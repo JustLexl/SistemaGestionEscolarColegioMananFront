@@ -1,0 +1,688 @@
+<aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between p-space-md"><div class="flex flex-col gap-space-lg"><div class="flex items-center gap-space-sm px-space-xs"><img alt="Brand logo. - Primary color: #0d9488 - Font: literata - Mode: light - Roundness: rounded-sm" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Vl7Rx0MYa0yy64UrpW8LAG4Y1p3E1Fnut-2xMv9QA7RsG6yemdQhT-ts43W0r8FC8JHJJtZ14ufGSkUzh8OdhAxnj6kzjgnV9XUxnntObozSa3VsbWoJYsm9BTYX4WhNNIsPKMnQGuViRUteXWxfk0pmLcB2wD7qZ4V_9GkJop-qb93SwoYZ8LAPzZjXIv18hAqsGeFpunxqaE1PTZKE6QCbmaE0nmkM94Px02QCbWSS6DcFirO5vnCF1c"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary leading-tight">Colegio Manantial</span><span class="font-label-sm text-label-sm text-on-surface-variant">Sistema de Gestión Escolar</span></div></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="alumnos" href="#"><span class="material-symbols-outlined text-primary text-[20px]">school</span><span class="">Alumnos</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm transition-all bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]" data-path="grados-y-grupos" href="#"><span class="material-symbols-outlined text-primary text-[20px]">meeting_room</span><span class="">Grados y grupos</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="profesores" href="#"><span class="material-symbols-outlined text-primary text-[20px]">badge</span><span class="">Profesores</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="materias" href="#"><span class="material-symbols-outlined text-primary text-[20px]">auto_stories</span><span class="">Materias</span></a></nav></div><div class="flex flex-col gap-space-sm pt-space-md border-t border-outline-variant/30"><div class="px-space-xs flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Ciclo Escolar</span><span class="font-label-sm text-label-sm bg-surface-container text-secondary font-semibold px-2 py-0.5 rounded-lg">2024–2025</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-error hover:bg-error-container hover:text-on-error-container transition-all font-label-lg text-label-lg" data-path="login" href="#"><span class="material-symbols-outlined text-[20px]">logout</span><span class="">Cerrar sesión</span></a></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-margin"><div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"><span class="hover:text-on-surface transition-colors cursor-pointer">Portal</span><span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span><span class="hover:text-on-surface transition-colors cursor-pointer">Administración</span><span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span><span class="text-primary font-semibold">Grados y grupos</span></div><div class="flex items-center gap-space-md"><button class="p-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors relative flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="flex items-center gap-space-sm px-space-sm py-1 rounded-full bg-surface-container-low shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"><div class="flex flex-col items-end pr-1"><span class="font-label-sm text-label-sm text-on-surface font-semibold leading-tight">Prof. Javier Méndez</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-none">Administración Escolar</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface px-margin"><div class="flex flex-col w-full pb-16">
+<!-- Top Academic Context & Hierarchy Ribbon -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md py-space-xs text-on-surface-variant">
+<div class="flex items-center gap-2 font-label-md text-label-md">
+<span class="inline-flex items-center gap-1 font-semibold text-primary bg-primary-fixed/20 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px]">school</span>
+        Colegio Manantial
+      </span>
+<span class="">•</span>
+<span class="font-body-md text-body-sm text-on-surface-variant">Estructura Curricular: Docente → Grados &amp; Grupos → Materias → Alumnos</span>
+</div>
+<div class="flex items-center gap-space-xs text-label-sm">
+<span class="inline-flex items-center gap-1 text-primary font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        Período Activo: 1° Trimestre 2024–2025
+      </span>
+</div>
+</div>
+<!-- 1. Encabezado principal y KPIs -->
+<section class="flex flex-col gap-space-lg mb-space-lg">
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-1 max-w-3xl">
+<div class="inline-flex items-center gap-2">
+<span class="font-label-md text-label-md uppercase tracking-wider text-primary font-semibold">ESTRUCTURA ESCOLAR</span>
+<span class="h-px w-10 bg-primary/30"></span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Grados y grupos</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Consulta, asignación de aulas, distribución de grupos y vinculación docente. Ciclo 2024–2025.
+        </p>
+</div>
+<div class="flex items-center gap-space-sm flex-shrink-0">
+<button class="inline-flex items-center gap-2 px-space-md py-2.5 bg-surface-container-lowest text-secondary font-label-lg text-label-lg rounded-xl shadow-sm hover:bg-surface-container-low border border-surface-container transition-all active:scale-[0.99] cursor-pointer" onclick="openModal('modal-crear-grado')" type="button">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span class="">+ Crear grado</span>
+</button>
+<button class="inline-flex items-center gap-2 px-space-md py-2.5 bg-primary text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm hover:bg-primary-container transition-all active:scale-[0.99] cursor-pointer" onclick="openModal('modal-crear-grupo')" type="button">
+<span class="material-symbols-outlined text-[20px]">group_add</span>
+<span class="">+ Registrar grupo</span>
+</button>
+</div>
+</div>
+<!-- Metric KPI Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md">
+<!-- Card 1: Total Grados y Grupos -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Total Grados y Grupos</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">14</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Grupos activos</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant/80 mt-1">6 Grados (1° a 6° Primaria)</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">meeting_room</span>
+</div>
+</div>
+<!-- Card 2: Aulas Asignadas -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Aulas Asignadas</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">14</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">de 14 aulas</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant/80 mt-1">100% capacidad física en Turno Matutino</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[26px]">domain</span>
+</div>
+</div>
+<!-- Card 3: Matrícula Total -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Matrícula Total</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md text-primary font-bold">480</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>+1.2%
+            </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant/80 mt-1">Promedio de 34 alumnos por grupo</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">groups</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Barra de búsqueda y filtros -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] mb-space-lg flex flex-col gap-space-sm">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+<!-- Search input -->
+<div class="md:col-span-5 relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-outline" id="grupo-search-input" placeholder="Buscar por grado, grupo, aula o profesor titular..." type="text"/>
+</div>
+<!-- Filter Grado -->
+<div class="md:col-span-2">
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-label-sm text-body-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" id="filter-grado">
+<option value="">Grado: Todos</option>
+<option value="1">1° Primaria</option>
+<option value="2">2° Primaria</option>
+<option value="3">3° Primaria</option>
+<option value="4">4° Primaria</option>
+<option value="5">5° Primaria</option>
+<option value="6">6° Primaria</option>
+</select>
+</div>
+<!-- Filter Turno -->
+<div class="md:col-span-2">
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-label-sm text-body-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" id="filter-turno">
+<option value="">Turno: Todos</option>
+<option value="matutino">Matutino</option>
+<option value="vespertino">Vespertino</option>
+</select>
+</div>
+<!-- Filter Estado -->
+<div class="md:col-span-2">
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-label-sm text-body-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" id="filter-estado">
+<option value="">Estado: Todos</option>
+<option value="activo">Activo</option>
+<option value="inactivo">Inactivo</option>
+</select>
+</div>
+<!-- Clear filters action -->
+<div class="md:col-span-1 flex justify-end">
+<button class="inline-flex items-center gap-1 text-outline hover:text-on-surface font-label-sm text-label-sm py-2 px-2 rounded-lg hover:bg-surface transition-colors cursor-pointer" onclick="resetFilters()" title="Restablecer filtros" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span class="">Limpiar</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 3. Tabla principal de grados y grupos registrados -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] overflow-hidden mb-space-xl">
+<div class="px-space-md py-space-sm bg-surface-container-low/50 flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface">Padrón de Grados y Grupos</span>
+<span class="bg-primary/10 text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold">14 grupos</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span class="">Asignación del Plan Oficial SEP 2024–2025</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-sm">
+<thead class="bg-surface text-on-surface-variant uppercase font-label-md text-label-md tracking-wider">
+<tr>
+<th class="py-3 px-space-md font-semibold" scope="col">Grado y Grupo</th>
+<th class="py-3 px-space-md font-semibold" scope="col">Profesor Titular</th>
+<th class="py-3 px-space-md font-semibold" scope="col">Materias Vinculadas</th>
+<th class="py-3 px-space-md font-semibold" scope="col">Alumnos Matriculados</th>
+<th class="py-3 px-space-md font-semibold text-center" scope="col">Estado</th>
+<th class="py-3 px-space-md font-semibold text-right" scope="col">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface">
+<!-- Row 1: 4° Grado — Grupo A -->
+<tr class="bg-primary-fixed/10 hover:bg-primary-fixed/20 transition-colors">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center font-title-md font-bold text-[14px]">
+                  4°A
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold flex items-center gap-1.5">
+                    4° Grado — Grupo A
+                    <span class="material-symbols-outlined text-primary text-[16px]" title="Grupo Base">stars</span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clave: CM-PRI-4A-24 • Aula 204 (Edificio B)</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center font-title-md font-bold text-[12px]">
+                  CS
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Profra. Carmen Salinas</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cédula: DOC-2018-042 • Titular de aula</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Español</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Matemáticas</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Ciencias</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-secondary-container/50 text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px] text-primary">groups</span>
+                36 / 40 alumnos (90% capacidad)
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#CCFBF1] text-[#0F766E] font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 text-primary hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="showToast('Consultando expediente de 4° Grado Grupo A')" title="Consultar" type="button">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="openModal('modal-crear-grupo')" title="Editar" type="button">
+<span class="material-symbols-outlined text-[19px]">edit</span>
+</button>
+<button class="p-1.5 text-error/80 hover:text-error hover:bg-error-container rounded-lg transition-colors cursor-pointer" onclick="openBajaModal('4° Grado — Grupo A')" title="Dar de baja" type="button">
+<span class="material-symbols-outlined text-[19px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: 4° Grado — Grupo B -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary text-on-secondary flex items-center justify-center font-title-md font-bold text-[14px]">
+                  4°B
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">4° Grado — Grupo B</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clave: CM-PRI-4B-24 • Aula 205 (Edificio B)</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-secondary flex items-center justify-center font-title-md font-bold text-[12px]">
+                  EG
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Profra. Elena Garro</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cédula: DOC-2019-018 • Titular de aula</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Español</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Matemáticas</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Ciencias</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-surface text-on-surface font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px] text-secondary">groups</span>
+                36 / 40 alumnos (90% capacidad)
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#CCFBF1] text-[#0F766E] font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 text-primary hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="showToast('Consultando expediente de 4° Grado Grupo B')" title="Consultar" type="button">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="openModal('modal-crear-grupo')" title="Editar" type="button">
+<span class="material-symbols-outlined text-[19px]">edit</span>
+</button>
+<button class="p-1.5 text-error/80 hover:text-error hover:bg-error-container rounded-lg transition-colors cursor-pointer" onclick="openBajaModal('4° Grado — Grupo B')" title="Dar de baja" type="button">
+<span class="material-symbols-outlined text-[19px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: 3° Grado — Grupo A -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container text-on-surface flex items-center justify-center font-title-md font-bold text-[14px]">
+                  3°A
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">3° Grado — Grupo A</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clave: CM-PRI-3A-24 • Aula 102 (Edificio A)</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-secondary flex items-center justify-center font-title-md font-bold text-[12px]">
+                  RV
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Prof. Roberto Carlos Valdés</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cédula: DOC-2021-095 • Titular de aula</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Español</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Inglés</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Matemáticas</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-surface text-on-surface font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px] text-secondary">groups</span>
+                34 / 40 alumnos (85% capacidad)
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#CCFBF1] text-[#0F766E] font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 text-primary hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="showToast('Consultando expediente de 3° Grado Grupo A')" title="Consultar" type="button">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="openModal('modal-crear-grupo')" title="Editar" type="button">
+<span class="material-symbols-outlined text-[19px]">edit</span>
+</button>
+<button class="p-1.5 text-error/80 hover:text-error hover:bg-error-container rounded-lg transition-colors cursor-pointer" onclick="openBajaModal('3° Grado — Grupo A')" title="Dar de baja" type="button">
+<span class="material-symbols-outlined text-[19px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: 5° Grado — Grupo A -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container text-on-surface flex items-center justify-center font-title-md font-bold text-[14px]">
+                  5°A
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">5° Grado — Grupo A</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clave: CM-PRI-5A-24 • Aula 301 (Edificio B)</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-secondary flex items-center justify-center font-title-md font-bold text-[12px]">
+                  GM
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Profra. Gabriela Mistral Nava</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cédula: DOC-2016-011 • Titular de aula</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Historia</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Geografía</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Matemáticas</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-surface text-on-surface font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px] text-secondary">groups</span>
+                35 / 40 alumnos (87% capacidad)
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#CCFBF1] text-[#0F766E] font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 text-primary hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="showToast('Consultando expediente de 5° Grado Grupo A')" title="Consultar" type="button">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="openModal('modal-crear-grupo')" title="Editar" type="button">
+<span class="material-symbols-outlined text-[19px]">edit</span>
+</button>
+<button class="p-1.5 text-error/80 hover:text-error hover:bg-error-container rounded-lg transition-colors cursor-pointer" onclick="openBajaModal('5° Grado — Grupo A')" title="Dar de baja" type="button">
+<span class="material-symbols-outlined text-[19px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: 6° Grado — Grupo A -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed text-on-secondary-fixed font-bold flex items-center justify-center font-title-md text-[14px]">
+                  6°A
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">6° Grado — Grupo A</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clave: CM-PRI-6A-24 • Aula 303 (Edificio B)</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-secondary flex items-center justify-center font-title-md font-bold text-[12px]">
+                  AR
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Prof. Alfonso Reyes Ochoa</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cédula: DOC-2022-073 • Titular de aula</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Español</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Civismo</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">Ed. Física</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-surface text-on-surface font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px] text-secondary">groups</span>
+                35 / 40 alumnos (87% capacidad)
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#CCFBF1] text-[#0F766E] font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 text-primary hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="showToast('Consultando expediente de 6° Grado Grupo A')" title="Consultar" type="button">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-lg transition-colors cursor-pointer" onclick="openModal('modal-crear-grupo')" title="Editar" type="button">
+<span class="material-symbols-outlined text-[19px]">edit</span>
+</button>
+<button class="p-1.5 text-error/80 hover:text-error hover:bg-error-container rounded-lg transition-colors cursor-pointer" onclick="openBajaModal('6° Grado — Grupo A')" title="Dar de baja" type="button">
+<span class="material-symbols-outlined text-[19px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Paginación inferior -->
+<div class="px-space-md py-3 bg-surface flex flex-wrap items-center justify-between gap-space-sm font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Mostrando 1 a 5 de 14 grupos registrados</span>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded-lg text-outline hover:bg-surface-container-high transition-colors" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-7 h-7 rounded-lg bg-primary text-on-primary font-bold flex items-center justify-center">1</button>
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center">2</button>
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center">3</button>
+<button class="p-1 rounded-lg text-on-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Formulario Modal: Registrar Nuevo Grupo -->
+<div class="fixed inset-0 z-50 bg-[#0F2942]/60 backdrop-blur-sm hidden items-center justify-center p-4" id="modal-crear-grupo">
+<div class="bg-surface-container-lowest w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+<!-- Modal Header -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">group_add</span>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface font-semibold">Registrar Nuevo Grupo</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Alta de grupo escolar y asignación de aula en el ciclo 2024–2025.</p>
+</div>
+</div>
+<button class="p-1.5 text-outline hover:text-on-surface hover:bg-surface rounded-xl transition-colors cursor-pointer" onclick="closeModal('modal-crear-grupo')" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<form class="p-space-lg overflow-y-auto flex flex-col gap-space-md" onsubmit="event.preventDefault(); submitNewGroup();">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Grado al que pertenecerá *</label>
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20">
+<option value="">Seleccione el grado escolar...</option>
+<option value="1">1° de Primaria</option>
+<option value="2">2° de Primaria</option>
+<option value="3">3° de Primaria</option>
+<option selected="" value="4">4° de Primaria</option>
+<option value="5">5° de Primaria</option>
+<option value="6">6° de Primaria</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Nombre del grupo / Letra identificadora *</label>
+<input class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Ej. Grupo C — 'Miguel de Cervantes'" type="text"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Siga la convención institucional: Grupo [Letra]</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Aula / Ubicación Física *</label>
+<input class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Ej. Aula 206 (Edificio B)" type="text"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Turno Asignado *</label>
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20">
+<option selected="" value="matutino">Matutino (07:45 – 14:00)</option>
+<option value="vespertino">Vespertino (14:15 – 19:30)</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Profesor Titular Asignado *</label>
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20">
+<option value="">Seleccione al profesor titular...</option>
+<option value="1">Profra. Carmen Salinas</option>
+<option value="2">Profra. Elena Garro</option>
+<option value="3">Prof. Roberto Carlos Valdés</option>
+<option value="4">Profra. Gabriela Mistral Nava</option>
+<option value="5">Prof. Alfonso Reyes Ochoa</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Capacidad Máxima de Alumnos</label>
+<input class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="40" type="number" value="40"/>
+</div>
+<!-- Modal Footer -->
+<div class="pt-space-md border-t border-surface flex items-center justify-end gap-3 mt-2">
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-xl transition-colors cursor-pointer" onclick="closeModal('modal-crear-grupo')" type="button">
+          Cancelar
+        </button>
+<button class="px-space-md py-2 bg-primary text-on-primary font-label-lg text-label-lg rounded-xl hover:bg-primary-container shadow-sm transition-all cursor-pointer" type="submit">
+          Guardar grupo
+        </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Modal: Crear Nuevo Grado -->
+<div class="fixed inset-0 z-50 bg-[#0F2942]/60 backdrop-blur-sm hidden items-center justify-center p-4" id="modal-crear-grado">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface font-semibold">Crear Nuevo Grado</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Añadir nivel a la estructura curricular.</p>
+</div>
+</div>
+<button class="p-1.5 text-outline hover:text-on-surface hover:bg-surface rounded-xl transition-colors cursor-pointer" onclick="closeModal('modal-crear-grado')" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<form class="p-space-lg flex flex-col gap-space-md" onsubmit="event.preventDefault(); submitNewGrade();">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Nombre del grado *</label>
+<input class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Ej. 1° de Secundaria" type="text"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Nivel Educativo *</label>
+<select class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20">
+<option value="primaria">Primaria</option>
+<option value="secundaria">Secundaria</option>
+<option value="preescolar">Preescolar</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Ciclo escolar correspondiente</label>
+<input class="w-full px-3 py-2 bg-surface-container text-on-surface-variant font-body-md text-body-md rounded-xl cursor-not-allowed" readonly="" type="text" value="2024–2025"/>
+</div>
+<div class="pt-space-md border-t border-surface flex items-center justify-end gap-3">
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-xl transition-colors cursor-pointer" onclick="closeModal('modal-crear-grado')" type="button">
+          Cancelar
+        </button>
+<button class="px-space-md py-2 bg-primary text-on-primary font-label-lg text-label-lg rounded-xl hover:bg-primary-container shadow-sm transition-all cursor-pointer" type="submit">
+          Guardar grado
+        </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Modal: Confirmar dar de baja -->
+<div class="fixed inset-0 z-50 bg-[#0F2942]/60 backdrop-blur-sm hidden items-center justify-center p-4" id="modal-dar-baja">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl p-space-lg flex flex-col gap-space-md">
+<div class="w-12 h-12 rounded-2xl bg-error-container text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">warning</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Confirmar baja de grupo</h3>
+<p class="font-body-md text-body-md text-on-surface-variant" id="baja-message">
+          ¿Está seguro que desea dar de baja al grupo <strong class="text-on-surface" id="baja-group-name">4° Grado — Grupo A</strong>? Esta acción requerirá reubicar a los alumnos matriculados antes de completar el trámite.
+        </p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-xl text-body-sm text-on-surface-variant flex items-start gap-2">
+<span class="material-symbols-outlined text-outline text-[18px] mt-0.5">info</span>
+<span class="">Se desvincularán el aula y las materias programadas para este grupo en el ciclo escolar.</span>
+</div>
+<div class="flex items-center justify-end gap-2 pt-2">
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-xl transition-colors cursor-pointer" onclick="closeModal('modal-dar-baja')" type="button">
+          Cancelar
+        </button>
+<button class="px-4 py-2 bg-error text-on-error font-label-lg text-label-lg rounded-xl hover:opacity-90 transition-all cursor-pointer shadow-sm" onclick="confirmarBajaAction()" type="button">
+          Confirmar baja
+        </button>
+</div>
+</div>
+</div>
+<!-- Toast Notification System -->
+<div class="fixed bottom-6 right-6 z-50 bg-inverse-surface text-inverse-on-surface px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-opacity duration-300 opacity-0 pointer-events-none" id="toast-notification">
+<span class="material-symbols-outlined text-inverse-primary text-[20px]">check_circle</span>
+<span class="font-body-md text-body-sm" id="toast-message">Operación realizada con éxito.</span>
+</div>
+</div>
+<script>
+  // Modal helpers
+  function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+    }
+  }
+
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
+  }
+
+  // Baja modal trigger
+  function openBajaModal(name) {
+    const nameEl = document.getElementById('baja-group-name');
+    if (nameEl) nameEl.textContent = name;
+    openModal('modal-dar-baja');
+  }
+
+  function confirmarBajaAction() {
+    closeModal('modal-dar-baja');
+    showToast("Grupo dado de baja. Pendiente reubicación de alumnos.");
+  }
+
+  function submitNewGroup() {
+    closeModal('modal-crear-grupo');
+    showToast("Grupo registrado exitosamente en el sistema.");
+  }
+
+  function submitNewGrade() {
+    closeModal('modal-crear-grado');
+    showToast("Grado creado exitosamente.");
+  }
+
+  function resetFilters() {
+    const search = document.getElementById('grupo-search-input');
+    const fGrado = document.getElementById('filter-grado');
+    const fTurno = document.getElementById('filter-turno');
+    const fEstado = document.getElementById('filter-estado');
+    if (search) search.value = '';
+    if (fGrado) fGrado.value = '';
+    if (fTurno) fTurno.value = '';
+    if (fEstado) fEstado.value = '';
+    showToast("Filtros restablecidos");
+  }
+
+  // Notification Toast Helper
+  function showToast(msg) {
+    const toast = document.getElementById('toast-notification');
+    const msgEl = document.getElementById('toast-message');
+    if (toast && msgEl) {
+      msgEl.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+  }
+</script>
