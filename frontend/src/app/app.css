@@ -1,0 +1,495 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+/* CONTENEDOR GENERAL */
+
+.login-page {
+  min-height: 100vh;
+  background: #f9f9ff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+
+  font-family: 'Manrope', sans-serif;
+  box-sizing: border-box;
+}
+
+
+/* TARJETA */
+
+.login-card {
+  width: 100%;
+  max-width: 1150px;
+  min-height: 600px;
+
+  display: grid;
+  grid-template-columns: 42% 58%;
+
+  background: #ffffff;
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  box-shadow: 0 18px 45px rgba(20, 40, 65, 0.12);
+}
+
+
+/* ===========================
+   PANEL IZQUIERDO
+=========================== */
+
+.left-panel {
+  padding: 52px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      145deg,
+      #008f82 0%,
+      #008378 48%,
+      #4b7891 100%
+    );
+}
+
+.left-content {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* CAMPUS VIRTUAL */
+
+.campus-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #89f5e7;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 0.03em;
+
+  margin-bottom: 25px;
+}
+
+.campus-icon {
+  width: 31px;
+  height: 31px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.campus-icon .material-symbols-outlined {
+  font-size: 18px;
+  color: #89f5e7;
+}
+
+
+/* LOGO */
+
+.logo-box {
+  width: 96px;
+  height: 96px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.14);
+
+  margin-bottom: 18px;
+
+  overflow: hidden;
+}
+
+.logo-box img {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+}
+
+
+/* TITULO */
+
+.left-panel h1 {
+  margin: 0 0 8px;
+
+  font-family: 'Literata', serif;
+
+  font-size: 31px;
+  line-height: 1.2;
+
+  font-weight: 600;
+}
+
+
+/* SUBTITULO */
+
+.subtitle {
+  margin: 0;
+
+  max-width: 340px;
+
+  color: #89f5e7;
+
+  font-size: 14px;
+  line-height: 21px;
+
+  font-weight: 500;
+}
+
+
+/* DESCRIPCIÓN */
+
+.description {
+  margin-top: 38px;
+  margin-bottom: 0;
+
+  max-width: 370px;
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 14px;
+  line-height: 22px;
+}
+
+
+/* PIE IZQUIERDO */
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 12px;
+}
+
+.footer-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #89f5e7;
+}
+
+
+/* ===========================
+   PANEL DERECHO
+=========================== */
+
+.right-panel {
+  padding: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+}
+
+.login-content {
+  width: 100%;
+  max-width: 440px;
+}
+
+
+/* AUTENTICACIÓN */
+
+.auth-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-bottom: 6px;
+
+  color: #00685f;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
+}
+
+.auth-label .material-symbols-outlined {
+  font-size: 15px;
+  color: #00685f;
+}
+
+
+/* TITULO LOGIN */
+
+.login-content h2 {
+  margin: 0 0 4px;
+
+  font-family: 'Literata', serif;
+
+  font-size: 24px;
+  line-height: 32px;
+
+  font-weight: 600;
+
+  color: #111c2d;
+}
+
+
+/* DESCRIPCIÓN LOGIN */
+
+.intro {
+  margin: 0 0 32px;
+
+  color: #3d4947;
+
+  font-size: 14px;
+  line-height: 20px;
+}
+
+
+/* FORMULARIO */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #111c2d;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* INPUT */
+
+.input-container {
+  width: 100%;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  padding: 0 13px;
+
+  gap: 11px;
+
+  border-radius: 8px;
+
+  background: #f0f3ff;
+}
+
+.input-container input {
+  flex: 1;
+
+  height: 100%;
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #111c2d;
+
+  font-family: 'Manrope', sans-serif;
+
+  font-size: 14px;
+}
+
+.input-container input::placeholder {
+  color: #bcc9c6;
+}
+
+
+/* ICONOS INPUT */
+
+.input-icon {
+  color: #6d7a77;
+
+  font-size: 18px;
+}
+
+
+/* TEXTO DE AYUDA */
+
+.form-group small {
+  display: block;
+
+  margin-top: 7px;
+  padding-left: 3px;
+
+  color: #6d7a77;
+
+  font-size: 12px;
+  line-height: 16px;
+}
+
+
+/* OJO */
+
+.eye-button {
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: #6d7a77;
+
+  cursor: pointer;
+}
+
+.eye-button:hover {
+  background: transparent;
+  color: #00685f;
+}
+
+.eye-button .material-symbols-outlined {
+  font-size: 18px;
+}
+
+
+/* BOTÓN LOGIN */
+
+.login-button {
+  width: 100%;
+  height: 48px;
+
+  margin-top: 2px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #007c70;
+
+  color: white;
+
+  font-family: 'Manrope', sans-serif;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+
+  transition: 0.2s;
+}
+
+.login-button:hover {
+  background: #00685f;
+}
+
+.login-button .arrow {
+  font-size: 17px;
+}
+
+
+/* COPYRIGHT */
+
+.copyright {
+  margin-top: 30px;
+  margin-bottom: 0;
+
+  text-align: center;
+
+  color: #6d7a77;
+
+  font-size: 12px;
+}
+
+
+/* ===========================
+   ICONOS MATERIAL
+=========================== */
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+
+  font-weight: normal;
+  font-style: normal;
+
+  line-height: 1;
+
+  letter-spacing: normal;
+  text-transform: none;
+
+  display: inline-block;
+
+  white-space: nowrap;
+  word-wrap: normal;
+
+  direction: ltr;
+
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+
+  font-feature-settings: 'liga';
+}
+
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media (max-width: 800px) {
+
+  .login-card {
+    grid-template-columns: 1fr;
+  }
+
+  .left-panel {
+    min-height: 390px;
+    padding: 35px;
+  }
+
+  .right-panel {
+    padding: 40px 28px;
+  }
+
+  .footer-left {
+    margin-top: 40px;
+  }
+}
