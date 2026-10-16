@@ -1,0 +1,56 @@
+<aside class="sidebar" aria-label="Navegación principal">
+  <div class="brand">
+    <div class="brand__mark" aria-label="Identidad visual provisional">
+      <app-ui-icon name="school" [size]="25" />
+    </div>
+    <div class="brand__copy">
+      <strong>Colegio Manantial</strong><span>Sistema de Gestión Escolar</span>
+    </div>
+  </div>
+  <nav class="navigation" aria-label="Administración escolar">
+    <a
+      class="navigation__item"
+      routerLink="/alumnos"
+      routerLinkActive="navigation__item--active"
+      ariaCurrentWhenActive="page"
+    >
+      <app-ui-icon name="students" /><span>Alumnos</span>
+    </a>
+    <a
+      class="navigation__item"
+      routerLink="/grados-y-grupos"
+      routerLinkActive="navigation__item--active"
+      ariaCurrentWhenActive="page"
+    >
+      <app-ui-icon name="groups" /><span>Grados y grupos</span>
+    </a>
+    <a
+      class="navigation__item"
+      routerLink="/asistencias"
+      routerLinkActive="navigation__item--active"
+      ariaCurrentWhenActive="page"
+    >
+      <app-ui-icon name="check" /><span>Asistencias</span>
+    </a>
+    <button class="navigation__item" type="button" aria-disabled="true">
+      <app-ui-icon name="teachers" /><span>Profesores</span>
+    </button>
+    <button class="navigation__item" type="button" aria-disabled="true">
+      <app-ui-icon name="book" /><span>Materias</span>
+    </button>
+    <a
+      class="navigation__item"
+      routerLink="/calificaciones"
+      routerLinkActive="navigation__item--active"
+      ariaCurrentWhenActive="page"
+    >
+      <app-ui-icon name="grade" /><span>Calificaciones</span>
+    </a>
+  </nav>
+  <div class="sidebar__footer">
+    <div class="school-year"><span>Ciclo Escolar</span><strong>2026–2027 · Demo</strong></div>
+    <a class="logout" routerLink="/login">
+      <app-ui-icon name="logout" [size]="18" /><span>Cerrar sesión</span>
+    </a>
+  </div>
+</aside>

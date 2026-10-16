@@ -1,0 +1,497 @@
+<div class="workspace">
+  <app-sidebar />
+  <div class="workspace__content">
+    <app-header />
+    <main>
+      <section class="academic-context" aria-label="Contexto académico demostrativo">
+        <div class="academic-context__identity">
+          <app-ui-icon name="school" [size]="19" />
+          <strong>Colegio Manantial</strong><span aria-hidden="true">•</span>
+          <span>Control académico de calificaciones</span>
+        </div>
+        <div class="active-period">
+          <span aria-hidden="true"></span><strong>Período Activo: Demo 2026–2027</strong>
+        </div>
+      </section>
+
+      <section class="module-heading" aria-labelledby="page-title">
+        <div>
+          <span class="module-heading__eyebrow">Control Académico</span>
+          <h1 id="page-title">Calificaciones</h1>
+          <p>Consulta y administra las calificaciones de los alumnos.</p>
+        </div>
+        <button #registerButton class="register-button" type="button" (click)="openCreate()">
+          <app-ui-icon name="grade" [size]="20" /><span>+ Registrar calificación</span>
+        </button>
+      </section>
+
+      <section class="summary" aria-label="Resumen de calificaciones">
+        <article class="summary-card summary-card--teal">
+          <div class="summary-card__copy">
+            <span>Total de calificaciones</span><strong>{{ total() }}</strong
+            ><small>Registros actuales</small>
+          </div>
+          <div class="summary-card__icon"><app-ui-icon name="grade" [size]="24" /></div>
+        </article>
+        <article class="summary-card summary-card--blue">
+          <div class="summary-card__copy">
+            <span>Promedio general</span><strong>{{ formatScore(promedioGeneral()) }}</strong
+            ><small>Promedio del padrón</small>
+          </div>
+          <div class="summary-card__icon"><app-ui-icon name="chart" [size]="24" /></div>
+        </article>
+        <article class="summary-card summary-card--amber">
+          <div class="summary-card__copy">
+            <span>Materias evaluadas</span><strong>{{ materiasEvaluadas() }}</strong
+            ><small>Materias únicas</small>
+          </div>
+          <div class="summary-card__icon"><app-ui-icon name="book" [size]="24" /></div>
+        </article>
+      </section>
+
+      <section class="filters" aria-labelledby="filters-title">
+        <h2 id="filters-title" class="visually-hidden">Buscar y filtrar calificaciones</h2>
+        <div class="filters__grid">
+          <label class="field field--search">
+            <span class="visually-hidden">Buscar por nombre o matrícula</span>
+            <span class="field__control"
+              ><app-ui-icon name="search" [size]="19" />
+              <input
+                #searchInput
+                type="search"
+                placeholder="Buscar por nombre o matrícula..."
+                autocomplete="off"
+                [value]="search()"
+                (input)="search.set(searchInput.value)"
+              />
+            </span>
+          </label>
+          <label class="field"
+            ><span class="visually-hidden">Grado</span>
+            <select
+              #gradeSelect
+              aria-label="Filtrar por grado"
+              [value]="gradoFilter()"
+              (change)="gradoFilter.set(gradeSelect.value)"
+            >
+              <option value="">Grado: Todos</option>
+              @for (grado of grados; track grado) {
+                <option [value]="grado">{{ grado }}</option>
+              }
+            </select>
+          </label>
+          <label class="field"
+            ><span class="visually-hidden">Grupo</span>
+            <select
+              #groupSelect
+              aria-label="Filtrar por grupo"
+              [value]="grupoFilter()"
+              (change)="grupoFilter.set(groupSelect.value)"
+            >
+              <option value="">Grupo: Todos</option>
+              @for (grupo of grupos; track grupo) {
+                <option [value]="grupo">Grupo {{ grupo }}</option>
+              }
+            </select>
+          </label>
+          <label class="field"
+            ><span class="visually-hidden">Materia</span>
+            <select
+              #subjectSelect
+              aria-label="Filtrar por materia"
+              [value]="materiaFilter()"
+              (change)="materiaFilter.set(subjectSelect.value)"
+            >
+              <option value="">Materia: Todas</option>
+              @for (materia of materias; track materia) {
+                <option [value]="materia">{{ materia }}</option>
+              }
+            </select>
+          </label>
+          <label class="field"
+            ><span class="visually-hidden">Periodo</span>
+            <select
+              #periodSelect
+              aria-label="Filtrar por periodo"
+              [value]="periodoFilter()"
+              (change)="periodoFilter.set(periodSelect.value)"
+            >
+              <option value="">Periodo: Todos</option>
+              @for (periodo of periodos; track periodo) {
+                <option [value]="periodo">{{ periodo }}</option>
+              }
+            </select>
+          </label>
+          <button
+            class="clear-button"
+            type="button"
+            aria-label="Limpiar filtros"
+            title="Limpiar filtros"
+            (click)="clearFilters()"
+          >
+            <app-ui-icon name="refresh" [size]="20" />
+          </button>
+        </div>
+      </section>
+
+      <section class="registry" aria-labelledby="registry-title">
+        <div class="registry__header">
+          <h2 id="registry-title">Padrón de calificaciones</h2>
+          <span class="registry__count"
+            >{{ filtered().length }}
+            {{ filtered().length === 1 ? 'calificación' : 'calificaciones' }}</span
+          >
+        </div>
+        <div class="table-scroll">
+          <table>
+            <caption class="visually-hidden">
+              Padrón de calificaciones de demostración
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Alumno / Matrícula</th>
+                <th scope="col">Grado-Grupo</th>
+                <th scope="col">Materia</th>
+                <th scope="col">Periodo</th>
+                <th scope="col">Calificación</th>
+                <th scope="col" class="actions-heading">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of filtered(); track item.id) {
+                <tr>
+                  <td>
+                    <div class="student">
+                      <span class="student__avatar" aria-hidden="true">{{
+                        item.alumno.charAt(0)
+                      }}</span>
+                      <div>
+                        <strong [attr.title]="item.alumno">{{ item.alumno }}</strong
+                        ><span [attr.title]="item.matricula">{{ item.matricula }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ item.grado }} {{ item.grupo }}</td>
+                  <td>{{ item.materia }}</td>
+                  <td>{{ item.periodo }}</td>
+                  <td>
+                    <span [class]="'score ' + getCalificacionTone(item.calificacion)">
+                      {{ formatScore(item.calificacion) }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="actions" [attr.aria-label]="'Acciones para ' + item.alumno">
+                      <button
+                        type="button"
+                        class="actions__view"
+                        title="Consultar"
+                        [attr.data-id]="item.id"
+                        data-action="view"
+                        [attr.aria-label]="'Consultar calificación de ' + item.alumno"
+                        (click)="openDetail(item.id)"
+                      >
+                        <app-ui-icon name="eye" [size]="17" />
+                      </button>
+                      <button
+                        type="button"
+                        class="actions__edit"
+                        title="Editar"
+                        [attr.data-id]="item.id"
+                        data-action="edit"
+                        [attr.aria-label]="'Editar calificación de ' + item.alumno"
+                        (click)="openEdit(item.id)"
+                      >
+                        <app-ui-icon name="edit-simple" [size]="17" />
+                      </button>
+                      <button
+                        type="button"
+                        class="actions__danger"
+                        title="Eliminar"
+                        [attr.data-id]="item.id"
+                        data-action="delete"
+                        [attr.aria-label]="'Eliminar calificación de ' + item.alumno"
+                        (click)="openDelete(item.id)"
+                      >
+                        <app-ui-icon name="trash" [size]="17" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td class="empty-state" colspan="6">
+                    No hay calificaciones que coincidan con los filtros.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <footer class="pagination" aria-label="Paginación demostrativa">
+          <span>Mostrando {{ rangeLabel() }} de {{ filtered().length }} registros</span>
+          <div>
+            <button type="button" disabled aria-label="Página anterior">‹</button
+            ><button class="pagination__active" type="button" aria-current="page">1</button
+            ><button type="button" disabled aria-label="Página siguiente">›</button>
+          </div>
+        </footer>
+      </section>
+    </main>
+  </div>
+</div>
+
+@if (modalMode() === 'create' || modalMode() === 'edit') {
+  <div class="modal-backdrop">
+    <section
+      class="form-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="form-modal-title"
+      aria-describedby="form-modal-description"
+    >
+      <header class="modal-header">
+        <div>
+          <span>{{ modalMode() === 'create' ? 'Nuevo registro' : 'Actualizar registro' }}</span>
+          <h2 id="form-modal-title">
+            {{ modalMode() === 'create' ? 'Registrar calificación' : 'Modificar calificación' }}
+          </h2>
+        </div>
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Cerrar formulario"
+          title="Cerrar"
+          (click)="closeModal()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <p id="form-modal-description" class="modal-description">
+        Captura los datos académicos del registro de calificación.
+      </p>
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <div class="form-grid">
+          <div class="form-field form-field--wide">
+            <label for="cal-alumno">Alumno</label
+            ><input
+              #firstModalControl
+              id="cal-alumno"
+              type="text"
+              formControlName="alumno"
+              autocomplete="off"
+              [attr.aria-invalid]="fieldInvalid('alumno')"
+            />
+            @if (fieldInvalid('alumno')) {
+              <span class="form-field__error" role="alert">El alumno es obligatorio.</span>
+            }
+          </div>
+          <div class="form-field form-field--wide">
+            <label for="cal-matricula">Matrícula</label
+            ><input
+              id="cal-matricula"
+              type="text"
+              formControlName="matricula"
+              autocomplete="off"
+              [attr.aria-invalid]="fieldInvalid('matricula')"
+              (input)="clearDuplicateError()"
+            />
+            @if (fieldInvalid('matricula')) {
+              <span class="form-field__error" role="alert">La matrícula es obligatoria.</span>
+            }
+          </div>
+          <div class="form-field">
+            <label for="cal-grado">Grado</label
+            ><select
+              id="cal-grado"
+              formControlName="grado"
+              [attr.aria-invalid]="fieldInvalid('grado')"
+            >
+              <option value="">Selecciona</option>
+              @for (grado of grados; track grado) {
+                <option [value]="grado">{{ grado }}</option>
+              }
+            </select>
+            @if (fieldInvalid('grado')) {
+              <span class="form-field__error" role="alert">Selecciona un grado.</span>
+            }
+          </div>
+          <div class="form-field">
+            <label for="cal-grupo">Grupo</label
+            ><select
+              id="cal-grupo"
+              formControlName="grupo"
+              [attr.aria-invalid]="fieldInvalid('grupo')"
+            >
+              <option value="">Selecciona</option>
+              @for (grupo of grupos; track grupo) {
+                <option [value]="grupo">{{ grupo }}</option>
+              }
+            </select>
+            @if (fieldInvalid('grupo')) {
+              <span class="form-field__error" role="alert">Selecciona un grupo.</span>
+            }
+          </div>
+          <div class="form-field">
+            <label for="cal-materia">Materia</label
+            ><select
+              id="cal-materia"
+              formControlName="materia"
+              [attr.aria-invalid]="fieldInvalid('materia')"
+              (change)="clearDuplicateError()"
+            >
+              <option value="">Selecciona</option>
+              @for (materia of materias; track materia) {
+                <option [value]="materia">{{ materia }}</option>
+              }
+            </select>
+            @if (fieldInvalid('materia')) {
+              <span class="form-field__error" role="alert">Selecciona una materia.</span>
+            }
+          </div>
+          <div class="form-field">
+            <label for="cal-periodo">Periodo</label
+            ><select
+              id="cal-periodo"
+              formControlName="periodo"
+              [attr.aria-invalid]="fieldInvalid('periodo')"
+              (change)="clearDuplicateError()"
+            >
+              <option value="">Selecciona</option>
+              @for (periodo of periodos; track periodo) {
+                <option [value]="periodo">{{ periodo }}</option>
+              }
+            </select>
+            @if (fieldInvalid('periodo')) {
+              <span class="form-field__error" role="alert">Selecciona un periodo.</span>
+            }
+          </div>
+          <div class="form-field form-field--wide">
+            <label for="cal-valor">Calificación</label
+            ><input
+              id="cal-valor"
+              type="number"
+              min="0"
+              max="10"
+              step="0.1"
+              inputmode="decimal"
+              formControlName="calificacion"
+              [attr.aria-invalid]="fieldInvalid('calificacion')"
+            />
+            @if (fieldInvalid('calificacion')) {
+              <span class="form-field__error" role="alert">{{ scoreError() }}</span>
+            }
+          </div>
+        </div>
+        @if (duplicateError()) {
+          <p class="form-error" role="alert">
+            Ya existe una calificación para este alumno, materia y periodo.
+          </p>
+        }
+        <footer class="modal-actions">
+          <button class="button-secondary" type="button" (click)="closeModal()">Cancelar</button
+          ><button class="button-primary" type="submit">
+            {{ modalMode() === 'create' ? 'Guardar' : 'Guardar cambios' }}
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}
+
+@if (modalMode() === 'detail' && selected(); as item) {
+  <div class="modal-backdrop">
+    <section
+      class="detail-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detail-modal-title"
+    >
+      <header class="modal-header">
+        <div>
+          <span>Consulta de registro</span>
+          <h2 id="detail-modal-title">Detalle de calificación</h2>
+        </div>
+        <button
+          #firstModalControl
+          class="modal-close"
+          type="button"
+          aria-label="Cerrar detalle"
+          title="Cerrar"
+          (click)="closeModal()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <div class="detail-identity">
+        <span aria-hidden="true">{{ item.alumno.charAt(0) }}</span>
+        <div>
+          <strong>{{ item.alumno }}</strong
+          ><small>{{ item.matricula }}</small>
+        </div>
+      </div>
+      <dl class="detail-grid">
+        <div>
+          <dt>Grado y grupo</dt>
+          <dd>{{ item.grado }} {{ item.grupo }}</dd>
+        </div>
+        <div>
+          <dt>Materia</dt>
+          <dd>{{ item.materia }}</dd>
+        </div>
+        <div>
+          <dt>Periodo</dt>
+          <dd>{{ item.periodo }}</dd>
+        </div>
+        <div>
+          <dt>Calificación</dt>
+          <dd>
+            <span [class]="'score ' + getCalificacionTone(item.calificacion)">
+              {{ formatScore(item.calificacion) }}
+            </span>
+          </dd>
+        </div>
+      </dl>
+      <footer class="modal-actions">
+        <button class="button-primary" type="button" (click)="closeModal()">Cerrar</button>
+      </footer>
+    </section>
+  </div>
+}
+
+@if (modalMode() === 'delete' && selected(); as item) {
+  <div class="modal-backdrop">
+    <section
+      class="delete-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-modal-title"
+      aria-describedby="delete-modal-description"
+    >
+      <header class="modal-header">
+        <div>
+          <span>Confirmar eliminación</span>
+          <h2 id="delete-modal-title">Eliminar calificación</h2>
+        </div>
+        <button
+          #firstModalControl
+          class="modal-close"
+          type="button"
+          aria-label="Cerrar confirmación"
+          title="Cerrar"
+          (click)="closeModal()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <p id="delete-modal-description" class="modal-description">
+        ¿Estás seguro de que deseas eliminar la calificación de
+        <strong>{{ item.alumno }}</strong> en <strong>{{ item.materia }}</strong
+        >?
+      </p>
+      <footer class="modal-actions">
+        <button class="button-secondary" type="button" (click)="closeModal()">Cancelar</button
+        ><button class="button-danger" type="button" (click)="confirmDelete()">Eliminar</button>
+      </footer>
+    </section>
+  </div>
+}
