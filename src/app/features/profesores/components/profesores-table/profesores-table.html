@@ -1,0 +1,123 @@
+<section class="registry" aria-labelledby="registry-title">
+  <div class="registry__header">
+    <h2 id="registry-title">Padrón de profesores</h2>
+    <span class="registry__count">
+      {{ totalProfesores() }} {{ totalProfesores() === 1 ? 'profesor' : 'profesores' }}
+    </span>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <colgroup>
+        <col class="column--teacher" />
+        <col class="column--subjects" />
+        <col class="column--groups" />
+        <col class="column--status" />
+        <col class="column--actions" />
+      </colgroup>
+      <caption class="visually-hidden">
+        Vista preliminar del padrón docente
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Profesor / Cédula</th>
+          <th scope="col">Materias Asignadas</th>
+          <th scope="col">Grupos Asignados</th>
+          <th scope="col">Estado</th>
+          <th scope="col" class="actions-heading">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (profesor of profesores(); track profesor.id) {
+          <tr>
+            <td>
+              <div class="teacher">
+                <span class="teacher__avatar" aria-hidden="true">{{
+                  profesor.nombre.charAt(0)
+                }}</span>
+                <div>
+                  <strong [attr.title]="profesor.nombre">{{ profesor.nombre }}</strong>
+                  <span [attr.title]="profesor.cedula">{{ profesor.cedula }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="tag-list">
+                @for (materia of profesor.materiasAsignadas; track materia) {
+                  <span class="tag tag--subject">{{ materia }}</span>
+                }
+              </div>
+            </td>
+            <td>
+              <div class="tag-list">
+                @for (grupo of profesor.gruposAsignados; track grupo) {
+                  <span class="tag">{{ grupo }}</span>
+                }
+              </div>
+            </td>
+            <td>
+              <span class="status" [class.status--inactive]="profesor.estado === 'Inactivo'">
+                <span aria-hidden="true"></span>{{ profesor.estado }}
+              </span>
+            </td>
+            <td>
+              <div class="actions" [attr.aria-label]="'Acciones para ' + profesor.nombre">
+                <button
+                  #consultationButton
+                  class="actions__view"
+                  type="button"
+                  [attr.data-profesor-id]="profesor.id"
+                  [attr.aria-label]="'Consultar profesor ' + profesor.nombre"
+                  title="Consultar"
+                  (click)="consultar.emit(profesor.id)"
+                >
+                  <app-ui-icon name="eye" [size]="17" />
+                </button>
+                <button
+                  #editButton
+                  class="actions__edit"
+                  type="button"
+                  [attr.data-profesor-id]="profesor.id"
+                  [attr.aria-label]="'Editar profesor ' + profesor.nombre"
+                  title="Editar"
+                  (click)="editar.emit(profesor.id)"
+                >
+                  <app-ui-icon name="edit" [size]="17" />
+                </button>
+                <button
+                  #deactivationButton
+                  class="actions__danger"
+                  type="button"
+                  [attr.data-profesor-id]="profesor.id"
+                  [attr.aria-label]="
+                    profesor.estado === 'Inactivo'
+                      ? profesor.nombre + ' ya está inactivo'
+                      : 'Dar de baja a ' + profesor.nombre
+                  "
+                  [attr.title]="
+                    profesor.estado === 'Inactivo' ? 'Profesor ya inactivo' : 'Dar de baja'
+                  "
+                  [attr.aria-disabled]="profesor.estado === 'Inactivo'"
+                  (click)="profesor.estado === 'Activo' && darDeBaja.emit(profesor.id)"
+                >
+                  <app-ui-icon name="trash" [size]="17" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="pagination" aria-label="Paginación demostrativa">
+    <span>Mostrando {{ rangoMostrado() }} de {{ totalProfesores() }} registros demo</span>
+    <div>
+      <button type="button" disabled aria-label="Página anterior" title="Anterior">‹</button>
+      <button class="pagination__active" type="button" aria-current="page" title="Página 1">
+        1
+      </button>
+      <button type="button" aria-label="Página siguiente" title="Siguiente">›</button>
+    </div>
+  </footer>
+</section>

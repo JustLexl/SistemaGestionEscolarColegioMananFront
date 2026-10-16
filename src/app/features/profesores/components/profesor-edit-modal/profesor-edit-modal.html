@@ -1,0 +1,76 @@
+<div class="modal-backdrop">
+  <section
+    class="edit-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-modal-title"
+    aria-describedby="edit-modal-description"
+  >
+    <header class="edit-modal__header">
+      <div>
+        <span>Edición docente</span>
+        <h2 id="edit-modal-title">Modificar profesor</h2>
+      </div>
+      <button
+        class="edit-modal__close"
+        type="button"
+        aria-label="Cerrar formulario de edición"
+        title="Cerrar"
+        (click)="cerrar()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <p id="edit-modal-description" class="edit-modal__description">
+      Actualiza únicamente los datos básicos del profesor.
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="form-field">
+        <label for="editar-profesor-nombre">Nombre</label>
+        <input
+          #nombreInput
+          id="editar-profesor-nombre"
+          type="text"
+          formControlName="nombre"
+          autocomplete="off"
+          aria-describedby="editar-profesor-nombre-error"
+          [attr.aria-invalid]="mostrarErrorNombre()"
+        />
+        @if (mostrarErrorNombre()) {
+          <span id="editar-profesor-nombre-error" class="form-field__error" role="alert">
+            El nombre es obligatorio.
+          </span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="editar-profesor-cedula">Cédula / identificación</label>
+        <input
+          id="editar-profesor-cedula"
+          type="text"
+          formControlName="cedula"
+          autocomplete="off"
+          aria-describedby="editar-profesor-cedula-error"
+          [attr.aria-invalid]="mostrarErrorCedula() || cedulaDuplicada()"
+          (input)="limpiarErrorCedulaDuplicada()"
+        />
+        @if (mostrarErrorCedula()) {
+          <span id="editar-profesor-cedula-error" class="form-field__error" role="alert">
+            La cédula es obligatoria.
+          </span>
+        } @else if (cedulaDuplicada()) {
+          <span id="editar-profesor-cedula-error" class="form-field__error" role="alert">
+            Ya existe un profesor con esta cédula.
+          </span>
+        }
+      </div>
+
+      <footer class="edit-modal__actions">
+        <button class="edit-modal__cancel" type="button" (click)="cerrar()">Cancelar</button>
+        <button class="edit-modal__save" type="submit">Guardar</button>
+      </footer>
+    </form>
+  </section>
+</div>

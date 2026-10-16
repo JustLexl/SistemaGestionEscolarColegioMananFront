@@ -1,0 +1,64 @@
+<div class="workspace">
+  <app-sidebar />
+
+  <div class="workspace__content">
+    <app-header />
+
+    <main>
+      <section class="academic-context" aria-label="Contexto académico demostrativo">
+        <div class="academic-context__identity">
+          <app-ui-icon name="school" [size]="19" />
+          <strong>Colegio Manantial</strong>
+          <span aria-hidden="true">•</span>
+          <span>Administración de profesores</span>
+        </div>
+        <div class="active-period">
+          <span aria-hidden="true"></span>
+          <strong>Período Activo: Demo 2026–2027</strong>
+        </div>
+      </section>
+
+      <section class="module-heading" aria-labelledby="page-title">
+        <div>
+          <span class="module-heading__eyebrow">Cuerpo Docente Institucional</span>
+          <h1 id="page-title">Profesores</h1>
+          <p>Consulta, asignación académica y administración integral del personal docente.</p>
+        </div>
+        <button
+          #registerButton
+          class="register-button"
+          type="button"
+          (click)="registroAbierto.set(true)"
+        >
+          <app-ui-icon name="user-plus" [size]="20" />
+          <span>+ Registrar profesor</span>
+        </button>
+      </section>
+
+      <app-profesores-summary [profesoresCount]="profesores().length" />
+      <app-profesores-filters />
+      <app-profesores-table
+        [profesores]="profesores()"
+        (consultar)="abrirConsulta($event)"
+        (editar)="abrirEdicion($event)"
+        (darDeBaja)="abrirBaja($event)"
+      />
+    </main>
+  </div>
+</div>
+
+@if (registroAbierto()) {
+  <app-profesor-registration-modal (closed)="cerrarRegistro()" />
+}
+
+@if (profesorConsultado(); as profesor) {
+  <app-profesor-detail-modal [profesor]="profesor" (closed)="cerrarConsulta()" />
+}
+
+@if (profesorEditado(); as profesor) {
+  <app-profesor-edit-modal [profesor]="profesor" (closed)="cerrarEdicion()" />
+}
+
+@if (profesorBaja(); as profesor) {
+  <app-profesor-deactivate-modal [profesor]="profesor" (closed)="cerrarBaja()" />
+}
