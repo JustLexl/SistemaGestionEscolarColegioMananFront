@@ -31,11 +31,7 @@
   box-sizing: border-box;
 }
 
-html {
-  min-width: 320px;
-  background: var(--color-canvas);
-}
-
+html,
 body {
   min-width: 320px;
   min-height: 100vh;

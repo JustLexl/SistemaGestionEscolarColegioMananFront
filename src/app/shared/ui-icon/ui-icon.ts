@@ -7,7 +7,9 @@ export type IconName =
   | 'chart'
   | 'check'
   | 'edit'
+  | 'edit-simple'
   | 'eye'
+  | 'grade'
   | 'groups'
   | 'logout'
   | 'plus'
@@ -26,5 +28,5 @@ export type IconName =
 })
 export class UiIcon {
   readonly name = input.required<IconName>();
-  readonly size = input(20);
+  readonly size = input<number>(20);
 }

@@ -12,9 +12,14 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.breadcrumb {
+.breadcrumb,
+.header__actions,
+.user {
   display: flex;
   align-items: center;
+}
+
+.breadcrumb {
   min-width: 0;
   gap: 10px;
   color: #5f696f;
@@ -32,12 +37,6 @@
 .breadcrumb__separator {
   color: #9ca5aa;
   font-size: 1rem;
-}
-
-.header__actions,
-.user {
-  display: flex;
-  align-items: center;
 }
 
 .header__actions {
