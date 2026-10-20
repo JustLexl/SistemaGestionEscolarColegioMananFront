@@ -1,16 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
+  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss',
 })
-export class App {
-  mostrarPassword = false;
-
-  togglePassword(): void {
-    this.mostrarPassword = !this.mostrarPassword;
-  }
-}
+export class App {}

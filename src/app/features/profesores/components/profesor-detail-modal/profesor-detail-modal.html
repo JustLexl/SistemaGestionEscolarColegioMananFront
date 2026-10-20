@@ -1,0 +1,85 @@
+<div class="modal-backdrop">
+  <section
+    class="detail-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="detail-modal-title"
+    aria-describedby="detail-modal-description"
+  >
+    <header class="detail-modal__header">
+      <div>
+        <span>Consulta docente</span>
+        <h2 id="detail-modal-title">Información del profesor</h2>
+      </div>
+      <button
+        #closeButton
+        class="detail-modal__close"
+        type="button"
+        aria-label="Cerrar información del profesor"
+        title="Cerrar"
+        (click)="cerrar()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <p id="detail-modal-description" class="detail-modal__description">
+      Información académica registrada actualmente en el sistema.
+    </p>
+
+    <dl class="detail-list">
+      <div class="detail-list__item detail-list__item--wide">
+        <dt>Nombre</dt>
+        <dd>{{ profesor().nombre }}</dd>
+      </div>
+
+      <div class="detail-list__item">
+        <dt>Cédula / identificación</dt>
+        <dd>{{ profesor().cedula }}</dd>
+      </div>
+
+      <div class="detail-list__item">
+        <dt>Estado</dt>
+        <dd>
+          <span class="status" [class.status--inactive]="profesor().estado === 'Inactivo'">
+            {{ profesor().estado }}
+          </span>
+        </dd>
+      </div>
+
+      <div class="detail-list__item detail-list__item--wide">
+        <dt>Materias asignadas</dt>
+        <dd>
+          @if (profesor().materiasAsignadas.length > 0) {
+            <ul class="assignment-list">
+              @for (materia of profesor().materiasAsignadas; track materia) {
+                <li>{{ materia }}</li>
+              }
+            </ul>
+          } @else {
+            <span class="empty-value">Sin materias asignadas</span>
+          }
+        </dd>
+      </div>
+
+      <div class="detail-list__item detail-list__item--wide">
+        <dt>Grupos asignados</dt>
+        <dd>
+          @if (profesor().gruposAsignados.length > 0) {
+            <ul class="assignment-list">
+              @for (grupo of profesor().gruposAsignados; track grupo) {
+                <li>{{ grupo }}</li>
+              }
+            </ul>
+          } @else {
+            <span class="empty-value">Sin grupos asignados</span>
+          }
+        </dd>
+      </div>
+    </dl>
+
+    <footer class="detail-modal__actions">
+      <button type="button" (click)="cerrar()">Cerrar</button>
+    </footer>
+  </section>
+</div>

@@ -1,0 +1,44 @@
+<section class="filters" aria-labelledby="filters-title">
+  <h2 id="filters-title" class="visually-hidden">Buscar y filtrar profesores</h2>
+
+  <div class="filters__grid">
+    <label class="field field--search">
+      <span class="visually-hidden">Buscar profesor</span>
+      <span class="field__control">
+        <app-ui-icon name="search" [size]="19" />
+        <input type="search" placeholder="Buscar por nombre o cédula..." autocomplete="off" />
+      </span>
+    </label>
+
+    <label class="field">
+      <span class="visually-hidden">Grado</span>
+      <select>
+        <option value="">Grado: Todos</option>
+        <option value="1">1.º</option>
+        <option value="2">2.º</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="visually-hidden">Grupo</span>
+      <select>
+        <option value="">Grupo: Todos</option>
+        <option value="a">Grupo A</option>
+        <option value="b">Grupo B</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="visually-hidden">Materia</span>
+      <select>
+        <option value="">Materia: Todas</option>
+        <option value="matematicas">Matemáticas</option>
+        <option value="lengua">Lengua</option>
+      </select>
+    </label>
+
+    <button class="clear-button" type="button" aria-label="Limpiar filtros" title="Limpiar filtros">
+      <app-ui-icon name="refresh" [size]="20" />
+    </button>
+  </div>
+</section>

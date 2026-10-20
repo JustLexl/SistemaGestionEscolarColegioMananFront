@@ -1,0 +1,79 @@
+<div class="modal-backdrop">
+  <section
+    class="registration-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="registration-modal-title"
+    aria-describedby="registration-modal-description"
+  >
+    <header class="registration-modal__header">
+      <div>
+        <span>Nuevo registro</span>
+        <h2 id="registration-modal-title">Registrar profesor</h2>
+      </div>
+      <button
+        class="registration-modal__close"
+        type="button"
+        aria-label="Cerrar formulario de registro"
+        title="Cerrar"
+        (click)="cerrar()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <p id="registration-modal-description" class="registration-modal__description">
+      Ingresa los datos básicos del profesor. Las asignaciones académicas se podrán realizar
+      posteriormente.
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="form-field">
+        <label for="profesor-nombre">Nombre</label>
+        <input
+          #nombreInput
+          id="profesor-nombre"
+          type="text"
+          formControlName="nombre"
+          autocomplete="off"
+          aria-describedby="profesor-nombre-error"
+          [attr.aria-invalid]="mostrarErrorNombre()"
+        />
+        @if (mostrarErrorNombre()) {
+          <span id="profesor-nombre-error" class="form-field__error" role="alert">
+            El nombre es obligatorio.
+          </span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="profesor-cedula">Cédula / identificación</label>
+        <input
+          id="profesor-cedula"
+          type="text"
+          formControlName="cedula"
+          autocomplete="off"
+          aria-describedby="profesor-cedula-error"
+          [attr.aria-invalid]="mostrarErrorCedula() || cedulaDuplicada()"
+          (input)="limpiarErrorCedulaDuplicada()"
+        />
+        @if (mostrarErrorCedula()) {
+          <span id="profesor-cedula-error" class="form-field__error" role="alert">
+            La cédula es obligatoria.
+          </span>
+        } @else if (cedulaDuplicada()) {
+          <span id="profesor-cedula-error" class="form-field__error" role="alert">
+            Ya existe un profesor con esta cédula.
+          </span>
+        }
+      </div>
+
+      <footer class="registration-modal__actions">
+        <button class="registration-modal__cancel" type="button" (click)="cerrar()">
+          Cancelar
+        </button>
+        <button class="registration-modal__save" type="submit">Guardar</button>
+      </footer>
+    </form>
+  </section>
+</div>

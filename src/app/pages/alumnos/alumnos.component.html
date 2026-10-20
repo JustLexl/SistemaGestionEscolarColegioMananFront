@@ -5,8 +5,12 @@
   <div class="flex flex-col gap-space-lg">
 
     <div class="flex items-center gap-space-sm px-space-xs">
-      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-        <span class="material-symbols-outlined text-on-primary">school</span>
+      <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden shrink-0">
+        <img
+          src="/images/logo-manantial.jpg"
+          alt="Logo Colegio Manantial"
+          class="w-full h-full object-contain"
+        />
       </div>
 
       <div class="flex flex-col">
@@ -32,6 +36,17 @@
         <span>Alumnos</span>
       </a>
 
+      <!-- ASISTENCIAS -->
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg"
+        routerLink="/asistencias"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">
+          fact_check
+        </span>
+        <span>Asistencias</span>
+      </a>
+
       <a
         class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg"
         routerLink="/grados-y-grupos"
@@ -44,7 +59,7 @@
 
       <a
         class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all font-label-lg text-label-lg"
-        href="#"
+        routerLink="/profesores"
       >
         <span class="material-symbols-outlined text-primary text-[20px]">
           badge

@@ -1,0 +1,89 @@
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.summary-card {
+  display: flex;
+  min-height: 120px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.summary-card__copy {
+  display: grid;
+  gap: 4px;
+}
+
+.summary-card__copy > span {
+  color: #58656c;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.summary-card__copy strong {
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.summary-card__copy small {
+  color: #5f6b71;
+  font-size: 0.79rem;
+}
+
+.summary-card__icon {
+  display: grid;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 50px;
+  place-items: center;
+  color: var(--card-accent);
+  background: var(--card-icon-background);
+  border-radius: 8px;
+}
+
+.summary-card--teal {
+  --card-accent: #087e73;
+  --card-icon-background: #eff9f7;
+}
+
+.summary-card--blue {
+  --card-accent: #42647b;
+  --card-icon-background: #f0f2fb;
+}
+
+.summary-card--amber {
+  --card-accent: #a96f2c;
+  --card-icon-background: #fbf4e9;
+}
+
+@media (max-width: 1080px) {
+  .summary {
+    gap: 12px;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    min-height: 108px;
+  }
+}

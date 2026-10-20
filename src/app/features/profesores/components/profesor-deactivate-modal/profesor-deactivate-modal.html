@@ -1,0 +1,43 @@
+<div class="modal-backdrop">
+  <section
+    class="deactivate-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deactivate-modal-title"
+    aria-describedby="deactivate-modal-description deactivate-modal-note"
+  >
+    <header class="deactivate-modal__header">
+      <div>
+        <span>Confirmación requerida</span>
+        <h2 id="deactivate-modal-title">Dar de baja profesor</h2>
+      </div>
+      <button
+        class="deactivate-modal__close"
+        type="button"
+        aria-label="Cerrar confirmación de baja"
+        title="Cerrar"
+        (click)="cerrar()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <p id="deactivate-modal-description" class="deactivate-modal__question">
+      ¿Estás seguro de que deseas dar de baja a <strong>{{ profesor().nombre }}</strong
+      >?
+    </p>
+
+    <p id="deactivate-modal-note" class="deactivate-modal__note">
+      El profesor permanecerá registrado, pero su estado cambiará a Inactivo.
+    </p>
+
+    <footer class="deactivate-modal__actions">
+      <button #cancelButton class="deactivate-modal__cancel" type="button" (click)="cerrar()">
+        Cancelar
+      </button>
+      <button class="deactivate-modal__confirm" type="button" (click)="confirmarBaja()">
+        Dar de baja
+      </button>
+    </footer>
+  </section>
+</div>
