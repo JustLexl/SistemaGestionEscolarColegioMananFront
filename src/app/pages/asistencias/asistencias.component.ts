@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+
 
 type EstadoAsistencia = 'Presente' | 'Ausente' | 'Justificada';
 
@@ -23,7 +23,7 @@ interface AlumnoAsistencia {
 @Component({
   selector: 'app-asistencias',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './asistencias.component.html',
   styleUrl: './asistencias.component.css',
 })

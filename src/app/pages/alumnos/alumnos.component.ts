@@ -16,7 +16,7 @@ interface Alumno {
 @Component({
   selector: 'app-alumnos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './alumnos.component.html',
   styleUrl: './alumnos.component.css'
 })

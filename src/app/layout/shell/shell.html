@@ -1,0 +1,154 @@
+<!-- SIDEBAR -->
+<aside
+  class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between p-space-md"
+>
+  <div class="flex flex-col gap-space-lg">
+
+    <div class="flex items-center gap-space-sm px-space-xs">
+      <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden shrink-0">
+        <img
+          src="/images/logo-manantial.jpg"
+          alt="Logo Colegio Manantial"
+          class="w-full h-full object-contain"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm text-primary leading-tight">
+          Colegio Manantial
+        </span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">
+          Sistema de Gestión Escolar
+        </span>
+      </div>
+    </div>
+
+    <nav class="flex flex-col gap-space-xs">
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/alumnos"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">school</span>
+        <span>Alumnos</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/asistencias"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">fact_check</span>
+        <span>Asistencias</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/grados-y-grupos"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">meeting_room</span>
+        <span>Grados y grupos</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/profesores"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+        <span>Profesores</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/calificaciones"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">grade</span>
+        <span>Calificaciones</span>
+      </a>
+
+      <button
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant opacity-50 cursor-not-allowed w-full"
+        type="button"
+        disabled
+        title="Materias (No disponible)"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
+        <span>Materias</span>
+        <span class="ml-auto text-[11px] bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant font-medium">
+          No disponible
+        </span>
+      </button>
+
+    </nav>
+  </div>
+
+  <div class="flex flex-col gap-space-sm pt-space-md border-t border-outline-variant/30">
+
+    <div class="px-space-xs flex items-center justify-between">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Ciclo Escolar</span>
+      <span class="font-label-sm text-label-sm bg-surface-container text-secondary font-semibold px-2 py-0.5 rounded-lg">
+        2024–2025
+      </span>
+    </div>
+
+    <a
+      class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-error hover:bg-error-container transition-all font-label-lg text-label-lg"
+      routerLink="/login"
+    >
+      <span class="material-symbols-outlined text-[20px]">logout</span>
+      <span>Cerrar sesión</span>
+    </a>
+
+  </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="pl-72">
+
+  <!-- HEADER -->
+  <header
+    class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-margin"
+  >
+    <div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+      <span>Portal</span>
+      <span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+      <span>Administración</span>
+      <span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+      <span class="text-primary font-semibold">Gestión Escolar</span>
+    </div>
+
+    <div class="flex items-center gap-space-md">
+      <button
+        class="p-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container"
+        type="button"
+      >
+        <span class="material-symbols-outlined text-[22px]">notifications</span>
+      </button>
+
+      <div class="flex items-center gap-space-sm px-space-sm py-1 rounded-full bg-surface-container-low">
+        <div class="flex flex-col items-end pr-1">
+          <span class="font-label-sm text-on-surface font-semibold">Administrador</span>
+          <span class="font-label-sm text-on-surface-variant">Administración Escolar</span>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PÁGINA ACTIVA -->
+  <main class="w-full pt-16 bg-surface">
+    <router-outlet />
+  </main>
+
+</div>

@@ -1,6 +1,5 @@
 import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { Header } from '../../../../layout/header/header';
-import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { UiIcon } from '../../../../shared/ui-icon/ui-icon';
 import { ProfesorDeactivateModal } from '../../components/profesor-deactivate-modal/profesor-deactivate-modal';
 import { ProfesorDetailModal } from '../../components/profesor-detail-modal/profesor-detail-modal';
@@ -16,7 +15,6 @@ import { ProfesoresMockService } from '../../services/profesores-mock.service';
   selector: 'app-profesores-page',
   imports: [
     Header,
-    Sidebar,
     UiIcon,
     ProfesorDeactivateModal,
     ProfesorDetailModal,
