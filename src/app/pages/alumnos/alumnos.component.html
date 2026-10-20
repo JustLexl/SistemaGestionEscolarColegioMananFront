@@ -1,0 +1,1335 @@
+<!-- SIDEBAR -->
+<aside
+  class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between p-space-md"
+>
+  <div class="flex flex-col gap-space-lg">
+
+    <div class="flex items-center gap-space-sm px-space-xs">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary">school</span>
+      </div>
+
+      <div class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm text-primary leading-tight">
+          Colegio Manantial
+        </span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">
+          Sistema de Gestión Escolar
+        </span>
+      </div>
+    </div>
+
+    <nav class="flex flex-col gap-space-xs">
+
+      <!-- ALUMNOS ACTIVO -->
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        routerLink="/alumnos"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">
+          school
+        </span>
+        <span>Alumnos</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg"
+        routerLink="/grados-y-grupos"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">
+          meeting_room
+        </span>
+        <span>Grados y grupos</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all font-label-lg text-label-lg"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">
+          badge
+        </span>
+        <span>Profesores</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all font-label-lg text-label-lg"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">
+          auto_stories
+        </span>
+        <span>Materias</span>
+      </a>
+
+    </nav>
+  </div>
+
+  <div class="flex flex-col gap-space-sm pt-space-md border-t border-outline-variant/30">
+
+    <div class="px-space-xs flex items-center justify-between">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">
+        Ciclo Escolar
+      </span>
+
+      <span
+        class="font-label-sm text-label-sm bg-surface-container text-secondary font-semibold px-2 py-0.5 rounded-lg"
+      >
+        2024–2025
+      </span>
+    </div>
+
+    <a
+      class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-error hover:bg-error-container transition-all font-label-lg text-label-lg"
+      href="#"
+    >
+      <span class="material-symbols-outlined text-[20px]">logout</span>
+      <span>Cerrar sesión</span>
+    </a>
+
+  </div>
+</aside>
+
+
+<!-- CONTENIDO -->
+<div class="pl-72">
+
+  <!-- HEADER -->
+  <header
+    class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-margin"
+  >
+
+    <div
+      class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"
+    >
+      <span>Portal</span>
+
+      <span class="material-symbols-outlined text-[16px] text-outline-variant">
+        chevron_right
+      </span>
+
+      <span>Administración</span>
+
+      <span class="material-symbols-outlined text-[16px] text-outline-variant">
+        chevron_right
+      </span>
+
+      <span class="text-primary font-semibold">Alumnos</span>
+    </div>
+
+    <div class="flex items-center gap-space-md">
+
+      <button
+        class="p-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container"
+        type="button"
+      >
+        <span class="material-symbols-outlined text-[22px]">
+          notifications
+        </span>
+      </button>
+
+      <div
+        class="flex items-center gap-space-sm px-space-sm py-1 rounded-full bg-surface-container-low"
+      >
+
+        <div class="flex flex-col items-end pr-1">
+          <span class="font-label-sm text-on-surface font-semibold">
+            Prof. Javier Méndez
+          </span>
+
+          <span class="font-label-sm text-on-surface-variant">
+            Administración Escolar
+          </span>
+        </div>
+
+        <div
+          class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined text-on-primary text-[18px]">
+            person
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+
+  <main class="w-full pt-16 bg-surface px-margin">
+
+    <div class="flex flex-col w-full pb-16">
+
+      <!-- CONTEXTO -->
+      <div
+        class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md py-space-xs text-on-surface-variant"
+      >
+
+        <div class="flex items-center gap-2">
+
+          <span
+            class="inline-flex items-center gap-1 font-semibold text-primary bg-primary-fixed/20 px-2 py-0.5 rounded-full"
+          >
+            <span class="material-symbols-outlined text-[14px]">
+              school
+            </span>
+
+            Colegio Manantial
+          </span>
+
+          <span>•</span>
+
+          <span class="font-body-md text-body-sm">
+            Administración de alumnos
+          </span>
+
+        </div>
+
+        <span class="inline-flex items-center gap-1 text-primary font-semibold">
+
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+
+          Período Activo: 1° Trimestre 2024–2025
+
+        </span>
+
+      </div>
+
+
+      <!-- ENCABEZADO -->
+      <section class="flex flex-col gap-space-lg mb-space-lg">
+
+        <div
+          class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md"
+        >
+
+          <div>
+
+            <span
+              class="font-label-md uppercase tracking-wider text-primary font-semibold"
+            >
+              CONTROL ESCOLAR
+            </span>
+
+            <h1
+              class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight"
+            >
+              Alumnos
+            </h1>
+
+            <p class="font-body-md text-body-md text-on-surface-variant">
+              Consulta, registro y administración de los alumnos del colegio.
+            </p>
+
+          </div>
+
+          <button
+            (click)="abrirRegistro()"
+            class="inline-flex items-center gap-2 px-space-md py-2.5 bg-primary text-on-primary font-label-lg rounded-xl shadow-sm hover:bg-primary-container transition-all cursor-pointer"
+            type="button"
+          >
+            <span class="material-symbols-outlined text-[20px]">
+              person_add
+            </span>
+
+            + Registrar alumno
+          </button>
+
+        </div>
+
+
+        <!-- TARJETAS -->
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md"
+        >
+
+          <div
+            class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between"
+          >
+            <div>
+              <span class="text-on-surface-variant">
+                Total alumnos
+              </span>
+
+              <div
+                class="font-headline-md text-headline-md font-bold mt-1"
+              >
+                {{ alumnos.length }}
+              </div>
+
+              <span class="text-on-surface-variant text-sm">
+                Alumnos registrados
+              </span>
+            </div>
+
+            <div
+              class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary"
+            >
+              <span class="material-symbols-outlined text-[26px]">
+                groups
+              </span>
+            </div>
+          </div>
+
+
+          <div
+            class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between"
+          >
+            <div>
+              <span class="text-on-surface-variant">
+                Alumnos activos
+              </span>
+
+              <div
+                class="font-headline-md text-headline-md font-bold mt-1"
+              >
+                {{ totalActivos }}
+              </div>
+
+              <span class="text-primary text-sm font-semibold">
+                Actualmente inscritos
+              </span>
+            </div>
+
+            <div
+              class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary"
+            >
+              <span class="material-symbols-outlined text-[26px]">
+                how_to_reg
+              </span>
+            </div>
+          </div>
+
+
+          <div
+            class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between"
+          >
+            <div>
+              <span class="text-on-surface-variant">
+                Grupos
+              </span>
+
+              <div
+                class="font-headline-md text-headline-md font-bold mt-1"
+              >
+                {{ totalGrupos }}
+              </div>
+
+              <span class="text-on-surface-variant text-sm">
+                Con alumnos registrados
+              </span>
+            </div>
+
+            <div
+              class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary"
+            >
+              <span class="material-symbols-outlined text-[26px]">
+                meeting_room
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- BUSCADOR Y FILTROS -->
+      <section
+        class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg"
+      >
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center"
+        >
+
+          <div class="md:col-span-5 relative">
+
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]"
+            >
+              search
+            </span>
+
+            <input
+              [(ngModel)]="busqueda"
+              class="w-full pl-10 pr-4 py-2 bg-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+              placeholder="Buscar por nombre o matrícula..."
+              type="text"
+            />
+
+          </div>
+
+
+          <div class="md:col-span-2">
+
+            <select
+              [(ngModel)]="filtroGrado"
+              class="w-full px-3 py-2 bg-surface rounded-xl"
+            >
+              <option value="">Grado: Todos</option>
+              <option value="1° Primaria">1° Primaria</option>
+              <option value="2° Primaria">2° Primaria</option>
+              <option value="3° Primaria">3° Primaria</option>
+              <option value="4° Primaria">4° Primaria</option>
+              <option value="5° Primaria">5° Primaria</option>
+              <option value="6° Primaria">6° Primaria</option>
+            </select>
+
+          </div>
+
+
+          <div class="md:col-span-2">
+
+            <select
+              [(ngModel)]="filtroGrupo"
+              class="w-full px-3 py-2 bg-surface rounded-xl"
+            >
+              <option value="">Grupo: Todos</option>
+              <option value="Grupo A">Grupo A</option>
+              <option value="Grupo B">Grupo B</option>
+              <option value="Grupo C">Grupo C</option>
+            </select>
+
+          </div>
+
+
+          <div class="md:col-span-2">
+
+            <select
+              [(ngModel)]="filtroEstado"
+              class="w-full px-3 py-2 bg-surface rounded-xl"
+            >
+              <option value="">Estado: Todos</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+
+          </div>
+
+
+          <div class="md:col-span-1 flex justify-end">
+
+            <button
+              (click)="limpiarFiltros()"
+              class="p-2 text-outline hover:text-on-surface hover:bg-surface rounded-lg"
+              title="Limpiar filtros"
+              type="button"
+            >
+              <span class="material-symbols-outlined">
+                restart_alt
+              </span>
+            </button>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- TABLA -->
+      <section
+        class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden"
+      >
+
+        <div
+          class="px-space-md py-space-sm bg-surface-container-low/50 flex items-center justify-between"
+        >
+
+          <div class="flex items-center gap-space-xs">
+
+            <span class="font-title-md text-title-md text-on-surface">
+              Padrón de alumnos
+            </span>
+
+            <span
+              class="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold text-sm"
+            >
+              {{ alumnosFiltrados.length }} alumnos
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="overflow-x-auto">
+
+          <table class="w-full text-left">
+
+            <thead
+              class="bg-surface text-on-surface-variant uppercase text-sm"
+            >
+              <tr>
+                <th class="py-3 px-space-md">Alumno</th>
+                <th class="py-3 px-space-md">Matrícula</th>
+                <th class="py-3 px-space-md">Grado / Grupo</th>
+                <th class="py-3 px-space-md">Tutor</th>
+                <th class="py-3 px-space-md text-center">Estado</th>
+                <th class="py-3 px-space-md text-right">Acciones</th>
+              </tr>
+            </thead>
+
+
+            <tbody class="divide-y divide-surface">
+
+              <tr
+                *ngFor="let alumno of alumnosFiltrados"
+                class="hover:bg-surface-container-low transition-colors"
+              >
+
+                <td class="py-3.5 px-space-md">
+
+                  <div class="flex items-center gap-3">
+
+                    <div
+                      class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center font-bold"
+                    >
+                      {{ alumno.nombre.charAt(0) }}
+                    </div>
+
+                    <span class="font-semibold text-on-surface">
+                      {{ alumno.nombre }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <td class="py-3.5 px-space-md">
+                  {{ alumno.matricula }}
+                </td>
+
+
+                <td class="py-3.5 px-space-md">
+
+                  <div class="flex flex-col">
+
+                    <span class="font-semibold">
+                      {{ alumno.grado }}
+                    </span>
+
+                    <span class="text-on-surface-variant text-sm">
+                      {{ alumno.grupo }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <td class="py-3.5 px-space-md">
+                  {{ alumno.tutor }}
+                </td>
+
+
+                <td class="py-3.5 px-space-md text-center">
+
+                  <span
+                    class="inline-flex px-2.5 py-1 rounded-full text-sm font-semibold"
+                    [ngClass]="
+                      alumno.estado === 'Activo'
+                        ? 'bg-[#CCFBF1] text-[#0F766E]'
+                        : 'bg-error-container text-error'
+                    "
+                  >
+                    {{ alumno.estado }}
+                  </span>
+
+                </td>
+
+
+                <td class="py-3.5 px-space-md text-right">
+
+                  <div class="inline-flex items-center gap-1">
+
+                    <button
+                      (click)="consultarAlumno(alumno)"
+                      class="p-1.5 text-primary hover:bg-surface rounded-lg"
+                      title="Consultar"
+                      type="button"
+                    >
+                      <span class="material-symbols-outlined text-[19px]">
+                        visibility
+                      </span>
+                    </button>
+
+                    <button
+                      (click)="editarAlumno(alumno)"
+                      class="p-1.5 text-on-surface-variant hover:bg-surface rounded-lg"
+                      title="Editar"
+                      type="button"
+                    >
+                      <span class="material-symbols-outlined text-[19px]">
+                        edit
+                      </span>
+                    </button>
+
+                    <button
+                      (click)="solicitarBaja(alumno)"
+                      class="p-1.5 text-error hover:bg-error-container rounded-lg"
+                      title="Dar de baja"
+                      type="button"
+                    >
+                      <span class="material-symbols-outlined text-[19px]">
+                        delete
+                      </span>
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+
+              <tr *ngIf="alumnosFiltrados.length === 0">
+
+                <td
+                  class="py-10 text-center text-on-surface-variant"
+                  colspan="6"
+                >
+                  No se encontraron alumnos.
+                                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <!-- PAGINACIÓN -->
+        <div
+          class="px-space-md py-3 bg-surface flex flex-wrap items-center justify-between gap-space-sm text-sm text-on-surface-variant"
+        >
+
+          <span>
+            Mostrando {{ alumnosFiltrados.length }} de {{ alumnos.length }} alumnos registrados
+          </span>
+
+          <div class="flex items-center gap-1">
+
+            <button
+              class="p-1 rounded-lg text-outline"
+              disabled
+              type="button"
+            >
+              <span class="material-symbols-outlined text-[18px]">
+                chevron_left
+              </span>
+            </button>
+
+            <button
+              class="w-7 h-7 rounded-lg bg-primary text-on-primary font-bold flex items-center justify-center"
+              type="button"
+            >
+              1
+            </button>
+
+            <button
+              class="p-1 rounded-lg text-outline"
+              disabled
+              type="button"
+            >
+              <span class="material-symbols-outlined text-[18px]">
+                chevron_right
+              </span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- MODAL REGISTRAR / EDITAR ALUMNO -->
+<div
+  *ngIf="modalRegistroAbierto"
+  class="fixed inset-0 z-[100] bg-[#0F2942]/60 backdrop-blur-sm flex items-center justify-center p-4"
+>
+
+  <div
+    class="bg-surface-container-lowest w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+  >
+
+    <!-- HEADER DEL MODAL -->
+    <div
+      class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between"
+    >
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined">
+            {{ modoEdicion ? 'edit' : 'person_add' }}
+          </span>
+        </div>
+
+        <div>
+
+          <h2
+            class="font-title-lg text-title-lg text-on-surface font-semibold"
+          >
+            {{ modoEdicion ? 'Editar alumno' : 'Registrar alumno' }}
+          </h2>
+
+          <p class="font-body-sm text-body-sm text-on-surface-variant">
+            {{
+              modoEdicion
+                ? 'Modifique la información registrada del alumno.'
+                : 'Ingrese la información necesaria para registrar al alumno.'
+            }}
+          </p>
+
+        </div>
+
+      </div>
+
+      <button
+        (click)="cerrarRegistro()"
+        class="p-1.5 text-outline hover:text-on-surface hover:bg-surface rounded-xl transition-colors"
+        type="button"
+      >
+        <span class="material-symbols-outlined">
+          close
+        </span>
+      </button>
+
+    </div>
+
+
+    <!-- FORMULARIO -->
+    <form
+      (ngSubmit)="guardarAlumno()"
+      class="p-space-lg overflow-y-auto flex flex-col gap-space-lg"
+    >
+
+      <!-- DATOS DEL ALUMNO -->
+      <div class="flex flex-col gap-space-md">
+
+        <div>
+
+          <h3 class="font-title-md text-title-md text-on-surface font-semibold">
+            Datos del alumno
+          </h3>
+
+          <p class="text-sm text-on-surface-variant">
+            Información general para identificar al alumno.
+          </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+
+          <!-- MATRÍCULA -->
+          <div class="flex flex-col gap-1">
+
+            <label
+              class="font-label-md text-label-md text-on-surface font-medium"
+            >
+              Matrícula *
+            </label>
+
+            <input
+              [(ngModel)]="nuevoAlumno.matricula"
+              class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+              name="matricula"
+              placeholder="Ej. CM-2026-006"
+              required
+              type="text"
+            />
+
+          </div>
+
+
+          <!-- NOMBRE -->
+          <div class="flex flex-col gap-1">
+
+            <label
+              class="font-label-md text-label-md text-on-surface font-medium"
+            >
+              Nombre completo *
+            </label>
+
+            <input
+              [(ngModel)]="nuevoAlumno.nombre"
+              class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+              name="nombre"
+              placeholder="Nombre completo del alumno"
+              required
+              type="text"
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- INFORMACIÓN ESCOLAR -->
+      <div class="flex flex-col gap-space-md">
+
+        <div>
+
+          <h3 class="font-title-md text-title-md text-on-surface font-semibold">
+            Información escolar
+          </h3>
+
+          <p class="text-sm text-on-surface-variant">
+            Seleccione el grado y grupo correspondiente.
+          </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+
+          <!-- GRADO -->
+          <div class="flex flex-col gap-1">
+
+            <label
+              class="font-label-md text-label-md text-on-surface font-medium"
+            >
+              Grado *
+            </label>
+
+            <select
+              [(ngModel)]="nuevoAlumno.grado"
+              class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+              name="grado"
+              required
+            >
+
+              <option value="">
+                Seleccione el grado...
+              </option>
+
+              <option value="1° Primaria">
+                1° Primaria
+              </option>
+
+              <option value="2° Primaria">
+                2° Primaria
+              </option>
+
+              <option value="3° Primaria">
+                3° Primaria
+              </option>
+
+              <option value="4° Primaria">
+                4° Primaria
+              </option>
+
+              <option value="5° Primaria">
+                5° Primaria
+              </option>
+
+              <option value="6° Primaria">
+                6° Primaria
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- GRUPO -->
+          <div class="flex flex-col gap-1">
+
+            <label
+              class="font-label-md text-label-md text-on-surface font-medium"
+            >
+              Grupo *
+            </label>
+
+            <select
+              [(ngModel)]="nuevoAlumno.grupo"
+              class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+              name="grupo"
+              required
+            >
+
+              <option value="">
+                Seleccione el grupo...
+              </option>
+
+              <option value="Grupo A">
+                Grupo A
+              </option>
+
+              <option value="Grupo B">
+                Grupo B
+              </option>
+
+              <option value="Grupo C">
+                Grupo C
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- TUTOR -->
+      <div class="flex flex-col gap-space-md">
+
+        <div>
+
+          <h3 class="font-title-md text-title-md text-on-surface font-semibold">
+            Padre o tutor
+          </h3>
+
+          <p class="text-sm text-on-surface-variant">
+            Registre el tutor relacionado con el alumno.
+          </p>
+
+        </div>
+
+        <div class="flex flex-col gap-1">
+
+          <label
+            class="font-label-md text-label-md text-on-surface font-medium"
+          >
+            Nombre del tutor *
+          </label>
+
+          <input
+            [(ngModel)]="nuevoAlumno.tutor"
+            class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+            name="tutor"
+            placeholder="Nombre completo del padre o tutor"
+            required
+            type="text"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ESTADO -->
+      <div class="flex flex-col gap-1">
+
+        <label
+          class="font-label-md text-label-md text-on-surface font-medium"
+        >
+          Estado
+        </label>
+
+        <select
+          [(ngModel)]="nuevoAlumno.estado"
+          class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+          name="estado"
+        >
+
+          <option value="Activo">
+            Activo
+          </option>
+
+          <option value="Inactivo">
+            Inactivo
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- BOTONES -->
+      <div
+        class="pt-space-md border-t border-surface flex items-center justify-end gap-3"
+      >
+
+        <button
+          (click)="cerrarRegistro()"
+          class="px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-xl transition-colors"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="px-space-md py-2 bg-primary text-on-primary font-label-lg rounded-xl hover:bg-primary-container shadow-sm transition-all"
+          type="submit"
+        >
+          {{ modoEdicion ? 'Guardar cambios' : 'Guardar alumno' }}
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL CONFIRMAR BAJA -->
+<div
+  *ngIf="modalBajaAbierto"
+  class="fixed inset-0 z-[100] bg-[#0F2942]/60 backdrop-blur-sm flex items-center justify-center p-4"
+>
+
+  <div
+    class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl p-space-lg flex flex-col gap-space-md"
+  >
+
+    <div
+      class="w-12 h-12 rounded-2xl bg-error-container text-error flex items-center justify-center"
+    >
+      <span class="material-symbols-outlined text-[28px]">
+        warning
+      </span>
+    </div>
+
+
+    <div class="flex flex-col gap-1">
+
+      <h3
+        class="font-headline-sm text-headline-sm text-on-surface font-semibold"
+      >
+        Confirmar baja de alumno
+      </h3>
+
+      <p class="font-body-md text-body-md text-on-surface-variant">
+
+        ¿Está seguro que desea dar de baja a
+
+        <strong class="text-on-surface">
+          {{ alumnoSeleccionado?.nombre }}
+        </strong>?
+
+      </p>
+
+    </div>
+
+
+    <div
+      class="p-3 bg-surface-container-low rounded-xl text-sm text-on-surface-variant flex items-start gap-2"
+    >
+
+      <span class="material-symbols-outlined text-outline text-[18px]">
+        info
+      </span>
+
+      <span>
+        El alumno permanecerá registrado en el sistema, pero su estado cambiará a inactivo.
+      </span>
+
+    </div>
+
+
+    <div class="flex items-center justify-end gap-2">
+
+      <button
+        (click)="cancelarBaja()"
+        class="px-4 py-2 text-on-surface-variant hover:bg-surface rounded-xl"
+        type="button"
+      >
+        Cancelar
+      </button>
+
+      <button
+        (click)="confirmarBaja()"
+        class="px-4 py-2 bg-error text-on-error rounded-xl hover:opacity-90"
+        type="button"
+      >
+        Confirmar baja
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL CONSULTAR ALUMNO -->
+<div
+  *ngIf="modalConsultaAbierto && alumnoSeleccionado"
+  class="fixed inset-0 z-[100] bg-[#0F2942]/60 backdrop-blur-sm flex items-center justify-center p-4"
+>
+
+  <div
+    class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+  >
+
+    <!-- HEADER -->
+    <div
+      class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between"
+    >
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined">
+            person
+          </span>
+        </div>
+
+        <div>
+          <h2
+            class="font-title-lg text-title-lg text-on-surface font-semibold"
+          >
+            Expediente del alumno
+          </h2>
+
+          <p class="font-body-sm text-body-sm text-on-surface-variant">
+            Consulta de la información registrada.
+          </p>
+        </div>
+
+      </div>
+
+      <button
+        (click)="cerrarConsulta()"
+        class="p-1.5 text-outline hover:text-on-surface hover:bg-surface rounded-xl transition-colors"
+        type="button"
+      >
+        <span class="material-symbols-outlined">
+          close
+        </span>
+      </button>
+
+    </div>
+
+
+    <!-- CONTENIDO -->
+    <div class="p-space-lg flex flex-col gap-space-lg">
+
+      <!-- ALUMNO -->
+      <div class="flex items-center gap-4">
+
+        <div
+          class="w-14 h-14 rounded-2xl bg-primary/15 text-primary flex items-center justify-center font-bold text-xl"
+        >
+          {{ alumnoSeleccionado.nombre.charAt(0) }}
+        </div>
+
+        <div class="flex flex-col">
+
+          <span
+            class="font-headline-sm text-headline-sm text-on-surface font-semibold"
+          >
+            {{ alumnoSeleccionado.nombre }}
+          </span>
+
+          <span class="text-on-surface-variant">
+            {{ alumnoSeleccionado.matricula }}
+          </span>
+
+        </div>
+
+        <span
+          class="ml-auto inline-flex px-3 py-1 rounded-full text-sm font-semibold"
+          [ngClass]="
+            alumnoSeleccionado.estado === 'Activo'
+              ? 'bg-[#CCFBF1] text-[#0F766E]'
+              : 'bg-error-container text-error'
+          "
+        >
+          {{ alumnoSeleccionado.estado }}
+        </span>
+
+      </div>
+
+
+      <!-- INFORMACIÓN GENERAL -->
+      <div>
+
+        <h3
+          class="font-title-md text-title-md text-on-surface font-semibold mb-3"
+        >
+          Información general
+        </h3>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-space-md"
+        >
+
+          <div
+            class="p-4 bg-surface rounded-xl"
+          >
+            <span
+              class="block text-sm text-on-surface-variant"
+            >
+              Matrícula
+            </span>
+
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.matricula }}
+            </span>
+          </div>
+
+
+          <div
+            class="p-4 bg-surface rounded-xl"
+          >
+            <span
+              class="block text-sm text-on-surface-variant"
+            >
+              Estado
+            </span>
+
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.estado }}
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- INFORMACIÓN ESCOLAR -->
+      <div>
+
+        <h3
+          class="font-title-md text-title-md text-on-surface font-semibold mb-3"
+        >
+          Información escolar
+        </h3>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-space-md"
+        >
+
+          <div class="p-4 bg-surface rounded-xl">
+
+            <span
+              class="block text-sm text-on-surface-variant"
+            >
+              Grado
+            </span>
+
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.grado }}
+            </span>
+
+          </div>
+
+
+          <div class="p-4 bg-surface rounded-xl">
+
+            <span
+              class="block text-sm text-on-surface-variant"
+            >
+              Grupo
+            </span>
+
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.grupo }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- TUTOR -->
+      <div>
+
+        <h3
+          class="font-title-md text-title-md text-on-surface font-semibold mb-3"
+        >
+          Padre o tutor
+        </h3>
+
+        <div
+          class="p-4 bg-surface rounded-xl flex items-center gap-3"
+        >
+
+          <div
+            class="w-9 h-9 rounded-full bg-primary/15 text-primary flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-[20px]">
+              family_restroom
+            </span>
+          </div>
+
+          <div>
+            <span
+              class="block text-sm text-on-surface-variant"
+            >
+              Tutor registrado
+            </span>
+
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.tutor }}
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- BOTONES -->
+      <div
+        class="pt-space-md border-t border-surface flex justify-end gap-3"
+      >
+
+        <button
+          (click)="cerrarConsulta()"
+          class="px-4 py-2 text-on-surface-variant hover:bg-surface rounded-xl"
+          type="button"
+        >
+          Cerrar
+        </button>
+
+        <button
+          (click)="cerrarConsulta(); editarAlumno(alumnoSeleccionado)"
+          class="inline-flex items-center gap-2 px-space-md py-2 bg-primary text-on-primary rounded-xl hover:bg-primary-container"
+          type="button"
+        >
+          <span class="material-symbols-outlined text-[18px]">
+            edit
+          </span>
+
+          Editar alumno
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div
+  *ngIf="mostrarToast"
+  class="fixed bottom-6 right-6 z-[150] bg-inverse-surface text-inverse-on-surface px-4 py-3 rounded-xl shadow-xl flex items-center gap-3"
+>
+
+  <span
+    class="material-symbols-outlined text-inverse-primary text-[20px]"
+  >
+    check_circle
+  </span>
+
+  <span class="font-body-md text-body-sm">
+    {{ mensajeToast }}
+  </span>
+
+</div>

@@ -1,13 +1,9 @@
 import { Routes } from '@angular/router';
-<<<<<<< HEAD
-
-export const routes: Routes = [];
-=======
 import { GradosGruposComponent } from './pages/grados-grupos/grados-grupos.component';
+import { AlumnosComponent } from './pages/alumnos/alumnos.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'grados-y-grupos', pathMatch: 'full' },
-  { path: 'grados-y-grupos', component: GradosGruposComponent }
+  { path: 'grados-y-grupos', component: GradosGruposComponent },
+  { path: 'alumnos', component: AlumnosComponent },
 ];
-
->>>>>>> origin/feature/CRUDGradosGrupos
