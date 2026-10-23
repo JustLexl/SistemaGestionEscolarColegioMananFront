@@ -1,0 +1,392 @@
+<div class="flex flex-col w-full pb-16 px-margin">
+
+      <!-- Ribbon -->
+      <div class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md py-space-xs text-on-surface-variant">
+        <div class="flex items-center gap-2 font-label-md text-label-md">
+          <span class="inline-flex items-center gap-1 font-semibold text-primary bg-primary-fixed/20 px-2 py-0.5 rounded-full">
+            <span class="material-symbols-outlined text-[14px]">school</span>
+            Colegio Manantial
+          </span>
+          <span>•</span>
+          <span class="font-body-md text-body-sm text-on-surface-variant">Control de Acceso: Roles → Usuarios → Permisos → Sistema</span>
+        </div>
+        <div class="flex items-center gap-space-xs text-label-sm">
+          <span class="inline-flex items-center gap-1 text-primary font-semibold">
+            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            Período Activo: 1° Trimestre 2024–2025
+          </span>
+        </div>
+      </div>
+
+      <!-- ── 1. ENCABEZADO Y KPIs ───────────────────── -->
+      <section class="flex flex-col gap-space-lg mb-space-lg">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+          <div class="flex flex-col gap-1 max-w-3xl">
+            <div class="inline-flex items-center gap-2">
+              <span class="font-label-md text-label-md uppercase tracking-wider text-primary font-semibold">GESTIÓN DE ACCESO Y CONTROL DE USUARIOS</span>
+              <span class="h-px w-10 bg-primary/30"></span>
+            </div>
+            <h1 class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Roles y Usuarios</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+              Administración de cuentas, puestos y niveles de acceso al sistema de gestión escolar. Ciclo 2024–2025.
+            </p>
+          </div>
+          <div class="flex items-center gap-space-sm flex-shrink-0">
+            <button (click)="openRolModal()" class="inline-flex items-center gap-2 px-space-md py-2.5 bg-primary text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm hover:bg-primary-container transition-all active:scale-[0.99] cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-[20px]">person_add</span>
+              <span>+ Registrar usuario</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+          <!-- Total Usuarios -->
+          <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Total Usuarios</span>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="font-headline-md text-headline-md text-on-surface font-bold">{{ totalRolesCount }}</span>
+                <span class="font-label-sm text-label-sm text-primary font-semibold">Registrados</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant/80 mt-1">Padrón completo del sistema</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[26px]">manage_accounts</span>
+            </div>
+          </div>
+          <!-- Usuarios Activos -->
+          <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Usuarios Activos</span>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="font-headline-md text-headline-md text-on-surface font-bold">{{ totalActivosCount }}</span>
+                <span class="font-label-sm text-label-sm text-[#0F766E] font-semibold">Activos</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant/80 mt-1">Con acceso al sistema habilitado</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-[#CCFBF1] flex items-center justify-center text-[#0F766E]">
+              <span class="material-symbols-outlined text-[26px]">verified_user</span>
+            </div>
+          </div>
+          <!-- Usuarios Inactivos -->
+          <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Usuarios Inactivos</span>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="font-headline-md text-headline-md text-on-surface font-bold">{{ totalInactivosCount }}</span>
+                <span class="font-label-sm text-label-sm text-error font-semibold">Inactivos</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant/80 mt-1">Acceso suspendido o sin activar</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error">
+              <span class="material-symbols-outlined text-[26px]">person_off</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 2. BARRA DE BÚSQUEDA Y FILTROS ─────────── -->
+      <section class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] mb-space-lg flex flex-col gap-space-sm">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+          <!-- Search -->
+          <div class="md:col-span-5 relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+            <input [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()" class="w-full pl-10 pr-4 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-outline" placeholder="Buscar por nombre, rol o correo..." type="text"/>
+          </div>
+          <!-- Filter Puesto / Rol -->
+          <div class="md:col-span-3">
+            <select [(ngModel)]="filterPuesto" (ngModelChange)="onFilterChange()" class="w-full px-3 py-2 bg-surface text-on-surface font-label-sm text-body-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
+              <option value="">Rol: Todos</option>
+              <option *ngFor="let p of puestoOptions" [value]="p">{{ p }}</option>
+            </select>
+          </div>
+          <!-- Filter Estado -->
+          <div class="md:col-span-2">
+            <select [(ngModel)]="filterEstado" (ngModelChange)="onFilterChange()" class="w-full px-3 py-2 bg-surface text-on-surface font-label-sm text-body-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
+              <option value="">Estado: Todos</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+          <!-- Limpiar -->
+          <div class="md:col-span-2 flex justify-end">
+            <button (click)="resetFilters()" class="inline-flex items-center gap-1 text-outline hover:text-on-surface font-label-sm text-label-sm py-2 px-2 rounded-lg hover:bg-surface transition-colors cursor-pointer" title="Restablecer filtros" type="button">
+              <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+              <span>Limpiar</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 3. TABLA PRINCIPAL ──────────────────────── -->
+      <section class="bg-surface-container-lowest rounded-xl shadow-[0_1px_3px_0_rgba(15,41,66,0.04)] overflow-hidden mb-space-xl">
+        <!-- Header tabla -->
+        <div class="px-space-md py-space-sm bg-surface-container-low/50 flex flex-wrap items-center justify-between gap-space-sm">
+          <div class="flex items-center gap-space-xs">
+            <span class="font-title-md text-title-md text-on-surface">Padrón de Usuarios y Roles</span>
+            <span class="bg-primary/10 text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold">{{ filteredRoles.length }} usuarios</span>
+          </div>
+          <div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+            <span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+            <span>Control de acceso al Sistema de Gestión Escolar 2024–2025</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-body-md text-body-sm">
+            <thead class="bg-surface text-on-surface-variant uppercase font-label-md text-label-md tracking-wider">
+              <tr>
+                <th class="py-3 px-space-md font-semibold" scope="col">Nombre</th>
+                <th class="py-3 px-space-md font-semibold" scope="col">Rol</th>
+                <th class="py-3 px-space-md font-semibold" scope="col">Correo</th>
+                <th class="py-3 px-space-md font-semibold text-center" scope="col">Estado</th>
+                <th class="py-3 px-space-md font-semibold text-right" scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface">
+              <!-- Empty state -->
+              <tr *ngIf="paginatedRoles.length === 0">
+                <td colspan="5" class="py-8 text-center text-on-surface-variant">
+                  <div class="flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-[36px] text-outline">search_off</span>
+                    <p class="font-label-lg">No se encontraron usuarios que coincidan con la búsqueda.</p>
+                    <button (click)="resetFilters()" class="text-primary font-semibold text-xs hover:underline mt-1">Limpiar filtros</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Rows -->
+              <tr *ngFor="let rol of paginatedRoles" class="hover:bg-surface-container-low transition-colors">
+                <!-- Nombre -->
+                <td class="py-3.5 px-space-md">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center font-bold text-[13px]">
+                      {{ getIniciales(rol.nombre) }}
+                    </div>
+                    <span class="font-title-md text-title-md text-on-surface font-semibold">{{ rol.nombre }}</span>
+                  </div>
+                </td>
+                <!-- Puesto -->
+                <td class="py-3.5 px-space-md">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm font-semibold">
+                    <span class="material-symbols-outlined text-[14px] text-primary">work</span>
+                    {{ rol.puesto }}
+                  </span>
+                </td>
+                <!-- Correo -->
+                <td class="py-3.5 px-space-md">
+                  <span class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+                    <span class="material-symbols-outlined text-[15px] text-outline">mail</span>
+                    {{ rol.correo }}
+                  </span>
+                </td>
+                <!-- Estado -->
+                <td class="py-3.5 px-space-md text-center">
+                  <button (click)="toggleEstado(rol)" type="button" title="Cambiar estado" class="cursor-pointer focus:outline-none">
+                    <span *ngIf="rol.estado === 'Activo'" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#CCFBF1] text-[#0F766E] font-label-sm text-label-sm font-semibold hover:opacity-80 transition-opacity">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span>
+                      Activo
+                    </span>
+                    <span *ngIf="rol.estado === 'Inactivo'" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold hover:opacity-80 transition-opacity">
+                      <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                      Inactivo
+                    </span>
+                  </button>
+                </td>
+                <!-- Acciones -->
+                <td class="py-3.5 px-space-md text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <button (click)="openDetalleModal(rol)" class="p-1.5 text-primary hover:bg-surface rounded-lg transition-colors cursor-pointer" title="Ver detalle" type="button">
+                      <span class="material-symbols-outlined text-[19px]">visibility</span>
+                    </button>
+                    <button (click)="openRolModal(rol)" class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-lg transition-colors cursor-pointer" title="Editar" type="button">
+                      <span class="material-symbols-outlined text-[19px]">edit</span>
+                    </button>
+                    <button (click)="openDeleteModal(rol)" class="p-1.5 text-error/80 hover:text-error hover:bg-error-container rounded-lg transition-colors cursor-pointer" title="Eliminar" type="button">
+                      <span class="material-symbols-outlined text-[19px]">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="px-space-md py-3 bg-surface flex flex-wrap items-center justify-between gap-space-sm font-label-sm text-label-sm text-on-surface-variant">
+          <span>Mostrando {{ filteredRoles.length > 0 ? startIndex + 1 : 0 }} a {{ endIndex }} de {{ filteredRoles.length }} usuarios registrados</span>
+          <div class="flex items-center gap-1">
+            <button (click)="prevPage()" [disabled]="currentPage === 1" [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === 1}" class="p-1 rounded-lg text-outline hover:bg-surface-container-high transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button *ngFor="let page of pagesArray" (click)="goToPage(page)" [ngClass]="{'bg-primary text-on-primary font-bold': page === currentPage, 'hover:bg-surface-container-high text-on-surface': page !== currentPage}" class="w-7 h-7 rounded-lg transition-colors flex items-center justify-center cursor-pointer">
+              {{ page }}
+            </button>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages" [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === totalPages}" class="p-1 rounded-lg text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           MODAL: Registrar / Editar Usuario
+      ══════════════════════════════════════════════ -->
+      <div *ngIf="isRolModalOpen" class="fixed inset-0 z-50 bg-[#0F2942]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-lg max-h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
+          <!-- Header modal -->
+          <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-9 h-9 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">{{ editingRolId ? 'edit' : 'person_add' }}</span>
+              </div>
+              <div>
+                <h2 class="font-title-lg text-title-lg text-on-surface font-semibold">{{ editingRolId ? 'Editar Usuario' : 'Registrar Nuevo Usuario' }}</h2>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Alta de cuenta en el sistema de gestión escolar.</p>
+              </div>
+            </div>
+            <button (click)="closeRolModal()" class="p-1.5 text-outline hover:text-on-surface hover:bg-surface rounded-xl transition-colors cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
+          <!-- Body modal -->
+          <form (ngSubmit)="saveRol()" class="p-space-lg overflow-y-auto flex flex-col gap-space-md">
+            <!-- Nombre -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-medium">Nombre completo *</label>
+              <input [(ngModel)]="rolForm.nombre" name="nombre" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Ej. Prof. Juan García López" required type="text"/>
+            </div>
+            <!-- Rol -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-medium">Rol *</label>
+              <select [(ngModel)]="rolForm.puesto" name="puesto" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" required>
+                <option *ngFor="let rolOption of puestoOptions" [value]="rolOption">{{ rolOption }}</option>
+              </select>
+            </div>
+            <!-- Correo -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-medium">Correo electrónico *</label>
+              <input [(ngModel)]="rolForm.correo" name="correo" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Ej. juan.garcia@manantial.edu.mx" required type="email"/>
+            </div>
+            <!-- Estado -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-medium">Estado *</label>
+              <select [(ngModel)]="rolForm.estado" name="estado" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
+                <option value="Activo">Activo (Acceso habilitado)</option>
+                <option value="Inactivo">Inactivo (Acceso suspendido)</option>
+              </select>
+            </div>
+            <!-- Footer modal -->
+            <div class="pt-space-md border-t border-surface flex items-center justify-end gap-3 mt-2">
+              <button (click)="closeRolModal()" class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-xl transition-colors cursor-pointer" type="button">
+                Cancelar
+              </button>
+              <button class="px-space-md py-2 bg-primary text-on-primary font-label-lg text-label-lg rounded-xl hover:bg-primary-container shadow-sm transition-all cursor-pointer" type="submit">
+                {{ editingRolId ? 'Actualizar usuario' : 'Guardar usuario' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           MODAL: Confirmar eliminación
+      ══════════════════════════════════════════════ -->
+      <div *ngIf="isDeleteModalOpen" class="fixed inset-0 z-50 bg-[#0F2942]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl p-space-lg flex flex-col gap-space-md animate-fadeIn">
+          <div class="w-12 h-12 rounded-2xl bg-error-container text-error flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">warning</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Confirmar eliminación de usuario</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+              ¿Está seguro de que desea eliminar al usuario <strong class="text-on-surface">{{ selectedRolForDelete?.nombre }}</strong>? Esta acción revocará su acceso al sistema permanentemente.
+            </p>
+          </div>
+          <div class="p-3 bg-surface-container-low rounded-xl text-body-sm text-on-surface-variant flex items-start gap-2">
+            <span class="material-symbols-outlined text-outline text-[18px] mt-0.5">info</span>
+            <span>Se eliminarán todas las asignaciones y permisos asociados a esta cuenta.</span>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button (click)="closeDeleteModal()" class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-xl transition-colors cursor-pointer" type="button">
+              Cancelar
+            </button>
+            <button (click)="confirmarEliminacion()" class="px-4 py-2 bg-error text-on-error font-label-lg text-label-lg rounded-xl hover:opacity-90 transition-all cursor-pointer shadow-sm" type="button">
+              Eliminar usuario
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           MODAL: Detalle de Usuario
+      ══════════════════════════════════════════════ -->
+      <div *ngIf="isDetalleModalOpen" class="fixed inset-0 z-50 bg-[#0F2942]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl p-space-lg flex flex-col gap-space-md animate-fadeIn">
+          <!-- Header detalle -->
+          <div class="flex items-center justify-between border-b border-surface pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center font-bold text-[15px]">
+                {{ getIniciales(selectedRolDetail?.nombre || '') }}
+              </div>
+              <div>
+                <h3 class="font-title-lg text-on-surface font-semibold">{{ selectedRolDetail?.nombre }}</h3>
+                <p class="text-xs text-on-surface-variant">{{ selectedRolDetail?.puesto }}</p>
+              </div>
+            </div>
+            <button (click)="closeDetalleModal()" class="p-1.5 text-outline hover:text-on-surface hover:bg-surface rounded-xl transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-sm text-on-surface">
+            <div class="col-span-2 p-3 bg-surface-container-low rounded-xl">
+              <span class="text-xs text-on-surface-variant block font-medium">Correo Electrónico</span>
+              <span class="font-semibold block mt-0.5">{{ selectedRolDetail?.correo }}</span>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-xl">
+              <span class="text-xs text-on-surface-variant block font-medium">Rol</span>
+              <span class="font-semibold block mt-0.5">{{ selectedRolDetail?.puesto }}</span>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-xl">
+              <span class="text-xs text-on-surface-variant block font-medium">Estado</span>
+              <span *ngIf="selectedRolDetail?.estado === 'Activo'" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#CCFBF1] text-[#0F766E] text-xs font-bold mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#0F766E]"></span> Activo
+              </span>
+              <span *ngIf="selectedRolDetail?.estado === 'Inactivo'" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-error-container text-on-error-container text-xs font-bold mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-error"></span> Inactivo
+              </span>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-xl">
+              <span class="text-xs text-on-surface-variant block font-medium">Ciclo Escolar</span>
+              <span class="font-semibold block mt-0.5">2024–2025</span>
+              <span class="text-xs text-outline block">1° Trimestre activo</span>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-xl">
+              <span class="text-xs text-on-surface-variant block font-medium">Sistema</span>
+              <span class="font-semibold block mt-0.5">Gestión Escolar</span>
+              <span class="text-xs text-primary block">Colegio Manantial</span>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-2 border-t border-surface">
+            <button (click)="closeDetalleModal()" class="px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary-container transition-colors">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           TOAST NOTIFICATIONS
+      ══════════════════════════════════════════════ -->
+      <div [ngClass]="{'opacity-100 translate-y-0': toastVisible, 'opacity-0 translate-y-4 pointer-events-none': !toastVisible}" class="fixed bottom-6 right-6 z-50 bg-inverse-surface text-inverse-on-surface px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-300 transform">
+        <span *ngIf="toastType === 'success'" class="material-symbols-outlined text-inverse-primary text-[20px]">check_circle</span>
+        <span *ngIf="toastType === 'info'" class="material-symbols-outlined text-secondary-fixed text-[20px]">info</span>
+        <span *ngIf="toastType === 'warning'" class="material-symbols-outlined text-error text-[20px]">warning</span>
+        <span *ngIf="toastType === 'error'" class="material-symbols-outlined text-error text-[20px]">error</span>
+        <span class="font-body-md text-body-sm">{{ toastMessage }}</span>
+      </div>
+
+    </div>

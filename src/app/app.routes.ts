@@ -42,6 +42,12 @@ export const routes: Routes = [
           import('./features/calificaciones/pages/calificaciones-page/calificaciones-page').then((c) => c.CalificacionesPage),
         title: 'Calificaciones | Colegio Manantial'
       },
+      {
+        path: 'roles',
+        loadComponent: () =>
+          import('./pages/roles/roles.component').then((c) => c.RolesComponent),
+        title: 'Roles y Usuarios | Colegio Manantial'
+      },
       { path: '', redirectTo: 'alumnos', pathMatch: 'full' }
     ]
   },
