@@ -1,0 +1,11 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Los modelos de negocio se agregarán únicamente cuando cada módulo sea
+// autorizado. Este archivo será la única fuente del esquema Prisma.
