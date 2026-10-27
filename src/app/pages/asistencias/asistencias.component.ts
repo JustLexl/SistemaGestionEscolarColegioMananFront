@@ -1,3 +1,4 @@
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -5,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 
 type EstadoAsistencia = 'Presente' | 'Ausente' | 'Justificada';
+type TipoNotificacion = 'exito' | 'error';
 
 interface RegistroAsistencia {
   id: number;
@@ -74,6 +76,11 @@ export class AsistenciasComponent implements OnInit {
   registroIdEditar: number | null = null;
   registroEliminar: RegistroAsistencia | null = null;
 
+  // Notificaciones personalizadas
+  notificacionVisible = false;
+  mensajeNotificacion = '';
+  tipoNotificacion: TipoNotificacion = 'exito';
+
   nuevoRegistro: { fecha: string; estado: EstadoAsistencia } = {
     fecha: '2026-10-13',
     estado: 'Presente',
@@ -81,6 +88,27 @@ export class AsistenciasComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarAsistencias();
+  }
+
+  mostrarNotificacion(
+    mensaje: string,
+    tipo: TipoNotificacion = 'exito'
+  ): void {
+    this.mensajeNotificacion = mensaje;
+    this.tipoNotificacion = tipo;
+    this.notificacionVisible = true;
+
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.notificacionVisible = false;
+      this.cdr.detectChanges();
+    }, 3000);
+  }
+
+  cerrarNotificacion(): void {
+    this.notificacionVisible = false;
+    this.cdr.detectChanges();
   }
 
   cargarAsistencias(): void {
@@ -128,7 +156,10 @@ export class AsistenciasComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar asistencias:', error);
-        alert('Error al cargar los datos de asistencias.');
+        this.mostrarNotificacion(
+          'Error al cargar los datos de asistencias.',
+          'error'
+        );
       },
     });
   }
@@ -177,6 +208,8 @@ export class AsistenciasComponent implements OnInit {
     this.filtroGrado = '';
     this.filtroGrupo = '';
     this.filtroEstado = '';
+
+    this.mostrarNotificacion('Filtros restablecidos.');
   }
 
   get totalFaltas(): number {
@@ -263,14 +296,20 @@ export class AsistenciasComponent implements OnInit {
 
   guardarRegistro(): void {
     if (!this.alumnoSeleccionado || !this.nuevoRegistro.fecha) {
-      alert('Selecciona un alumno y una fecha.');
+      this.mostrarNotificacion(
+        'Selecciona un alumno y una fecha.',
+        'error'
+      );
       return;
     }
 
     // EDITAR ASISTENCIA CON PUT
     if (this.modoEdicion) {
       if (this.registroIdEditar === null) {
-        alert('No se encontró la asistencia que deseas editar.');
+        this.mostrarNotificacion(
+          'No se encontró la asistencia que deseas editar.',
+          'error'
+        );
         return;
       }
 
@@ -286,12 +325,15 @@ export class AsistenciasComponent implements OnInit {
         next: () => {
           this.modalRegistroAbierto = false;
           this.cargarAsistencias();
-          alert('Asistencia actualizada correctamente.');
+          this.mostrarNotificacion(
+            'Asistencia actualizada correctamente.'
+          );
         },
         error: (error) => {
           console.error('Error al actualizar asistencia:', error);
-          alert(
-            error.error?.message || 'Error al actualizar la asistencia.'
+          this.mostrarNotificacion(
+            error.error?.message || 'Error al actualizar la asistencia.',
+            'error'
           );
         }
       });
@@ -313,12 +355,15 @@ export class AsistenciasComponent implements OnInit {
       next: () => {
         this.modalRegistroAbierto = false;
         this.cargarAsistencias();
-        alert('Asistencia registrada correctamente.');
+        this.mostrarNotificacion(
+          'Asistencia registrada correctamente.'
+        );
       },
       error: (error) => {
         console.error('Error al registrar asistencia:', error);
-        alert(
-          error.error?.message || 'Error al registrar la asistencia.'
+        this.mostrarNotificacion(
+          error.error?.message || 'Error al registrar la asistencia.',
+          'error'
         );
       }
     });
@@ -353,12 +398,15 @@ export class AsistenciasComponent implements OnInit {
 
         this.cargarAsistencias();
 
-        alert('Asistencia eliminada correctamente.');
+        this.mostrarNotificacion(
+          'Asistencia eliminada correctamente.'
+        );
       },
       error: (error) => {
         console.error('Error al eliminar asistencia:', error);
-        alert(
-          error.error?.message || 'Error al eliminar la asistencia.'
+        this.mostrarNotificacion(
+          error.error?.message || 'Error al eliminar la asistencia.',
+          'error'
         );
       }
     });
