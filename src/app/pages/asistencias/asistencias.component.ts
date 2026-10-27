@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 
 type EstadoAsistencia = 'Presente' | 'Ausente' | 'Justificada';
 
@@ -9,6 +10,20 @@ interface RegistroAsistencia {
   id: number;
   fecha: string;
   estado: EstadoAsistencia;
+}
+
+interface AsistenciaAPI extends RegistroAsistencia {
+  alumnoId: number;
+}
+
+interface AlumnoAPI {
+  id: number;
+  matricula: string;
+  nombre: string;
+  grado: string;
+  grupo: string;
+  tutor: string;
+  estado: 'Activo' | 'Inactivo';
 }
 
 interface AlumnoAsistencia {
@@ -20,6 +35,13 @@ interface AlumnoAsistencia {
   registros: RegistroAsistencia[];
 }
 
+interface RespuestaAPI<T> {
+  success: boolean;
+  data: T;
+  count?: number;
+  message?: string;
+}
+
 @Component({
   selector: 'app-asistencias',
   standalone: true,
@@ -27,59 +49,15 @@ interface AlumnoAsistencia {
   templateUrl: './asistencias.component.html',
   styleUrl: './asistencias.component.css',
 })
-export class AsistenciasComponent {
-  alumnos: AlumnoAsistencia[] = [
-    {
-      id: 1,
-      matricula: 'CM-2026-001',
-      nombre: 'Sofía Hernández López',
-      grado: '4° Primaria',
-      grupo: 'Grupo A',
-      registros: [
-        { id: 1, fecha: '2026-10-13', estado: 'Presente' },
-        { id: 2, fecha: '2026-10-12', estado: 'Ausente' },
-        { id: 3, fecha: '2026-10-09', estado: 'Presente' },
-      ],
-    },
-    {
-      id: 2,
-      matricula: 'CM-2026-002',
-      nombre: 'Mateo García Pérez',
-      grado: '4° Primaria',
-      grupo: 'Grupo B',
-      registros: [
-        { id: 4, fecha: '2026-10-13', estado: 'Ausente' },
-        { id: 5, fecha: '2026-10-12', estado: 'Presente' },
-      ],
-    },
-    {
-      id: 3,
-      matricula: 'CM-2026-003',
-      nombre: 'Valentina Martínez Ruiz',
-      grado: '3° Primaria',
-      grupo: 'Grupo A',
-      registros: [{ id: 6, fecha: '2026-10-13', estado: 'Presente' }],
-    },
-    {
-      id: 4,
-      matricula: 'CM-2026-004',
-      nombre: 'Sebastián Torres Díaz',
-      grado: '5° Primaria',
-      grupo: 'Grupo A',
-      registros: [
-        { id: 7, fecha: '2026-10-13', estado: 'Presente' },
-        { id: 8, fecha: '2026-10-12', estado: 'Ausente' },
-      ],
-    },
-    {
-      id: 5,
-      matricula: 'CM-2026-005',
-      nombre: 'Camila Sánchez Moreno',
-      grado: '6° Primaria',
-      grupo: 'Grupo A',
-      registros: [],
-    },
-  ];
+export class AsistenciasComponent implements OnInit {
+
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  private apiAlumnos = 'http://localhost:3000/api/alumnos';
+  private apiAsistencias = 'http://localhost:3000/api/asistencias';
+
+  alumnos: AlumnoAsistencia[] = [];
 
   busqueda = '';
   filtroGrado = '';
@@ -100,6 +78,60 @@ export class AsistenciasComponent {
     fecha: '2026-10-13',
     estado: 'Presente',
   };
+
+  ngOnInit(): void {
+    this.cargarAsistencias();
+  }
+
+  cargarAsistencias(): void {
+    forkJoin({
+      respuestaAlumnos: this.http.get<RespuestaAPI<AlumnoAPI[]>>(
+        this.apiAlumnos
+      ),
+      respuestaAsistencias: this.http.get<RespuestaAPI<AsistenciaAPI[]>>(
+        this.apiAsistencias
+      ),
+    }).subscribe({
+      next: ({ respuestaAlumnos, respuestaAsistencias }) => {
+
+        const alumnos = respuestaAlumnos.data;
+        const asistencias = respuestaAsistencias.data;
+
+        this.alumnos = alumnos.map((alumno) => ({
+          id: alumno.id,
+          matricula: alumno.matricula,
+          nombre: alumno.nombre,
+          grado: alumno.grado,
+          grupo: alumno.grupo,
+          registros: asistencias
+            .filter((asistencia) => asistencia.alumnoId === alumno.id)
+            .map((asistencia) => ({
+              id: asistencia.id,
+              fecha: asistencia.fecha,
+              estado: asistencia.estado,
+            })),
+        }));
+
+        if (this.alumnoSeleccionado) {
+          const alumnoId = this.alumnoSeleccionado.id;
+
+          this.alumnoSeleccionado =
+            this.alumnos.find(
+              (alumno) => alumno.id === alumnoId
+            ) ?? null;
+        }
+
+        console.log('Alumnos cargados:', this.alumnos.length);
+        console.log('Asistencias cargadas:', asistencias.length);
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al cargar asistencias:', error);
+        alert('Error al cargar los datos de asistencias.');
+      },
+    });
+  }
 
   get gradosDisponibles(): string[] {
     return [...new Set(this.alumnos.map((a) => a.grado))].sort();
@@ -161,8 +193,9 @@ export class AsistenciasComponent {
   }
 
   contarFaltas(alumno: AlumnoAsistencia): number {
-    return alumno.registros.filter((registro) => registro.estado === 'Ausente')
-      .length;
+    return alumno.registros.filter(
+      (registro) => registro.estado === 'Ausente'
+    ).length;
   }
 
   ultimaAsistencia(alumno: AlumnoAsistencia): string {
@@ -234,24 +267,61 @@ export class AsistenciasComponent {
       return;
     }
 
-    const registros = this.alumnoSeleccionado.registros;
-
+    // EDITAR ASISTENCIA CON PUT
     if (this.modoEdicion) {
-      const registro = registros.find((r) => r.id === this.registroIdEditar);
-
-      if (registro) {
-        registro.fecha = this.nuevoRegistro.fecha;
-        registro.estado = this.nuevoRegistro.estado;
+      if (this.registroIdEditar === null) {
+        alert('No se encontró la asistencia que deseas editar.');
+        return;
       }
-    } else {
-      registros.push({
-        id: Date.now(),
+
+      const datosActualizados = {
         fecha: this.nuevoRegistro.fecha,
-        estado: this.nuevoRegistro.estado,
+        estado: this.nuevoRegistro.estado
+      };
+
+      this.http.put<RespuestaAPI<AsistenciaAPI>>(
+        `${this.apiAsistencias}/${this.registroIdEditar}`,
+        datosActualizados
+      ).subscribe({
+        next: () => {
+          this.modalRegistroAbierto = false;
+          this.cargarAsistencias();
+          alert('Asistencia actualizada correctamente.');
+        },
+        error: (error) => {
+          console.error('Error al actualizar asistencia:', error);
+          alert(
+            error.error?.message || 'Error al actualizar la asistencia.'
+          );
+        }
       });
+
+      return;
     }
 
-    this.modalRegistroAbierto = false;
+    // REGISTRAR ASISTENCIA CON POST
+    const datosAsistencia = {
+      alumnoId: this.alumnoSeleccionado.id,
+      fecha: this.nuevoRegistro.fecha,
+      estado: this.nuevoRegistro.estado
+    };
+
+    this.http.post<RespuestaAPI<AsistenciaAPI>>(
+      this.apiAsistencias,
+      datosAsistencia
+    ).subscribe({
+      next: () => {
+        this.modalRegistroAbierto = false;
+        this.cargarAsistencias();
+        alert('Asistencia registrada correctamente.');
+      },
+      error: (error) => {
+        console.error('Error al registrar asistencia:', error);
+        alert(
+          error.error?.message || 'Error al registrar la asistencia.'
+        );
+      }
+    });
   }
 
   eliminarRegistro(
@@ -266,16 +336,32 @@ export class AsistenciasComponent {
     this.modalEliminarAbierto = true;
   }
 
+  // ELIMINAR ASISTENCIA CON DELETE
   confirmarEliminar(): void {
-    if (!this.alumnoSeleccionado || !this.registroEliminar) return;
+    if (!this.alumnoSeleccionado || !this.registroEliminar) {
+      return;
+    }
 
-    this.alumnoSeleccionado.registros =
-      this.alumnoSeleccionado.registros.filter(
-        (r) => r.id !== this.registroEliminar?.id,
-      );
+    const registroId = this.registroEliminar.id;
 
-    this.modalEliminarAbierto = false;
-    this.registroEliminar = null;
+    this.http.delete(
+      `${this.apiAsistencias}/${registroId}`
+    ).subscribe({
+      next: () => {
+        this.modalEliminarAbierto = false;
+        this.registroEliminar = null;
+
+        this.cargarAsistencias();
+
+        alert('Asistencia eliminada correctamente.');
+      },
+      error: (error) => {
+        console.error('Error al eliminar asistencia:', error);
+        alert(
+          error.error?.message || 'Error al eliminar la asistencia.'
+        );
+      }
+    });
   }
 
   cancelarEliminar(): void {
