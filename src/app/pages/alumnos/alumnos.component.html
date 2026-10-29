@@ -566,7 +566,6 @@
 
         </div>
 
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
 
           <!-- MATRÍCULA -->
@@ -589,7 +588,6 @@
 
           </div>
 
-
           <!-- NOMBRE -->
           <div class="flex flex-col gap-1">
 
@@ -610,10 +608,28 @@
 
           </div>
 
+          <!-- FECHA DE NACIMIENTO -->
+          <div class="flex flex-col gap-1">
+
+            <label
+              class="font-label-md text-label-md text-on-surface font-medium"
+            >
+              Fecha de nacimiento *
+            </label>
+
+            <input
+              [(ngModel)]="nuevoAlumno.fechaNacimiento"
+              class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+              name="fechaNacimiento"
+              required
+              type="date"
+            />
+
+          </div>
+
         </div>
 
       </div>
-
 
       <!-- INFORMACIÓN ESCOLAR -->
       <div class="flex flex-col gap-space-md">
@@ -1001,33 +1017,43 @@
           class="grid grid-cols-1 md:grid-cols-2 gap-space-md"
         >
 
-          <div
-            class="p-4 bg-surface rounded-xl"
-          >
-            <span
-              class="block text-sm text-on-surface-variant"
-            >
+          <!-- MATRÍCULA -->
+          <div class="p-4 bg-surface rounded-xl">
+
+            <span class="block text-sm text-on-surface-variant">
               Matrícula
             </span>
 
             <span class="font-semibold text-on-surface">
               {{ alumnoSeleccionado.matricula }}
             </span>
+
           </div>
 
+          <!-- ESTADO -->
+          <div class="p-4 bg-surface rounded-xl">
 
-          <div
-            class="p-4 bg-surface rounded-xl"
-          >
-            <span
-              class="block text-sm text-on-surface-variant"
-            >
+            <span class="block text-sm text-on-surface-variant">
               Estado
             </span>
 
             <span class="font-semibold text-on-surface">
               {{ alumnoSeleccionado.estado }}
             </span>
+
+          </div>
+
+          <!-- FECHA DE NACIMIENTO -->
+          <div class="p-4 bg-surface rounded-xl">
+
+            <span class="block text-sm text-on-surface-variant">
+              Fecha de nacimiento
+            </span>
+
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.fechaNacimiento || 'No registrada' }}
+            </span>
+
           </div>
 
         </div>

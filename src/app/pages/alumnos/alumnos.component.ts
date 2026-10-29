@@ -7,6 +7,7 @@ interface Alumno {
   id: number;
   matricula: string;
   nombre: string;
+  fechaNacimiento: string;
   grado: string;
   grupo: string;
   tutor: string;
@@ -82,6 +83,7 @@ export class AlumnosComponent implements OnInit {
       id: 0,
       matricula: '',
       nombre: '',
+      fechaNacimiento: '',
       grado: '',
       grupo: '',
       tutor: '',
@@ -148,6 +150,7 @@ export class AlumnosComponent implements OnInit {
     if (
       !this.nuevoAlumno.matricula.trim() ||
       !this.nuevoAlumno.nombre.trim() ||
+      !this.nuevoAlumno.fechaNacimiento ||
       !this.nuevoAlumno.grado ||
       !this.nuevoAlumno.grupo ||
       !this.nuevoAlumno.tutor.trim()

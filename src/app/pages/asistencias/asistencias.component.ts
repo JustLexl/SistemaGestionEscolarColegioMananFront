@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -34,6 +33,7 @@ interface AlumnoAsistencia {
   nombre: string;
   grado: string;
   grupo: string;
+  estado: 'Activo' | 'Inactivo';
   registros: RegistroAsistencia[];
 }
 
@@ -65,6 +65,8 @@ export class AsistenciasComponent implements OnInit {
   filtroGrado = '';
   filtroGrupo = '';
   filtroEstado = '';
+  filtroEstadoAlumno = '';
+  filtroCicloEscolar = '';
 
   alumnoSeleccionado: AlumnoAsistencia | null = null;
 
@@ -131,6 +133,7 @@ export class AsistenciasComponent implements OnInit {
           nombre: alumno.nombre,
           grado: alumno.grado,
           grupo: alumno.grupo,
+          estado: alumno.estado,
           registros: asistencias
             .filter((asistencia) => asistencia.alumnoId === alumno.id)
             .map((asistencia) => ({
@@ -178,6 +181,23 @@ export class AsistenciasComponent implements OnInit {
     ].sort();
   }
 
+  obtenerCicloEscolar(fecha: string): string {
+    const [anio, mes] = fecha.split('-').map(Number);
+    const inicio = mes >= 8 ? anio : anio - 1;
+
+    return `${inicio}-${inicio + 1}`;
+  }
+
+  get ciclosEscolaresDisponibles(): string[] {
+    const ciclos = this.alumnos.flatMap((alumno) =>
+      alumno.registros.map((registro) =>
+        this.obtenerCicloEscolar(registro.fecha)
+      )
+    );
+
+    return [...new Set(ciclos)].sort().reverse();
+  }
+
   get alumnosFiltrados(): AlumnoAsistencia[] {
     const texto = this.busqueda.toLowerCase().trim();
 
@@ -197,8 +217,25 @@ export class AsistenciasComponent implements OnInit {
         !this.filtroEstado ||
         this.ultimaAsistencia(alumno) === this.filtroEstado;
 
+      const coincideEstadoAlumno =
+        !this.filtroEstadoAlumno ||
+        alumno.estado === this.filtroEstadoAlumno;
+
+      const coincideCicloEscolar =
+        !this.filtroCicloEscolar ||
+        alumno.registros.some(
+          (registro) =>
+            this.obtenerCicloEscolar(registro.fecha) ===
+            this.filtroCicloEscolar
+        );
+
       return (
-        coincideBusqueda && coincideGrado && coincideGrupo && coincideEstado
+        coincideBusqueda &&
+        coincideGrado &&
+        coincideGrupo &&
+        coincideEstado &&
+        coincideEstadoAlumno &&
+        coincideCicloEscolar
       );
     });
   }
@@ -208,25 +245,27 @@ export class AsistenciasComponent implements OnInit {
     this.filtroGrado = '';
     this.filtroGrupo = '';
     this.filtroEstado = '';
+    this.filtroEstadoAlumno = '';
+    this.filtroCicloEscolar = '';
 
     this.mostrarNotificacion('Filtros restablecidos.');
   }
 
   get totalFaltas(): number {
-    return this.alumnos.reduce(
+    return this.alumnosFiltrados.reduce(
       (total, alumno) => total + this.contarFaltas(alumno),
-      0,
+      0
     );
   }
 
   get totalPresentes(): number {
-    return this.alumnos.filter(
-      (alumno) => this.ultimaAsistencia(alumno) === 'Presente',
+    return this.alumnosFiltrados.filter(
+      (alumno) => this.ultimaAsistencia(alumno) === 'Presente'
     ).length;
   }
 
   contarFaltas(alumno: AlumnoAsistencia): number {
-    return alumno.registros.filter(
+    return this.ordenarRegistros(alumno).filter(
       (registro) => registro.estado === 'Ausente'
     ).length;
   }
@@ -237,9 +276,14 @@ export class AsistenciasComponent implements OnInit {
   }
 
   ordenarRegistros(alumno: AlumnoAsistencia): RegistroAsistencia[] {
-    return [...alumno.registros].sort(
-      (a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id,
-    );
+    return [...alumno.registros]
+      .filter((registro) =>
+        !this.filtroCicloEscolar ||
+        this.obtenerCicloEscolar(registro.fecha) === this.filtroCicloEscolar
+      )
+      .sort(
+        (a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id
+      );
   }
 
   consultarHistorial(alumno: AlumnoAsistencia): void {
@@ -291,7 +335,11 @@ export class AsistenciasComponent implements OnInit {
 
   seleccionarAlumno(id: number | string): void {
     this.alumnoSeleccionado =
-      this.alumnos.find((alumno) => alumno.id === Number(id)) ?? null;
+      this.alumnos.find(
+        (alumno) =>
+          alumno.id === Number(id) &&
+          (this.modoEdicion || alumno.estado === 'Activo')
+      ) ?? null;
   }
 
   guardarRegistro(): void {
@@ -338,6 +386,14 @@ export class AsistenciasComponent implements OnInit {
         }
       });
 
+      return;
+    }
+
+    if (this.alumnoSeleccionado.estado !== 'Activo') {
+      this.mostrarNotificacion(
+        'No se pueden registrar nuevas asistencias a alumnos inactivos.',
+        'error'
+      );
       return;
     }
 

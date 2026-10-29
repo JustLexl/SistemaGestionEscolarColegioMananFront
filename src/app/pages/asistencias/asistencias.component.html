@@ -68,7 +68,7 @@
       <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
           <p class="text-on-surface-variant">Total de alumnos</p>
-          <h2 class="text-3xl font-bold text-primary">{{ alumnos.length }}</h2>
+          <h2 class="text-3xl font-bold text-primary">{{ alumnosFiltrados.length }}</h2>
         </div>
 
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
@@ -86,9 +86,12 @@
       <section
         class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg"
       >
+
         <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+
           <!-- BUSCAR -->
-          <div class="md:col-span-5 relative">
+          <div class="md:col-span-4 relative">
+
             <span
               class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]"
             >
@@ -101,51 +104,63 @@
               placeholder="Buscar por nombre o matrícula..."
               type="text"
             />
+
           </div>
 
           <!-- GRADO -->
           <div class="md:col-span-2">
+
             <select
               [(ngModel)]="filtroGrado"
               (ngModelChange)="filtroGrupo = ''"
               class="w-full px-3 py-2 bg-surface rounded-xl"
             >
               <option value="">Grado: Todos</option>
+
               <option *ngFor="let grado of gradosDisponibles" [value]="grado">
                 {{ grado }}
               </option>
+
             </select>
+
           </div>
 
           <!-- GRUPO -->
           <div class="md:col-span-2">
+
             <select
               [(ngModel)]="filtroGrupo"
               class="w-full px-3 py-2 bg-surface rounded-xl"
             >
               <option value="">Grupo: Todos</option>
+
               <option *ngFor="let grupo of gruposDisponibles" [value]="grupo">
                 {{ grupo }}
               </option>
+
             </select>
+
           </div>
 
-          <!-- ESTADO -->
-          <div class="md:col-span-2">
+          <!-- ESTADO DE ASISTENCIA -->
+          <div class="md:col-span-3">
+
             <select
               [(ngModel)]="filtroEstado"
               class="w-full px-3 py-2 bg-surface rounded-xl"
             >
-              <option value="">Estado: Todos</option>
+              <option value="">Asistencia: Todas</option>
               <option value="Presente">Presente</option>
               <option value="Ausente">Ausente</option>
               <option value="Justificada">Justificada</option>
               <option value="Sin registros">Sin registros</option>
             </select>
+
           </div>
 
           <!-- LIMPIAR FILTROS -->
           <div class="md:col-span-1 flex justify-end">
+
             <button
               (click)="limpiarFiltros()"
               class="p-2 text-outline hover:text-on-surface hover:bg-surface rounded-lg"
@@ -155,8 +170,45 @@
             >
               <span class="material-symbols-outlined"> restart_alt </span>
             </button>
+
           </div>
+
+          <!-- ESTADO DEL ALUMNO -->
+          <div class="md:col-span-3">
+
+            <select
+              [(ngModel)]="filtroEstadoAlumno"
+              class="w-full px-3 py-2 bg-surface rounded-xl"
+            >
+              <option value="">Alumno: Todos</option>
+              <option value="Activo">Activos</option>
+              <option value="Inactivo">Inactivos</option>
+            </select>
+
+          </div>
+
+                    <!-- CICLO ESCOLAR -->
+          <div class="md:col-span-3">
+
+            <select
+              [(ngModel)]="filtroCicloEscolar"
+              class="w-full px-3 py-2 bg-surface rounded-xl"
+            >
+              <option value="">Ciclo escolar: Todos</option>
+
+              <option
+                *ngFor="let ciclo of ciclosEscolaresDisponibles"
+                [value]="ciclo"
+              >
+                {{ ciclo }}
+              </option>
+
+            </select>
+
+          </div>
+
         </div>
+
       </section>
 
       <!-- TABLA PRINCIPAL -->
@@ -400,9 +452,14 @@
         >
           <option value="" disabled>Seleccionar alumno</option>
 
-          <option *ngFor="let alumno of alumnos" [ngValue]="alumno.id">
-            {{ alumno.nombre }} - {{ alumno.matricula }}
-          </option>
+          <ng-container *ngFor="let alumno of alumnos">
+            <option
+              *ngIf="alumno.estado === 'Activo' || modoEdicion"
+              [ngValue]="alumno.id"
+            >
+              {{ alumno.nombre }} - {{ alumno.matricula }}
+            </option>
+          </ng-container>
         </select>
       </div>
 
