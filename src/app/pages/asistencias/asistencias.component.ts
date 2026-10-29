@@ -1,14 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 
 type EstadoAsistencia = 'Presente' | 'Ausente' | 'Justificada';
+type TipoNotificacion = 'exito' | 'error';
 
 interface RegistroAsistencia {
   id: number;
   fecha: string;
   estado: EstadoAsistencia;
+}
+
+interface AsistenciaAPI extends RegistroAsistencia {
+  alumnoId: number;
+}
+
+interface AlumnoAPI {
+  id: number;
+  matricula: string;
+  nombre: string;
+  grado: string;
+  grupo: string;
+  tutor: string;
+  estado: 'Activo' | 'Inactivo';
 }
 
 interface AlumnoAsistencia {
@@ -17,7 +33,15 @@ interface AlumnoAsistencia {
   nombre: string;
   grado: string;
   grupo: string;
+  estado: 'Activo' | 'Inactivo';
   registros: RegistroAsistencia[];
+}
+
+interface RespuestaAPI<T> {
+  success: boolean;
+  data: T;
+  count?: number;
+  message?: string;
 }
 
 @Component({
@@ -27,64 +51,22 @@ interface AlumnoAsistencia {
   templateUrl: './asistencias.component.html',
   styleUrl: './asistencias.component.css',
 })
-export class AsistenciasComponent {
-  alumnos: AlumnoAsistencia[] = [
-    {
-      id: 1,
-      matricula: 'CM-2026-001',
-      nombre: 'Sofía Hernández López',
-      grado: '4° Primaria',
-      grupo: 'Grupo A',
-      registros: [
-        { id: 1, fecha: '2026-10-13', estado: 'Presente' },
-        { id: 2, fecha: '2026-10-12', estado: 'Ausente' },
-        { id: 3, fecha: '2026-10-09', estado: 'Presente' },
-      ],
-    },
-    {
-      id: 2,
-      matricula: 'CM-2026-002',
-      nombre: 'Mateo García Pérez',
-      grado: '4° Primaria',
-      grupo: 'Grupo B',
-      registros: [
-        { id: 4, fecha: '2026-10-13', estado: 'Ausente' },
-        { id: 5, fecha: '2026-10-12', estado: 'Presente' },
-      ],
-    },
-    {
-      id: 3,
-      matricula: 'CM-2026-003',
-      nombre: 'Valentina Martínez Ruiz',
-      grado: '3° Primaria',
-      grupo: 'Grupo A',
-      registros: [{ id: 6, fecha: '2026-10-13', estado: 'Presente' }],
-    },
-    {
-      id: 4,
-      matricula: 'CM-2026-004',
-      nombre: 'Sebastián Torres Díaz',
-      grado: '5° Primaria',
-      grupo: 'Grupo A',
-      registros: [
-        { id: 7, fecha: '2026-10-13', estado: 'Presente' },
-        { id: 8, fecha: '2026-10-12', estado: 'Ausente' },
-      ],
-    },
-    {
-      id: 5,
-      matricula: 'CM-2026-005',
-      nombre: 'Camila Sánchez Moreno',
-      grado: '6° Primaria',
-      grupo: 'Grupo A',
-      registros: [],
-    },
-  ];
+export class AsistenciasComponent implements OnInit {
+
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  private apiAlumnos = 'http://localhost:3000/api/alumnos';
+  private apiAsistencias = 'http://localhost:3000/api/asistencias';
+
+  alumnos: AlumnoAsistencia[] = [];
 
   busqueda = '';
   filtroGrado = '';
   filtroGrupo = '';
   filtroEstado = '';
+  filtroEstadoAlumno = '';
+  filtroCicloEscolar = '';
 
   alumnoSeleccionado: AlumnoAsistencia | null = null;
 
@@ -96,10 +78,94 @@ export class AsistenciasComponent {
   registroIdEditar: number | null = null;
   registroEliminar: RegistroAsistencia | null = null;
 
+  // Notificaciones personalizadas
+  notificacionVisible = false;
+  mensajeNotificacion = '';
+  tipoNotificacion: TipoNotificacion = 'exito';
+
   nuevoRegistro: { fecha: string; estado: EstadoAsistencia } = {
     fecha: '2026-10-13',
     estado: 'Presente',
   };
+
+  ngOnInit(): void {
+    this.cargarAsistencias();
+  }
+
+  mostrarNotificacion(
+    mensaje: string,
+    tipo: TipoNotificacion = 'exito'
+  ): void {
+    this.mensajeNotificacion = mensaje;
+    this.tipoNotificacion = tipo;
+    this.notificacionVisible = true;
+
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.notificacionVisible = false;
+      this.cdr.detectChanges();
+    }, 3000);
+  }
+
+  cerrarNotificacion(): void {
+    this.notificacionVisible = false;
+    this.cdr.detectChanges();
+  }
+
+  cargarAsistencias(): void {
+    forkJoin({
+      respuestaAlumnos: this.http.get<RespuestaAPI<AlumnoAPI[]>>(
+        this.apiAlumnos
+      ),
+      respuestaAsistencias: this.http.get<RespuestaAPI<AsistenciaAPI[]>>(
+        this.apiAsistencias
+      ),
+    }).subscribe({
+      next: ({ respuestaAlumnos, respuestaAsistencias }) => {
+
+        const alumnos = respuestaAlumnos.data;
+        const asistencias = respuestaAsistencias.data;
+
+        this.alumnos = alumnos.map((alumno) => ({
+          id: alumno.id,
+          matricula: alumno.matricula,
+          nombre: alumno.nombre,
+          grado: alumno.grado,
+          grupo: alumno.grupo,
+          estado: alumno.estado,
+          registros: asistencias
+            .filter((asistencia) => asistencia.alumnoId === alumno.id)
+            .map((asistencia) => ({
+              id: asistencia.id,
+              fecha: asistencia.fecha,
+              estado: asistencia.estado,
+            })),
+        }));
+
+        if (this.alumnoSeleccionado) {
+          const alumnoId = this.alumnoSeleccionado.id;
+
+          this.alumnoSeleccionado =
+            this.alumnos.find(
+              (alumno) => alumno.id === alumnoId
+            ) ?? null;
+        }
+
+        console.log('Alumnos cargados:', this.alumnos.length);
+        console.log('Asistencias cargadas:', asistencias.length);
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al cargar asistencias:', error);
+        this.mostrarNotificacion(
+          'Error al cargar los datos de asistencias.',
+          'error'
+        );
+      },
+    });
+  }
 
   get gradosDisponibles(): string[] {
     return [...new Set(this.alumnos.map((a) => a.grado))].sort();
@@ -113,6 +179,23 @@ export class AsistenciasComponent {
           .map((a) => a.grupo),
       ),
     ].sort();
+  }
+
+  obtenerCicloEscolar(fecha: string): string {
+    const [anio, mes] = fecha.split('-').map(Number);
+    const inicio = mes >= 8 ? anio : anio - 1;
+
+    return `${inicio}-${inicio + 1}`;
+  }
+
+  get ciclosEscolaresDisponibles(): string[] {
+    const ciclos = this.alumnos.flatMap((alumno) =>
+      alumno.registros.map((registro) =>
+        this.obtenerCicloEscolar(registro.fecha)
+      )
+    );
+
+    return [...new Set(ciclos)].sort().reverse();
   }
 
   get alumnosFiltrados(): AlumnoAsistencia[] {
@@ -134,8 +217,25 @@ export class AsistenciasComponent {
         !this.filtroEstado ||
         this.ultimaAsistencia(alumno) === this.filtroEstado;
 
+      const coincideEstadoAlumno =
+        !this.filtroEstadoAlumno ||
+        alumno.estado === this.filtroEstadoAlumno;
+
+      const coincideCicloEscolar =
+        !this.filtroCicloEscolar ||
+        alumno.registros.some(
+          (registro) =>
+            this.obtenerCicloEscolar(registro.fecha) ===
+            this.filtroCicloEscolar
+        );
+
       return (
-        coincideBusqueda && coincideGrado && coincideGrupo && coincideEstado
+        coincideBusqueda &&
+        coincideGrado &&
+        coincideGrupo &&
+        coincideEstado &&
+        coincideEstadoAlumno &&
+        coincideCicloEscolar
       );
     });
   }
@@ -145,24 +245,29 @@ export class AsistenciasComponent {
     this.filtroGrado = '';
     this.filtroGrupo = '';
     this.filtroEstado = '';
+    this.filtroEstadoAlumno = '';
+    this.filtroCicloEscolar = '';
+
+    this.mostrarNotificacion('Filtros restablecidos.');
   }
 
   get totalFaltas(): number {
-    return this.alumnos.reduce(
+    return this.alumnosFiltrados.reduce(
       (total, alumno) => total + this.contarFaltas(alumno),
-      0,
+      0
     );
   }
 
   get totalPresentes(): number {
-    return this.alumnos.filter(
-      (alumno) => this.ultimaAsistencia(alumno) === 'Presente',
+    return this.alumnosFiltrados.filter(
+      (alumno) => this.ultimaAsistencia(alumno) === 'Presente'
     ).length;
   }
 
   contarFaltas(alumno: AlumnoAsistencia): number {
-    return alumno.registros.filter((registro) => registro.estado === 'Ausente')
-      .length;
+    return this.ordenarRegistros(alumno).filter(
+      (registro) => registro.estado === 'Ausente'
+    ).length;
   }
 
   ultimaAsistencia(alumno: AlumnoAsistencia): string {
@@ -171,9 +276,14 @@ export class AsistenciasComponent {
   }
 
   ordenarRegistros(alumno: AlumnoAsistencia): RegistroAsistencia[] {
-    return [...alumno.registros].sort(
-      (a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id,
-    );
+    return [...alumno.registros]
+      .filter((registro) =>
+        !this.filtroCicloEscolar ||
+        this.obtenerCicloEscolar(registro.fecha) === this.filtroCicloEscolar
+      )
+      .sort(
+        (a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id
+      );
   }
 
   consultarHistorial(alumno: AlumnoAsistencia): void {
@@ -225,33 +335,94 @@ export class AsistenciasComponent {
 
   seleccionarAlumno(id: number | string): void {
     this.alumnoSeleccionado =
-      this.alumnos.find((alumno) => alumno.id === Number(id)) ?? null;
+      this.alumnos.find(
+        (alumno) =>
+          alumno.id === Number(id) &&
+          (this.modoEdicion || alumno.estado === 'Activo')
+      ) ?? null;
   }
 
   guardarRegistro(): void {
     if (!this.alumnoSeleccionado || !this.nuevoRegistro.fecha) {
-      alert('Selecciona un alumno y una fecha.');
+      this.mostrarNotificacion(
+        'Selecciona un alumno y una fecha.',
+        'error'
+      );
       return;
     }
 
-    const registros = this.alumnoSeleccionado.registros;
-
+    // EDITAR ASISTENCIA CON PUT
     if (this.modoEdicion) {
-      const registro = registros.find((r) => r.id === this.registroIdEditar);
-
-      if (registro) {
-        registro.fecha = this.nuevoRegistro.fecha;
-        registro.estado = this.nuevoRegistro.estado;
+      if (this.registroIdEditar === null) {
+        this.mostrarNotificacion(
+          'No se encontró la asistencia que deseas editar.',
+          'error'
+        );
+        return;
       }
-    } else {
-      registros.push({
-        id: Date.now(),
+
+      const datosActualizados = {
         fecha: this.nuevoRegistro.fecha,
-        estado: this.nuevoRegistro.estado,
+        estado: this.nuevoRegistro.estado
+      };
+
+      this.http.put<RespuestaAPI<AsistenciaAPI>>(
+        `${this.apiAsistencias}/${this.registroIdEditar}`,
+        datosActualizados
+      ).subscribe({
+        next: () => {
+          this.modalRegistroAbierto = false;
+          this.cargarAsistencias();
+          this.mostrarNotificacion(
+            'Asistencia actualizada correctamente.'
+          );
+        },
+        error: (error) => {
+          console.error('Error al actualizar asistencia:', error);
+          this.mostrarNotificacion(
+            error.error?.message || 'Error al actualizar la asistencia.',
+            'error'
+          );
+        }
       });
+
+      return;
     }
 
-    this.modalRegistroAbierto = false;
+    if (this.alumnoSeleccionado.estado !== 'Activo') {
+      this.mostrarNotificacion(
+        'No se pueden registrar nuevas asistencias a alumnos inactivos.',
+        'error'
+      );
+      return;
+    }
+
+    // REGISTRAR ASISTENCIA CON POST
+    const datosAsistencia = {
+      alumnoId: this.alumnoSeleccionado.id,
+      fecha: this.nuevoRegistro.fecha,
+      estado: this.nuevoRegistro.estado
+    };
+
+    this.http.post<RespuestaAPI<AsistenciaAPI>>(
+      this.apiAsistencias,
+      datosAsistencia
+    ).subscribe({
+      next: () => {
+        this.modalRegistroAbierto = false;
+        this.cargarAsistencias();
+        this.mostrarNotificacion(
+          'Asistencia registrada correctamente.'
+        );
+      },
+      error: (error) => {
+        console.error('Error al registrar asistencia:', error);
+        this.mostrarNotificacion(
+          error.error?.message || 'Error al registrar la asistencia.',
+          'error'
+        );
+      }
+    });
   }
 
   eliminarRegistro(
@@ -266,16 +437,35 @@ export class AsistenciasComponent {
     this.modalEliminarAbierto = true;
   }
 
+  // ELIMINAR ASISTENCIA CON DELETE
   confirmarEliminar(): void {
-    if (!this.alumnoSeleccionado || !this.registroEliminar) return;
+    if (!this.alumnoSeleccionado || !this.registroEliminar) {
+      return;
+    }
 
-    this.alumnoSeleccionado.registros =
-      this.alumnoSeleccionado.registros.filter(
-        (r) => r.id !== this.registroEliminar?.id,
-      );
+    const registroId = this.registroEliminar.id;
 
-    this.modalEliminarAbierto = false;
-    this.registroEliminar = null;
+    this.http.delete(
+      `${this.apiAsistencias}/${registroId}`
+    ).subscribe({
+      next: () => {
+        this.modalEliminarAbierto = false;
+        this.registroEliminar = null;
+
+        this.cargarAsistencias();
+
+        this.mostrarNotificacion(
+          'Asistencia eliminada correctamente.'
+        );
+      },
+      error: (error) => {
+        console.error('Error al eliminar asistencia:', error);
+        this.mostrarNotificacion(
+          error.error?.message || 'Error al eliminar la asistencia.',
+          'error'
+        );
+      }
+    });
   }
 
   cancelarEliminar(): void {
