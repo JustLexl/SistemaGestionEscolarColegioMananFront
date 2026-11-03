@@ -1,8 +1,4 @@
-<div class="workspace">
-  <div class="workspace__content">
-    <app-header />
-
-    <main>
+<div class="module-page">
       <section class="academic-context" aria-label="Contexto académico demostrativo">
         <div class="academic-context__identity">
           <app-ui-icon name="school" [size]="19" />
@@ -41,8 +37,6 @@
         (editar)="abrirEdicion($event)"
         (darDeBaja)="abrirBaja($event)"
       />
-    </main>
-  </div>
 </div>
 
 @if (registroAbierto()) {

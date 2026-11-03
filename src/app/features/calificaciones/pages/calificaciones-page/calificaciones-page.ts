@@ -16,8 +16,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Header } from '../../../../layout/header/header';
-import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { UiIcon } from '../../../../shared/ui-icon/ui-icon';
 import {
   Calificacion,
@@ -41,7 +39,7 @@ function scoreValidator(
 
 @Component({
   selector: 'app-calificaciones-page',
-  imports: [Header, Sidebar, UiIcon, ReactiveFormsModule],
+  imports: [UiIcon, ReactiveFormsModule],
   templateUrl: './calificaciones-page.html',
   styleUrl: './calificaciones-page.scss',
 })

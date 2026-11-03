@@ -1,16 +1,4 @@
-.workspace {
-  display: block;
-  width: 100%;
-  min-height: 100%;
-  background: var(--color-canvas);
-}
-
-.workspace__content {
-  width: 100%;
-  min-width: 0;
-}
-
-main {
+.module-page {
   width: min(100%, 1500px);
   margin: 0 auto;
   padding: 0 32px 44px;
@@ -131,11 +119,7 @@ main {
 }
 
 @media (max-width: 900px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  main {
+  .module-page {
     padding-inline: 20px;
   }
 }

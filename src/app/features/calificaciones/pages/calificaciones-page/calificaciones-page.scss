@@ -1,13 +1,4 @@
-.workspace {
-  display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  min-height: 100dvh;
-  background: var(--color-canvas);
-}
-.workspace__content {
-  min-width: 0;
-}
-main {
+.module-page {
   width: min(100%, 1500px);
   margin: 0 auto;
   padding: 0 32px 44px;
@@ -654,10 +645,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 900px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-  main {
+  .module-page {
     padding-inline: 20px;
   }
 }
