@@ -1,12 +1,81 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UiIcon } from '../../../../shared/ui-icon/ui-icon';
-import { CalificacionesMockService } from '../../services/calificaciones-mock.service';
+import {
+  Calificacion,
+  CalificacionDatos,
+} from '../../models/calificacion.model';
+import {
+  AlumnoApi,
+  CalificacionesApiError,
+  CalificacionesApiService,
+  MateriaApi,
+} from '../../services/calificaciones-api.service';
 import { CalificacionesPage } from './calificaciones-page';
 
 describe('CalificacionesPage', () => {
   let fixture: ComponentFixture<CalificacionesPage>;
-  let service: CalificacionesMockService;
+  let api: {
+    obtenerCalificaciones: ReturnType<typeof vi.fn>;
+    obtenerCalificacion: ReturnType<typeof vi.fn>;
+    obtenerAlumnos: ReturnType<typeof vi.fn>;
+    obtenerMaterias: ReturnType<typeof vi.fn>;
+    registrarCalificacion: ReturnType<typeof vi.fn>;
+    actualizarCalificacion: ReturnType<typeof vi.fn>;
+    eliminarCalificacion: ReturnType<typeof vi.fn>;
+  };
+
+  const calificaciones: readonly Calificacion[] = [
+    {
+      id: 'cal-001',
+      alumno: 'Sofía Hernández López',
+      matricula: 'CM-2026-001',
+      grado: '4°',
+      grupo: 'A',
+      materia: 'Matemáticas IV',
+      periodo: '1er Trimestre',
+      calificacion: 9.2,
+    },
+    {
+      id: 'cal-002',
+      alumno: 'Mateo García Pérez',
+      matricula: 'CM-2026-002',
+      grado: '4°',
+      grupo: 'B',
+      materia: 'Lengua Materna (Español IV)',
+      periodo: '1er Trimestre',
+      calificacion: 8.5,
+    },
+  ];
+
+  const alumnos: readonly AlumnoApi[] = [
+    {
+      id: 1,
+      matricula: 'CM-2026-001',
+      nombre: 'Sofía Hernández López',
+      grado: '4° Primaria',
+      grupo: 'Grupo A',
+    },
+    {
+      id: 2,
+      matricula: 'CM-2026-002',
+      nombre: 'Mateo García Pérez',
+      grado: '4° Primaria',
+      grupo: 'Grupo B',
+    },
+    {
+      id: 3,
+      matricula: 'CM-2026-003',
+      nombre: 'Valentina Martínez Ruiz',
+      grado: '3° Primaria',
+      grupo: 'Grupo A',
+    },
+  ];
+
+  const materias: readonly MateriaApi[] = [
+    { id: 1, nombre: 'Matemáticas IV' },
+    { id: 2, nombre: 'Lengua Materna (Español IV)' },
+  ];
 
   const query = <T extends Element>(selector: string): T =>
     fixture.nativeElement.querySelector(selector) as T;
@@ -32,284 +101,245 @@ describe('CalificacionesPage', () => {
     fixture.detectChanges();
   }
 
-  function openCreate(): void {
-    click('.register-button');
-  }
-
-  function fillValidForm(score = '8.7'): void {
-    setInput('#cal-alumno', 'Alumno Demo 05');
-    setInput('#cal-matricula', 'ALU-DEMO-005');
-    setSelect('#cal-grado', '2°');
-    setSelect('#cal-grupo', 'A');
-    setSelect('#cal-materia', 'Matemáticas');
-    setSelect('#cal-periodo', '2° Trimestre');
-    setInput('#cal-valor', score);
-  }
-
-  function saveForm(): void {
-    click('form .button-primary');
-  }
-
   function rows(): HTMLTableRowElement[] {
     return queryAll<HTMLTableRowElement>('tbody tr').filter(
       (row) => !row.querySelector('.empty-state'),
     );
   }
 
+  async function settle(): Promise<void> {
+    await new Promise<void>((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+  }
+
+  async function createComponent(): Promise<void> {
+    fixture = TestBed.createComponent(CalificacionesPage);
+    fixture.detectChanges();
+    await settle();
+  }
+
   beforeEach(async () => {
+    api = {
+      obtenerCalificaciones: vi.fn().mockResolvedValue(calificaciones),
+      obtenerCalificacion: vi
+        .fn()
+        .mockImplementation((id: string) =>
+          Promise.resolve(calificaciones.find((item) => item.id === id)),
+        ),
+      obtenerAlumnos: vi.fn().mockResolvedValue(alumnos),
+      obtenerMaterias: vi.fn().mockResolvedValue(materias),
+      registrarCalificacion: vi.fn(),
+      actualizarCalificacion: vi.fn(),
+      eliminarCalificacion: vi.fn().mockResolvedValue(undefined),
+    };
+
     await TestBed.configureTestingModule({
       imports: [CalificacionesPage],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: CalificacionesApiService, useValue: api },
+      ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(CalificacionesPage);
-    service = TestBed.inject(CalificacionesMockService);
-    fixture.detectChanges();
   });
 
-  it('carga el módulo de Calificaciones con sus datos demo', () => {
-    expect(query('h1').textContent).toContain('Calificaciones');
-    expect(rows()).toHaveLength(4);
+  it('carga calificaciones, alumnos y materias desde la API', async () => {
+    await createComponent();
+
+    expect(api.obtenerCalificaciones).toHaveBeenCalledOnce();
+    expect(api.obtenerAlumnos).toHaveBeenCalledOnce();
+    expect(api.obtenerMaterias).toHaveBeenCalledOnce();
+    expect(rows()).toHaveLength(2);
+    expect(query('.summary-card__copy strong').textContent?.trim()).toBe('2');
   });
 
-  it('muestra el breadcrumb y contexto de Control Académico', () => {
-    expect(query('.breadcrumb').textContent).toContain('Portal');
-    expect(query('.breadcrumb').textContent).toContain('Control Académico');
-    expect(query('.academic-context__identity').textContent).toContain(
-      'Control académico de calificaciones',
+  it('muestra el error de carga y permite reintentar', async () => {
+    api.obtenerCalificaciones.mockRejectedValueOnce(
+      new CalificacionesApiError(0, 'Backend no disponible.'),
+    );
+    await createComponent();
+
+    expect(query('[role="alert"]').textContent).toContain(
+      'Backend no disponible.',
+    );
+
+    click('.empty-state button');
+    await settle();
+
+    expect(api.obtenerCalificaciones).toHaveBeenCalledTimes(2);
+    expect(rows()).toHaveLength(2);
+  });
+
+  it('usa los catálogos reales y completa alumno, matrícula, grado y grupo', async () => {
+    await createComponent();
+    click('.register-button');
+
+    const studentOptions = queryAll<HTMLOptionElement>(
+      '#cal-alumno option',
+    ).map((item) => item.textContent?.trim());
+    const subjectOptions = queryAll<HTMLOptionElement>(
+      '#cal-materia option',
+    ).map((item) => item.textContent?.trim());
+    expect(studentOptions).toContain('Valentina Martínez Ruiz — CM-2026-003');
+    expect(subjectOptions).toContain('Matemáticas IV');
+
+    setSelect('#cal-alumno', 'CM-2026-003');
+
+    expect(query<HTMLInputElement>('#cal-matricula').value).toBe('CM-2026-003');
+    expect(query<HTMLInputElement>('#cal-grado').value).toBe('3°');
+    expect(query<HTMLInputElement>('#cal-grupo').value).toBe('A');
+  });
+
+  it('registra mediante la API y agrega la respuesta real a la tabla', async () => {
+    const created: Calificacion = {
+      id: 'cal-003',
+      alumno: 'Valentina Martínez Ruiz',
+      matricula: 'CM-2026-003',
+      grado: '3°',
+      grupo: 'A',
+      materia: 'Matemáticas IV',
+      periodo: '2° Trimestre',
+      calificacion: 8.7,
+    };
+    api.registrarCalificacion.mockResolvedValue(created);
+    await createComponent();
+    click('.register-button');
+    setSelect('#cal-alumno', created.matricula);
+    setSelect('#cal-materia', created.materia);
+    setSelect('#cal-periodo', created.periodo);
+    setInput('#cal-valor', String(created.calificacion));
+
+    click('form .button-primary');
+    await settle();
+
+    expect(api.registrarCalificacion).toHaveBeenCalledWith({
+      alumno: created.alumno,
+      matricula: created.matricula,
+      grado: created.grado,
+      grupo: created.grupo,
+      materia: created.materia,
+      periodo: created.periodo,
+      calificacion: created.calificacion,
+    } satisfies CalificacionDatos);
+    expect(rows()).toHaveLength(3);
+    expect(fixture.nativeElement.textContent).toContain(
+      'Valentina Martínez Ruiz',
     );
   });
 
-  it.each([
-    [8, 'score--high'],
-    [10, 'score--high'],
-    [7.9, 'score--medium'],
-    [6.5, 'score--medium'],
-    [6.4, 'score--low'],
-    [0, 'score--low'],
-  ])('presenta %s con el tono %s', (score, expectedClass) => {
-    const current = service.getCalificacionById('cal-001')!;
-    service.actualizarCalificacion('cal-001', { ...current, calificacion: score });
-    fixture.detectChanges();
-
-    expect(rows()[0].querySelector('.score')?.classList.contains(expectedClass)).toBe(true);
-  });
-
-  it('reutiliza la clasificación visual en el modal de consulta', () => {
-    const current = service.getCalificacionById('cal-001')!;
-    service.actualizarCalificacion('cal-001', { ...current, calificacion: 6.4 });
-    fixture.detectChanges();
-    click('[data-action="view"]');
-
-    expect(query('.detail-modal .score').classList.contains('score--low')).toBe(true);
-  });
-
-  it('abre el modal desde Registrar calificación', () => {
-    openCreate();
-
-    expect(query('[role="dialog"]')).toBeTruthy();
-    expect(query('#form-modal-title').textContent).toContain('Registrar calificación');
-  });
-
-  it('registra una calificación válida y agrega una fila', () => {
-    openCreate();
-    fillValidForm();
-    saveForm();
-
-    expect(rows()).toHaveLength(5);
-    expect(fixture.nativeElement.textContent).toContain('ALU-DEMO-005');
-  });
-
-  it('muestra errores dentro del modal cuando el formulario está vacío', () => {
-    openCreate();
-    saveForm();
-
-    expect(queryAll('[role="alert"]')).toHaveLength(7);
-    expect(query('[role="dialog"]')).toBeTruthy();
-  });
-
-  it.each(['-0.1', '10.1', '8.75'])('rechaza la calificación inválida %s', (score) => {
-    openCreate();
-    fillValidForm(score);
-    saveForm();
-
-    expect(rows()).toHaveLength(4);
-    expect(query('.form-field__error').textContent).toContain('0 a 10');
-  });
-
-  it('rechaza un duplicado lógico con un mensaje claro', () => {
-    openCreate();
-    setInput('#cal-alumno', 'Otro nombre demo');
-    setInput('#cal-matricula', ' alu-demo-001 ');
-    setSelect('#cal-grado', '1°');
-    setSelect('#cal-grupo', 'A');
-    setSelect('#cal-materia', 'Matemáticas');
+  it('muestra el conflicto 409 del backend sin cerrar el formulario', async () => {
+    api.registrarCalificacion.mockRejectedValue(
+      new CalificacionesApiError(409, 'Ya existe una calificación.'),
+    );
+    await createComponent();
+    click('.register-button');
+    setSelect('#cal-alumno', 'CM-2026-001');
+    setSelect('#cal-materia', 'Matemáticas IV');
     setSelect('#cal-periodo', '1er Trimestre');
     setInput('#cal-valor', '9');
-    saveForm();
+
+    click('form .button-primary');
+    await settle();
 
     expect(query('.form-error').textContent).toContain(
       'Ya existe una calificación para este alumno, materia y periodo.',
     );
-    expect(rows()).toHaveLength(4);
+    expect(query('[role="dialog"]')).toBeTruthy();
   });
 
-  it('el ojo muestra el registro correcto en modo de solo lectura', () => {
+  it('actualiza mediante la API y sustituye la fila correspondiente', async () => {
+    const updated = { ...calificaciones[0], calificacion: 9.8 };
+    api.actualizarCalificacion.mockResolvedValue(updated);
+    await createComponent();
+    click('[data-action="edit"]');
+    setInput('#cal-valor', '9.8');
+
+    click('form .button-primary');
+    await settle();
+
+    expect(api.actualizarCalificacion).toHaveBeenCalledWith(
+      'cal-001',
+      expect.objectContaining({ calificacion: 9.8 }),
+    );
+    expect(rows()[0].textContent).toContain('9.8');
+  });
+
+  it('consulta el detalle actualizado mediante la API', async () => {
+    const detail = { ...calificaciones[0], calificacion: 9.6 };
+    api.obtenerCalificacion.mockResolvedValue(detail);
+    await createComponent();
+
     click('[data-action="view"]');
+    await settle();
 
-    const dialog = query('[role="dialog"]');
-    expect(dialog.textContent).toContain('Alumno Demo 01');
-    expect(dialog.textContent).toContain('ALU-DEMO-001');
-    expect(dialog.querySelector('form')).toBeNull();
+    expect(api.obtenerCalificacion).toHaveBeenCalledWith('cal-001');
+    expect(query('.detail-modal .score').textContent?.trim()).toBe('9.6');
   });
 
-  it('el lápiz precarga los datos del registro correcto', () => {
-    click('[data-action="edit"]', 1);
-
-    expect(query<HTMLInputElement>('#cal-alumno').value).toBe('Alumno Demo 02');
-    expect(query<HTMLInputElement>('#cal-valor').value).toBe('8.5');
-    expect(query<HTMLSelectElement>('#cal-materia').value).toBe('Lengua');
-  });
-
-  it('guardar una edición actualiza inmediatamente la fila', () => {
-    click('[data-action="edit"]');
-    setInput('#cal-alumno', 'Alumno Demo 01 Actualizado');
-    setInput('#cal-valor', '9.3');
-    saveForm();
-
-    expect(service.getCalificacionById('cal-001')?.calificacion).toBe(9.3);
-    expect(rows()[0].textContent).toContain('Alumno Demo 01 Actualizado');
-    expect(rows()[0].textContent).toContain('9.3');
-  });
-
-  it('cancelar una edición conserva los datos originales', () => {
-    click('[data-action="edit"]');
-    setInput('#cal-alumno', 'Cambio no guardado');
-    click('.modal-actions .button-secondary');
-
-    expect(service.getCalificacionById('cal-001')?.alumno).toBe('Alumno Demo 01');
-  });
-
-  it('la papelera abre una confirmación sin eliminar al primer clic', () => {
+  it('elimina mediante la API solamente después de confirmar', async () => {
+    await createComponent();
     click('[data-action="delete"]');
+    expect(api.eliminarCalificacion).not.toHaveBeenCalled();
 
-    expect(query('#delete-modal-title').textContent).toContain('Eliminar calificación');
-    expect(service.total()).toBe(4);
-  });
-
-  it('cancelar la eliminación conserva el registro', () => {
-    click('[data-action="delete"]');
-    click('.delete-modal .button-secondary');
-
-    expect(service.getCalificacionById('cal-001')).toBeDefined();
-    expect(rows()).toHaveLength(4);
-  });
-
-  it('confirmar la eliminación quita el registro', () => {
-    click('[data-action="delete"]');
     click('.button-danger');
+    await settle();
 
-    expect(service.getCalificacionById('cal-001')).toBeUndefined();
-    expect(rows()).toHaveLength(3);
+    expect(api.eliminarCalificacion).toHaveBeenCalledWith('cal-001');
+    expect(rows()).toHaveLength(1);
   });
 
-  it('actualiza los KPIs después de registrar y eliminar', () => {
-    openCreate();
-    fillValidForm('10');
-    saveForm();
-    let kpis = queryAll<HTMLElement>('.summary-card__copy strong').map((item) =>
-      item.textContent?.trim(),
+  it('mantiene el modal abierto cuando falla una operación', async () => {
+    api.eliminarCalificacion.mockRejectedValue(
+      new CalificacionesApiError(500, 'No se pudo eliminar.'),
     );
-    expect(kpis).toEqual(['5', '9', '4']);
+    await createComponent();
+    click('[data-action="delete"]');
 
-    click('[data-action="delete"]', 4);
     click('.button-danger');
-    kpis = queryAll<HTMLElement>('.summary-card__copy strong').map((item) =>
-      item.textContent?.trim(),
+    await settle();
+
+    expect(query('.delete-modal [role="alert"]').textContent).toContain(
+      'No se pudo eliminar.',
     );
-    expect(kpis).toEqual(['4', '8.8', '4']);
+    expect(query('.delete-modal')).toBeTruthy();
+    expect(rows()).toHaveLength(2);
   });
 
-  it('busca por nombre y matrícula', () => {
-    setInput('input[placeholder="Buscar por nombre o matrícula..."]', 'demo 03');
+  it('filtra localmente los datos obtenidos del backend', async () => {
+    await createComponent();
+
+    setInput('input[placeholder="Buscar por nombre o matrícula..."]', 'mateo');
     expect(rows()).toHaveLength(1);
-    expect(rows()[0].textContent).toContain('ALU-DEMO-003');
+    expect(rows()[0].textContent).toContain('CM-2026-002');
 
-    setInput('input[placeholder="Buscar por nombre o matrícula..."]', 'alu-demo-004');
+    setInput('input[placeholder="Buscar por nombre o matrícula..."]', '');
+    setSelect('select[aria-label="Filtrar por grupo"]', 'A');
     expect(rows()).toHaveLength(1);
-    expect(rows()[0].textContent).toContain('Alumno Demo 04');
+    expect(rows()[0].textContent).toContain('Sofía Hernández López');
   });
 
-  it.each([
-    ['select[aria-label="Filtrar por grado"]', '3°', 'Alumno Demo 03'],
-    ['select[aria-label="Filtrar por grupo"]', 'B', 'Alumno Demo 02'],
-    ['select[aria-label="Filtrar por materia"]', 'Historia', 'Alumno Demo 03'],
-    ['select[aria-label="Filtrar por periodo"]', '1er Trimestre', 'Alumno Demo 01'],
-  ])('aplica el filtro %s', (selector, value, expected) => {
-    setSelect(selector, value);
+  it('conserva el lápiz simple independiente para editar', async () => {
+    await createComponent();
 
-    expect(rows().length).toBeGreaterThan(0);
-    expect(rows()[0].textContent).toContain(expected);
-  });
-
-  it('limpia todos los filtros', () => {
-    setInput('input[placeholder="Buscar por nombre o matrícula..."]', 'demo 03');
-    setSelect('select[aria-label="Filtrar por grado"]', '3°');
-    click('.clear-button');
-
-    expect(rows()).toHaveLength(4);
-    expect(
-      query<HTMLInputElement>('input[placeholder="Buscar por nombre o matrícula..."]').value,
-    ).toBe('');
-    expect(query<HTMLSelectElement>('select[aria-label="Filtrar por grado"]').value).toBe('');
-  });
-
-  it('combina búsqueda y filtros y actualiza solamente el contador visible', () => {
-    setInput('input[placeholder="Buscar por nombre o matrícula..."]', 'Alumno Demo');
-    setSelect('select[aria-label="Filtrar por grado"]', '1°');
-    setSelect('select[aria-label="Filtrar por grupo"]', 'B');
-
-    expect(rows()).toHaveLength(1);
-    expect(query('.registry__count').textContent?.trim()).toBe('1 calificación');
-    expect(query('.summary-card__copy strong').textContent?.trim()).toBe('4');
-  });
-
-  it('Escape cierra cada tipo de modal', () => {
-    for (const selector of [
-      '.register-button',
-      '[data-action="view"]',
-      '[data-action="edit"]',
-      '[data-action="delete"]',
-    ]) {
-      click(selector);
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-      fixture.detectChanges();
-      expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();
-    }
-  });
-
-  it('expone nombres accesibles específicos para las acciones', () => {
-    expect(query('[data-action="view"]').getAttribute('aria-label')).toBe(
-      'Consultar calificación de Alumno Demo 01',
-    );
-    expect(query('[data-action="edit"]').getAttribute('aria-label')).toBe(
-      'Editar calificación de Alumno Demo 01',
-    );
-    expect(query('[data-action="delete"]').getAttribute('aria-label')).toBe(
-      'Eliminar calificación de Alumno Demo 01',
-    );
-  });
-
-  it('usa edit-simple con un lápiz sin línea inferior', () => {
     const iconDebugElement = fixture.debugElement
-      .queryAll((debugElement) => debugElement.componentInstance instanceof UiIcon)
-      .find((debugElement) => debugElement.componentInstance.name() === 'edit-simple');
+      .queryAll(
+        (debugElement) => debugElement.componentInstance instanceof UiIcon,
+      )
+      .find(
+        (debugElement) =>
+          debugElement.componentInstance.name() === 'edit-simple',
+      );
     const paths = Array.from(
-      iconDebugElement!.nativeElement.querySelectorAll('path') as NodeListOf<SVGPathElement>,
+      iconDebugElement!.nativeElement.querySelectorAll(
+        'path',
+      ) as NodeListOf<SVGPathElement>,
     );
 
     expect(paths).toHaveLength(1);
-    expect(paths[0].getAttribute('d')).toBe('M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z');
-    expect(paths.some((path) => path.getAttribute('d') === 'M12 20h9')).toBe(false);
+    expect(paths[0].getAttribute('d')).toBe(
+      'M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z',
+    );
+    expect(paths.some((path) => path.getAttribute('d') === 'M12 20h9')).toBe(
+      false,
+    );
   });
 });

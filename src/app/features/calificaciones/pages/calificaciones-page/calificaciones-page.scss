@@ -1,11 +1,10 @@
 .workspace {
-  display: block;
-  width: 100%;
-  min-height: 100%;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: 100dvh;
   background: var(--color-canvas);
 }
 .workspace__content {
-  width: 100%;
   min-width: 0;
 }
 main {

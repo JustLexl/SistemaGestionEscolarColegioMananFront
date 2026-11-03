@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnInit,
   computed,
   inject,
   signal,
@@ -16,16 +17,23 @@ import {
   Validators,
 } from '@angular/forms';
 import { Header } from '../../../../layout/header/header';
+import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { UiIcon } from '../../../../shared/ui-icon/ui-icon';
-import { Calificacion, CalificacionDatos } from '../../models/calificacion.model';
 import {
-  CalificacionDuplicadaError,
-  CalificacionesMockService,
-} from '../../services/calificaciones-mock.service';
+  Calificacion,
+  CalificacionDatos,
+} from '../../models/calificacion.model';
+import {
+  AlumnoApi,
+  CalificacionesApiError,
+  CalificacionesApiService,
+} from '../../services/calificaciones-api.service';
 
 type ModalMode = 'create' | 'detail' | 'edit' | 'delete' | null;
 
-function scoreValidator(control: AbstractControl<string | number>): ValidationErrors | null {
+function scoreValidator(
+  control: AbstractControl<string | number>,
+): ValidationErrors | null {
   const value = String(control.value ?? '').trim();
   if (!value) return null;
   return /^(?:10(?:\.0)?|[0-9](?:\.\d)?)$/.test(value) ? null : { score: true };
@@ -33,24 +41,53 @@ function scoreValidator(control: AbstractControl<string | number>): ValidationEr
 
 @Component({
   selector: 'app-calificaciones-page',
-  imports: [Header, UiIcon, ReactiveFormsModule],
+  imports: [Header, Sidebar, UiIcon, ReactiveFormsModule],
   templateUrl: './calificaciones-page.html',
   styleUrl: './calificaciones-page.scss',
 })
-export class CalificacionesPage {
-  private readonly service = inject(CalificacionesMockService);
+export class CalificacionesPage implements OnInit {
+  private readonly service = inject(CalificacionesApiService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
-  private readonly registerButton = viewChild<ElementRef<HTMLButtonElement>>('registerButton');
-  private readonly firstModalControl = viewChild<ElementRef<HTMLElement>>('firstModalControl');
+  private readonly registerButton =
+    viewChild<ElementRef<HTMLButtonElement>>('registerButton');
+  private readonly firstModalControl =
+    viewChild<ElementRef<HTMLElement>>('firstModalControl');
+  private readonly collection = signal<readonly Calificacion[]>([]);
+  private readonly materiasCatalog = signal<readonly string[]>([]);
 
-  protected readonly grados = ['1°', '2°', '3°', '4°', '5°', '6°'];
-  protected readonly grupos = ['A', 'B'];
-  protected readonly materias = ['Matemáticas', 'Lengua', 'Historia', 'Ciencias'];
-  protected readonly periodos = ['1er Trimestre', '2° Trimestre', '3er Trimestre'];
-  protected readonly calificaciones = this.service.calificaciones;
-  protected readonly total = this.service.total;
-  protected readonly promedioGeneral = this.service.promedioGeneral;
-  protected readonly materiasEvaluadas = this.service.materiasEvaluadas;
+  protected readonly alumnos = signal<readonly AlumnoApi[]>([]);
+  protected readonly periodos = [
+    '1er Trimestre',
+    '2° Trimestre',
+    '3er Trimestre',
+  ];
+  protected readonly calificaciones = this.collection.asReadonly();
+  protected readonly grados = computed(() =>
+    this.unique([
+      ...this.collection().map((item) => item.grado),
+      ...this.alumnos().map((item) => this.shortGrade(item.grado)),
+    ]),
+  );
+  protected readonly grupos = computed(() =>
+    this.unique([
+      ...this.collection().map((item) => item.grupo),
+      ...this.alumnos().map((item) => this.shortGroup(item.grupo)),
+    ]),
+  );
+  protected readonly materias = computed(() => this.materiasCatalog());
+  protected readonly total = computed(() => this.collection().length);
+  protected readonly promedioGeneral = computed(() => {
+    const items = this.collection();
+    if (items.length === 0) return 0;
+    return Number(
+      (
+        items.reduce((sum, item) => sum + item.calificacion, 0) / items.length
+      ).toFixed(1),
+    );
+  });
+  protected readonly materiasEvaluadas = computed(
+    () => new Set(this.collection().map((item) => item.materia)).size,
+  );
   protected readonly search = signal('');
   protected readonly gradoFilter = signal('');
   protected readonly grupoFilter = signal('');
@@ -60,10 +97,14 @@ export class CalificacionesPage {
   protected readonly selectedId = signal<string | null>(null);
   protected readonly submitted = signal(false);
   protected readonly duplicateError = signal(false);
+  protected readonly loading = signal(true);
+  protected readonly loadError = signal('');
+  protected readonly saving = signal(false);
+  protected readonly operationError = signal('');
 
   protected readonly selected = computed(() => {
     const id = this.selectedId();
-    return id ? this.service.getCalificacionById(id) : undefined;
+    return id ? this.collection().find((item) => item.id === id) : undefined;
   });
 
   protected readonly filtered = computed(() => {
@@ -84,17 +125,61 @@ export class CalificacionesPage {
   });
 
   protected readonly form = new FormGroup({
-    alumno: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    matricula: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    grado: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    grupo: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    materia: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    periodo: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    alumno: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    matricula: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    grado: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    grupo: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    materia: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    periodo: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
     calificacion: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, scoreValidator],
     }),
   });
+
+  ngOnInit(): void {
+    void this.loadData();
+  }
+
+  protected async loadData(): Promise<void> {
+    this.loading.set(true);
+    this.loadError.set('');
+
+    try {
+      const [calificaciones, alumnos, materias] = await Promise.all([
+        this.service.obtenerCalificaciones(),
+        this.service.obtenerAlumnos(),
+        this.service.obtenerMaterias(),
+      ]);
+      this.collection.set(calificaciones);
+      this.alumnos.set(alumnos);
+      this.materiasCatalog.set(
+        this.unique(materias.map((item) => item.nombre)),
+      );
+    } catch (error) {
+      this.loadError.set(this.errorMessage(error));
+    } finally {
+      this.loading.set(false);
+    }
+  }
 
   protected openCreate(): void {
     this.selectedId.set(null);
@@ -102,14 +187,25 @@ export class CalificacionesPage {
     this.openModal('create');
   }
 
-  protected openDetail(id: string): void {
-    if (!this.service.getCalificacionById(id)) return;
+  protected async openDetail(id: string): Promise<void> {
+    if (!this.collection().some((item) => item.id === id)) return;
     this.selectedId.set(id);
     this.openModal('detail');
+
+    try {
+      const detail = await this.service.obtenerCalificacion(id);
+      this.collection.update((items) =>
+        items.map((item) => (item.id === detail.id ? detail : item)),
+      );
+    } catch (error) {
+      this.operationError.set(this.errorMessage(error));
+    }
   }
 
   protected openEdit(id: string): void {
-    const item = this.service.getCalificacionById(id);
+    const item = this.collection().find(
+      (calificacion) => calificacion.id === id,
+    );
     if (!item) return;
     this.selectedId.set(id);
     this.form.reset({
@@ -125,14 +221,26 @@ export class CalificacionesPage {
   }
 
   protected openDelete(id: string): void {
-    if (!this.service.getCalificacionById(id)) return;
+    if (!this.collection().some((item) => item.id === id)) return;
     this.selectedId.set(id);
     this.openModal('delete');
   }
 
-  protected save(): void {
+  protected selectAlumno(matricula: string): void {
+    const alumno = this.alumnos().find((item) => item.matricula === matricula);
+    this.form.patchValue({
+      alumno: alumno?.nombre ?? '',
+      matricula: alumno?.matricula ?? '',
+      grado: alumno ? this.shortGrade(alumno.grado) : '',
+      grupo: alumno ? this.shortGroup(alumno.grupo) : '',
+    });
+    this.clearDuplicateError();
+  }
+
+  protected async save(): Promise<void> {
     this.submitted.set(true);
     this.duplicateError.set(false);
+    this.operationError.set('');
     this.trimTextControls();
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -150,27 +258,47 @@ export class CalificacionesPage {
       calificacion: Number(values.calificacion),
     };
 
+    this.saving.set(true);
     try {
       if (this.modalMode() === 'create') {
-        this.service.registrarCalificacion(datos);
+        const created = await this.service.registrarCalificacion(datos);
+        this.collection.update((items) => [...items, created]);
       } else {
         const id = this.selectedId();
-        if (id) this.service.actualizarCalificacion(id, datos);
+        if (id) {
+          const updated = await this.service.actualizarCalificacion(id, datos);
+          this.collection.update((items) =>
+            items.map((item) => (item.id === updated.id ? updated : item)),
+          );
+        }
       }
       this.closeModal();
     } catch (error) {
-      if (error instanceof CalificacionDuplicadaError) {
+      if (error instanceof CalificacionesApiError && error.status === 409) {
         this.duplicateError.set(true);
         return;
       }
-      throw error;
+      this.operationError.set(this.errorMessage(error));
+    } finally {
+      this.saving.set(false);
     }
   }
 
-  protected confirmDelete(): void {
+  protected async confirmDelete(): Promise<void> {
     const id = this.selectedId();
-    if (id) this.service.eliminarCalificacion(id);
-    this.closeModal();
+    if (!id) return;
+
+    this.operationError.set('');
+    this.saving.set(true);
+    try {
+      await this.service.eliminarCalificacion(id);
+      this.collection.update((items) => items.filter((item) => item.id !== id));
+      this.closeModal();
+    } catch (error) {
+      this.operationError.set(this.errorMessage(error));
+    } finally {
+      this.saving.set(false);
+    }
   }
 
   protected closeModal(): void {
@@ -180,14 +308,18 @@ export class CalificacionesPage {
     this.selectedId.set(null);
     this.submitted.set(false);
     this.duplicateError.set(false);
+    this.operationError.set('');
     queueMicrotask(() => {
       if (mode === 'create') {
         this.registerButton()?.nativeElement.focus();
         return;
       }
-      const action = mode === 'detail' ? 'view' : mode === 'edit' ? 'edit' : 'delete';
+      const action =
+        mode === 'detail' ? 'view' : mode === 'edit' ? 'edit' : 'delete';
       this.host.nativeElement
-        .querySelector<HTMLButtonElement>(`[data-action="${action}"][data-id="${id}"]`)
+        .querySelector<HTMLButtonElement>(
+          `[data-action="${action}"][data-id="${id}"]`,
+        )
         ?.focus();
     });
   }
@@ -216,7 +348,9 @@ export class CalificacionesPage {
     return Number.isInteger(value) ? String(value) : value.toFixed(1);
   }
 
-  protected getCalificacionTone(value: number): 'score--high' | 'score--medium' | 'score--low' {
+  protected getCalificacionTone(
+    value: number,
+  ): 'score--high' | 'score--medium' | 'score--low' {
     if (value >= 8) return 'score--high';
     if (value >= 6.5) return 'score--medium';
     return 'score--low';
@@ -229,6 +363,7 @@ export class CalificacionesPage {
 
   protected clearDuplicateError(): void {
     this.duplicateError.set(false);
+    this.operationError.set('');
   }
 
   @HostListener('document:keydown.escape')
@@ -239,6 +374,7 @@ export class CalificacionesPage {
   private openModal(mode: Exclude<ModalMode, null>): void {
     this.submitted.set(false);
     this.duplicateError.set(false);
+    this.operationError.set('');
     this.modalMode.set(mode);
     setTimeout(() => this.firstModalControl()?.nativeElement.focus());
   }
@@ -256,5 +392,23 @@ export class CalificacionesPage {
       const control = this.form.controls[name];
       control.setValue(control.value.trim());
     }
+  }
+
+  private shortGrade(value: string): string {
+    return value.replace(/\s+Primaria$/i, '').trim();
+  }
+
+  private shortGroup(value: string): string {
+    return value.replace(/^Grupo\s+/i, '').trim();
+  }
+
+  private unique(values: readonly string[]): readonly string[] {
+    return [...new Set(values.filter(Boolean))];
+  }
+
+  private errorMessage(error: unknown): string {
+    return error instanceof Error
+      ? error.message
+      : 'Ocurrió un error inesperado.';
   }
 }
