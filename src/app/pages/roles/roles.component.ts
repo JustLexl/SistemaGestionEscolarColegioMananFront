@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,6 +25,7 @@ export class RolesComponent implements OnInit {
   constructor(
     private router: Router,
     private rolesApi: RolesApiService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   // Listado de roles / usuarios del sistema con roles definidos
@@ -76,6 +77,7 @@ export class RolesComponent implements OnInit {
   private async cargarRoles(): Promise<void> {
     try {
       this.roles = [...await this.rolesApi.obtenerRoles()];
+      this.cdr.markForCheck();
     } catch (error) {
       this.mostrarErrorApi(error);
     }
@@ -173,6 +175,7 @@ export class RolesComponent implements OnInit {
   closeRolModal(): void {
     this.isRolModalOpen = false;
     this.editingRolId = null;
+    this.cdr.markForCheck();
   }
 
   onPuestoChange(puesto: RolTipo): void {
@@ -232,6 +235,7 @@ export class RolesComponent implements OnInit {
   closeDeleteModal(): void {
     this.isDeleteModalOpen = false;
     this.selectedRolForDelete = null;
+    this.cdr.markForCheck();
   }
 
   async confirmarEliminacion(): Promise<void> {
@@ -315,7 +319,11 @@ export class RolesComponent implements OnInit {
     this.toastMessage = message;
     this.toastType = type;
     this.toastVisible = true;
-    this.toastTimeout = setTimeout(() => { this.toastVisible = false; }, 3500);
+    this.cdr.markForCheck();
+    this.toastTimeout = setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.markForCheck();
+    }, 3500);
   }
 
   private mostrarErrorApi(error: unknown): void {
