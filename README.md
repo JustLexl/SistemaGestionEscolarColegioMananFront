@@ -1,59 +1,35 @@
-# Frontend
+# Colegio Manantial — Frontend de inicio de sesión
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.25.
+Proyecto Angular con **solo la funcionalidad de inicio de sesión**. Preparado para integrar desde la rama `feature/inicio-de-sesion` sin reemplazar los módulos académicos del equipo.
 
-## Development server
+## Ejecutar
 
-To start a local development server, run:
+Requiere Node.js compatible con Angular 21. Desde esta carpeta:
 
-```bash
-ng serve
+```powershell
+npm ci
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abrir `http://localhost:4200/login`.
 
-## Code scaffolding
+El backend de autenticación debe estar ejecutándose independientemente en `http://localhost:3000`. No se incluye ni se modifica aquí.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```powershell
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Lo que incluye
 
-```bash
-ng generate --help
-```
+- Login con validación de correo y contraseña usando el servicio existente `POST /api/auth/login`.
+- Mostrar/ocultar contraseña, estados de carga, mensajes de error y recuperación por `POST /api/auth/reset-password`.
+- Componente independiente `src/app/pages/login/` y servicio `src/app/services/auth.service.ts`.
+- Logo local en `public/images/`.
 
-## Building
+## Alcance
 
-To build the project run:
+Esta rama **no incluye** Grados y Grupos ni otros módulos académicos. El login conserva la navegación a `/grados-y-grupos` cuando esa ruta exista en la aplicación integrada; de lo contrario muestra un mensaje después de validar correctamente.
 
-```bash
-ng build
-```
+**Para Codex / Scrum Master:** leer `INTEGRACION_CODEX.md` antes de integrar. Deben conservarse las rutas y estructura del frontend del equipo, en lugar de reemplazarse por esta aplicación aislada.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+No subir `.env`, claves, credenciales, `node_modules`, `.git`, `.angular` o `dist`.
