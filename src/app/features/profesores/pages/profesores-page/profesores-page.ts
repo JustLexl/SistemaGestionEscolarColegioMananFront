@@ -1,4 +1,4 @@
-import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { UiIcon } from '../../../../shared/ui-icon/ui-icon';
 import { ProfesorDeactivateModal } from '../../components/profesor-deactivate-modal/profesor-deactivate-modal';
 import { ProfesorDetailModal } from '../../components/profesor-detail-modal/profesor-detail-modal';
@@ -25,7 +25,7 @@ import { ProfesoresMockService } from '../../services/profesores-mock.service';
   templateUrl: './profesores-page.html',
   styleUrl: './profesores-page.scss',
 })
-export class ProfesoresPage {
+export class ProfesoresPage implements OnInit {
   private readonly profesoresService = inject(ProfesoresMockService);
   private readonly registerButton =
     viewChild.required<ElementRef<HTMLButtonElement>>('registerButton');
@@ -48,6 +48,10 @@ export class ProfesoresPage {
     const id = this.profesorBajaId();
     return id === null ? undefined : this.profesoresService.getProfesorById(id);
   });
+
+  ngOnInit(): void {
+    void this.profesoresService.cargarDesdeApi();
+  }
 
   protected cerrarRegistro(): void {
     this.registroAbierto.set(false);

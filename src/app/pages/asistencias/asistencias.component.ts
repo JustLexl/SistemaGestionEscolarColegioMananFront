@@ -56,8 +56,8 @@ export class AsistenciasComponent implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
-  private apiAlumnos = 'http://localhost:3000/api/alumnos';
-  private apiAsistencias = 'http://localhost:3000/api/asistencias';
+  private apiAlumnos = 'http://localhost:3001/api/alumnos';
+  private apiAsistencias = 'http://localhost:3001/api/asistencias';
 
   alumnos: AlumnoAsistencia[] = [];
 

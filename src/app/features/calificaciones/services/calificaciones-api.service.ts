@@ -31,7 +31,7 @@ export class CalificacionesApiError extends Error {
   }
 }
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3001/api';
 
 @Injectable({ providedIn: 'root' })
 export class CalificacionesApiService {

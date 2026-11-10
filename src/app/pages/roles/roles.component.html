@@ -260,9 +260,15 @@
             <!-- Rol -->
             <div class="flex flex-col gap-1">
               <label class="font-label-md text-label-md text-on-surface font-medium">Rol *</label>
-              <select [(ngModel)]="rolForm.puesto" name="puesto" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" required>
+              <select [(ngModel)]="rolForm.puesto" (ngModelChange)="onPuestoChange($event)" name="puesto" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" required>
                 <option *ngFor="let rolOption of puestoOptions" [value]="rolOption">{{ rolOption }}</option>
               </select>
+            </div>
+            <!-- Cédula académica: solo aplica al rol Profesores -->
+            <div *ngIf="rolForm.puesto === 'Profesores'" class="flex flex-col gap-1">
+              <label for="rol-cedula" class="font-label-md text-label-md text-on-surface font-medium">Cédula *</label>
+              <input id="rol-cedula" [(ngModel)]="rolForm.cedula" name="cedula" class="w-full px-3 py-2 bg-surface text-on-surface font-body-md text-body-md rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Ej. DOC-2026-001" required type="text"/>
+              <span class="font-body-sm text-body-sm text-on-surface-variant">Se usará para crear y relacionar el perfil académico del profesor.</span>
             </div>
             <!-- Correo -->
             <div class="flex flex-col gap-1">

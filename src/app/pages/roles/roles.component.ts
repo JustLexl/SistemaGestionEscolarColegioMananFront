@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RolesApiError, RolesApiService } from './roles-api.service';
 
 export type RolTipo = 'Administrativo' | 'Directivos' | 'Profesores';
 
@@ -21,23 +22,13 @@ export interface Rol {
   styleUrl: './roles.component.css'
 })
 export class RolesComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private rolesApi: RolesApiService,
+  ) {}
 
   // Listado de roles / usuarios del sistema con roles definidos
-  roles: Rol[] = [
-    { id: 1, nombre: 'Prof. Javier Méndez',        puesto: 'Directivos',     correo: 'javier.mendez@manantial.edu.mx',    estado: 'Activo'   },
-    { id: 2, nombre: 'Profra. Carmen Salinas',      puesto: 'Directivos',     correo: 'carmen.salinas@manantial.edu.mx',   estado: 'Activo'   },
-    { id: 3, nombre: 'Prof. Roberto Carlos Valdés', puesto: 'Profesores',     correo: 'roberto.valdes@manantial.edu.mx',   estado: 'Activo'   },
-    { id: 4, nombre: 'Profra. Elena Garro',         puesto: 'Profesores',     correo: 'elena.garro@manantial.edu.mx',      estado: 'Activo'   },
-    { id: 5, nombre: 'Profra. Gabriela Mistral',    puesto: 'Profesores',     correo: 'gabriela.mistral@manantial.edu.mx', estado: 'Activo'   },
-    { id: 6, nombre: 'Prof. Alfonso Reyes',         puesto: 'Profesores',     correo: 'alfonso.reyes@manantial.edu.mx',    estado: 'Activo'   },
-    { id: 7, nombre: 'Profra. Sofía Ramírez',       puesto: 'Profesores',     correo: 'sofia.ramirez@manantial.edu.mx',    estado: 'Inactivo' },
-    { id: 8, nombre: 'Prof. Miguel Ángel Torres',   puesto: 'Profesores',     correo: 'miguel.torres@manantial.edu.mx',    estado: 'Activo'   },
-    { id: 9, nombre: 'Lic. Patricia Vega',          puesto: 'Administrativo', correo: 'patricia.vega@manantial.edu.mx',    estado: 'Activo'   },
-    { id: 10, nombre: 'Lic. Jorge Hernández',       puesto: 'Administrativo', correo: 'jorge.hernandez@manantial.edu.mx',  estado: 'Inactivo' },
-    { id: 11, nombre: 'Psic. Ana Lucía Morales',    puesto: 'Administrativo', correo: 'ana.morales@manantial.edu.mx',      estado: 'Activo'   },
-    { id: 12, nombre: 'Ing. Carlos Fuentes',        puesto: 'Administrativo', correo: 'carlos.fuentes@manantial.edu.mx',   estado: 'Activo'   },
-  ];
+  roles: Rol[] = [];
 
   // Filtros
   searchTerm: string = '';
@@ -64,6 +55,7 @@ export class RolesComponent implements OnInit {
     nombre: '',
     puesto: 'Profesores' as RolTipo,
     correo: '',
+    cedula: '',
     estado: 'Activo' as 'Activo' | 'Inactivo'
   };
 
@@ -77,7 +69,17 @@ export class RolesComponent implements OnInit {
   toastType: 'success' | 'info' | 'warning' | 'error' = 'success';
   private toastTimeout: any;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    void this.cargarRoles();
+  }
+
+  private async cargarRoles(): Promise<void> {
+    try {
+      this.roles = [...await this.rolesApi.obtenerRoles()];
+    } catch (error) {
+      this.mostrarErrorApi(error);
+    }
+  }
 
   // ── Getters de filtrado y paginación ──────────────────────────────────────
 
@@ -148,10 +150,22 @@ export class RolesComponent implements OnInit {
   openRolModal(rol?: Rol): void {
     if (rol) {
       this.editingRolId = rol.id;
-      this.rolForm = { nombre: rol.nombre, puesto: rol.puesto, correo: rol.correo, estado: rol.estado };
+      this.rolForm = {
+        nombre: rol.nombre,
+        puesto: rol.puesto,
+        correo: rol.correo,
+        cedula: '',
+        estado: rol.estado,
+      };
     } else {
       this.editingRolId = null;
-      this.rolForm = { nombre: '', puesto: 'Profesores', correo: '', estado: 'Activo' };
+      this.rolForm = {
+        nombre: '',
+        puesto: 'Profesores',
+        correo: '',
+        cedula: '',
+        estado: 'Activo',
+      };
     }
     this.isRolModalOpen = true;
   }
@@ -161,24 +175,51 @@ export class RolesComponent implements OnInit {
     this.editingRolId = null;
   }
 
-  saveRol(): void {
+  onPuestoChange(puesto: RolTipo): void {
+    this.rolForm.puesto = puesto;
+    if (puesto !== 'Profesores') {
+      this.rolForm.cedula = '';
+    }
+  }
+
+  async saveRol(): Promise<void> {
     if (!this.rolForm.nombre.trim() || !this.rolForm.puesto.trim() || !this.rolForm.correo.trim()) {
       this.showToast('Complete todos los campos obligatorios', 'warning');
       return;
     }
 
-    if (this.editingRolId !== null) {
-      const idx = this.roles.findIndex(r => r.id === this.editingRolId);
-      if (idx !== -1) {
-        this.roles[idx] = { ...this.roles[idx], ...this.rolForm };
-        this.showToast(`Usuario "${this.rolForm.nombre}" actualizado exitosamente`, 'success');
-      }
-    } else {
-      const nextId = Math.max(...this.roles.map(r => r.id), 0) + 1;
-      this.roles.unshift({ id: nextId, ...this.rolForm });
-      this.showToast(`Usuario "${this.rolForm.nombre}" registrado exitosamente`, 'success');
+    if (this.rolForm.puesto === 'Profesores' && !this.rolForm.cedula.trim()) {
+      this.showToast('La cédula es obligatoria para el rol Profesores', 'warning');
+      return;
     }
-    this.closeRolModal();
+
+    const datos = {
+      nombre: this.rolForm.nombre.trim(),
+      puesto: this.rolForm.puesto,
+      correo: this.rolForm.correo.trim(),
+      estado: this.rolForm.estado,
+      ...(this.rolForm.puesto === 'Profesores'
+        ? { cedula: this.rolForm.cedula.trim() }
+        : {}),
+    };
+
+    try {
+      if (this.editingRolId !== null) {
+        const resultado = await this.rolesApi.actualizarRol(this.editingRolId, datos);
+        const idx = this.roles.findIndex(r => r.id === this.editingRolId);
+        if (idx !== -1) {
+          this.roles[idx] = resultado.usuario;
+        }
+        this.showToast(`Usuario "${resultado.usuario.nombre}" actualizado exitosamente`, 'success');
+      } else {
+        const resultado = await this.rolesApi.registrarRol(datos);
+        this.roles.unshift(resultado.usuario);
+        this.showToast(`Usuario "${resultado.usuario.nombre}" registrado exitosamente`, 'success');
+      }
+      this.closeRolModal();
+    } catch (error) {
+      this.mostrarErrorApi(error);
+    }
   }
 
   // ── Modal Eliminar ─────────────────────────────────────────────────────────
@@ -193,12 +234,18 @@ export class RolesComponent implements OnInit {
     this.selectedRolForDelete = null;
   }
 
-  confirmarEliminacion(): void {
+  async confirmarEliminacion(): Promise<void> {
     if (this.selectedRolForDelete) {
-      this.roles = this.roles.filter(r => r.id !== this.selectedRolForDelete!.id);
-      this.showToast(`Usuario "${this.selectedRolForDelete.nombre}" eliminado del sistema`, 'warning');
+      const usuario = this.selectedRolForDelete;
+      try {
+        await this.rolesApi.eliminarRol(usuario.id);
+        this.roles = this.roles.filter(r => r.id !== usuario.id);
+        this.showToast(`Usuario "${usuario.nombre}" eliminado del sistema`, 'warning');
+        this.closeDeleteModal();
+      } catch (error) {
+        this.mostrarErrorApi(error);
+      }
     }
-    this.closeDeleteModal();
   }
 
   // ── Modal Detalle ──────────────────────────────────────────────────────────
@@ -215,9 +262,20 @@ export class RolesComponent implements OnInit {
 
   // ── Toggle Estado rápido ───────────────────────────────────────────────────
 
-  toggleEstado(rol: Rol): void {
-    rol.estado = rol.estado === 'Activo' ? 'Inactivo' : 'Activo';
-    this.showToast(`Estado de "${rol.nombre}" cambiado a ${rol.estado}`, 'info');
+  async toggleEstado(rol: Rol): Promise<void> {
+    try {
+      const resultado = await this.rolesApi.cambiarEstado(rol.id);
+      const idx = this.roles.findIndex(item => item.id === rol.id);
+      if (idx !== -1) {
+        this.roles[idx] = resultado.usuario;
+      }
+      this.showToast(
+        `Estado de "${resultado.usuario.nombre}" cambiado a ${resultado.usuario.estado}`,
+        'info',
+      );
+    } catch (error) {
+      this.mostrarErrorApi(error);
+    }
   }
 
   // ── Iniciales del nombre ───────────────────────────────────────────────────
@@ -258,5 +316,12 @@ export class RolesComponent implements OnInit {
     this.toastType = type;
     this.toastVisible = true;
     this.toastTimeout = setTimeout(() => { this.toastVisible = false; }, 3500);
+  }
+
+  private mostrarErrorApi(error: unknown): void {
+    const message = error instanceof RolesApiError
+      ? error.message
+      : 'Ocurrió un error inesperado al procesar el usuario.';
+    this.showToast(message, 'error');
   }
 }

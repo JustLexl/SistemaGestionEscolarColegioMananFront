@@ -39,6 +39,41 @@ export class ProfesoresMockService {
 
   readonly profesores = this._profesores.asReadonly();
 
+  async cargarDesdeApi(): Promise<boolean> {
+    try {
+      const response = await fetch('http://localhost:3001/api/profesores');
+      const payload = await response.json() as {
+        success: boolean;
+        data?: readonly {
+          id: number;
+          usuarioId?: number | null;
+          nombre: string;
+          cedula: string;
+          materias: readonly string[];
+          grupos: readonly string[];
+          estado: Profesor['estado'];
+        }[];
+      };
+
+      if (!response.ok || payload.success === false || !Array.isArray(payload.data)) {
+        return false;
+      }
+
+      this._profesores.set(payload.data.map((profesor) => ({
+        id: profesor.id,
+        usuarioId: profesor.usuarioId ?? null,
+        nombre: profesor.nombre,
+        cedula: profesor.cedula,
+        materiasAsignadas: profesor.materias,
+        gruposAsignados: profesor.grupos,
+        estado: profesor.estado,
+      })));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   getProfesorById(id: Profesor['id']): Profesor | undefined {
     return this._profesores().find((profesor) => profesor.id === id);
   }

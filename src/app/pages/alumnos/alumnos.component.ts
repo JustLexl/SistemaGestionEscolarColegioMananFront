@@ -32,7 +32,7 @@ export class AlumnosComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private apiUrl = 'http://localhost:3000/api/alumnos';
+  private apiUrl = 'http://localhost:3001/api/alumnos';
 
   alumnos: Alumno[] = [];
 

@@ -31,7 +31,7 @@ export class AuthApiError extends Error {
   }
 }
 
-const API_URL = 'http://localhost:3000/api/auth';
+const API_URL = 'http://localhost:3001/api/auth';
 const TOKEN_KEY = 'colegio_demo_auth_token';
 const USER_KEY = 'colegio_demo_auth_user';
 
