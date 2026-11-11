@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { API_BASE_URL } from '../../../core/api/api-base-url';
 import { Profesor } from '../models/profesor.model';
 
 export class CedulaProfesorDuplicadaError extends Error {
@@ -41,7 +42,7 @@ export class ProfesoresMockService {
 
   async cargarDesdeApi(): Promise<boolean> {
     try {
-      const response = await fetch('http://localhost:3001/api/profesores');
+      const response = await fetch(`${API_BASE_URL}/profesores`);
       const payload = await response.json() as {
         success: boolean;
         data?: readonly {

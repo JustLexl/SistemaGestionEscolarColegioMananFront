@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL } from '../../core/api/api-base-url';
 
 interface Alumno {
   id: number;
@@ -32,7 +33,7 @@ export class AlumnosComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private apiUrl = 'http://localhost:3001/api/alumnos';
+  private apiUrl = `${API_BASE_URL}/alumnos`;
 
   alumnos: Alumno[] = [];
 

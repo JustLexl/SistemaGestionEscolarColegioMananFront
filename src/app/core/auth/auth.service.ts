@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { API_BASE_URL } from '../api/api-base-url';
 
 export interface AuthUsuario {
   readonly id: number | string;
@@ -31,7 +32,7 @@ export class AuthApiError extends Error {
   }
 }
 
-const API_URL = 'http://localhost:3001/api/auth';
+const API_URL = `${API_BASE_URL}/auth`;
 const TOKEN_KEY = 'colegio_demo_auth_token';
 const USER_KEY = 'colegio_demo_auth_user';
 

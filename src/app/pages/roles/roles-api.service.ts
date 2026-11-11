@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE_URL } from '../../core/api/api-base-url';
 import type { Rol } from './roles.component';
 
 interface ApiResponse<T> {
@@ -32,7 +33,7 @@ export class RolesApiError extends Error {
   }
 }
 
-const API_URL = 'http://localhost:3001/api/roles';
+const API_URL = `${API_BASE_URL}/roles`;
 
 @Injectable({ providedIn: 'root' })
 export class RolesApiService {

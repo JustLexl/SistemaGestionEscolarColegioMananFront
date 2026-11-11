@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { API_BASE_URL } from '../../core/api/api-base-url';
 
 type EstadoAsistencia = 'Presente' | 'Ausente' | 'Justificada';
 type TipoNotificacion = 'exito' | 'error';
@@ -56,8 +57,8 @@ export class AsistenciasComponent implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
-  private apiAlumnos = 'http://localhost:3001/api/alumnos';
-  private apiAsistencias = 'http://localhost:3001/api/asistencias';
+  private apiAlumnos = `${API_BASE_URL}/alumnos`;
+  private apiAsistencias = `${API_BASE_URL}/asistencias`;
 
   alumnos: AlumnoAsistencia[] = [];
 

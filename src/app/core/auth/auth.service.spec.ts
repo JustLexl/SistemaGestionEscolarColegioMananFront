@@ -45,7 +45,7 @@ describe('AuthService', () => {
     ).resolves.toEqual(usuario);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3001/api/auth/login',
+      'http://localhost:3002/api/auth/login',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

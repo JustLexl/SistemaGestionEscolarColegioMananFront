@@ -172,4 +172,40 @@ describe('ProfesoresMockService', () => {
     expect(service.darDeBajaProfesor(3)).toBe(inactiveProfesor);
     expect(service.profesores()).toBe(profesoresBeforeDeactivation);
   });
+
+  it('should load real grupos and materias derived by the backend', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        success: true,
+        data: [{
+          id: 3,
+          usuarioId: 13,
+          nombre: 'Prof. Roberto Carlos Valdés',
+          cedula: 'DOC-2021-095',
+          grupos: ['3° A', '6° Z'],
+          materias: ['Matemáticas III', 'Lengua Materna III'],
+          estado: 'Activo',
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(service.cargarDesdeApi()).resolves.toBe(true);
+    expect(service.getProfesorById(3)).toMatchObject({
+      gruposAsignados: ['3° A', '6° Z'],
+      materiasAsignadas: ['Matemáticas III', 'Lengua Materna III'],
+    });
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/profesores');
+    vi.unstubAllGlobals();
+  });
+
+  it('should preserve current data when the backend is unavailable', async () => {
+    const profesoresIniciales = service.profesores();
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+
+    await expect(service.cargarDesdeApi()).resolves.toBe(false);
+    expect(service.profesores()).toBe(profesoresIniciales);
+    vi.unstubAllGlobals();
+  });
 });

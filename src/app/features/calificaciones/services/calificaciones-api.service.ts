@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE_URL } from '../../../core/api/api-base-url';
 import { Calificacion, CalificacionDatos } from '../models/calificacion.model';
 
 export interface AlumnoApi {
@@ -30,8 +31,6 @@ export class CalificacionesApiError extends Error {
     this.name = 'CalificacionesApiError';
   }
 }
-
-const API_BASE_URL = 'http://localhost:3001/api';
 
 @Injectable({ providedIn: 'root' })
 export class CalificacionesApiService {

@@ -56,7 +56,7 @@ describe('CalificacionesApiService', () => {
       calificacion,
     ]);
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3001/api/calificaciones',
+      'http://localhost:3002/api/calificaciones',
       {
         headers: undefined,
       },
@@ -81,8 +81,8 @@ describe('CalificacionesApiService', () => {
     await expect(service.obtenerAlumnos()).resolves.toEqual(alumnos);
     await expect(service.obtenerMaterias()).resolves.toEqual(materias);
     expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
-      'http://localhost:3001/api/alumnos',
-      'http://localhost:3001/api/materias',
+      'http://localhost:3002/api/alumnos',
+      'http://localhost:3002/api/materias',
     ]);
   });
 
@@ -95,7 +95,7 @@ describe('CalificacionesApiService', () => {
       calificacion,
     );
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3001/api/calificaciones',
+      'http://localhost:3002/api/calificaciones',
       {
         method: 'POST',
         body: JSON.stringify(datos),
@@ -112,7 +112,7 @@ describe('CalificacionesApiService', () => {
     await service.actualizarCalificacion('cal/001', datos);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3001/api/calificaciones/cal%2F001',
+      'http://localhost:3002/api/calificaciones/cal%2F001',
       {
         method: 'PUT',
         body: JSON.stringify(datos),
@@ -130,7 +130,7 @@ describe('CalificacionesApiService', () => {
       service.eliminarCalificacion('cal-001'),
     ).resolves.toBeUndefined();
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3001/api/calificaciones/cal-001',
+      'http://localhost:3002/api/calificaciones/cal-001',
       {
         method: 'DELETE',
         headers: undefined,
