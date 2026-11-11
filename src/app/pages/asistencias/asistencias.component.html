@@ -1,11 +1,11 @@
-    <div class="flex flex-col w-full pb-16">
+    <div class="flex flex-col w-full pb-16 cm-page">
       <!-- CONTEXTO -->
       <div
-        class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md py-space-xs text-on-surface-variant"
+        class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md py-space-xs text-on-surface-variant cm-context"
       >
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 cm-context__identity">
           <span
-            class="inline-flex items-center gap-1 font-semibold text-primary bg-primary-fixed/20 px-2 py-0.5 rounded-full"
+            class="inline-flex items-center gap-1 font-semibold text-primary bg-primary-fixed/20 px-2 py-0.5 rounded-full cm-context__brand"
           >
             <span class="material-symbols-outlined text-[14px]"> school </span>
 
@@ -19,21 +19,21 @@
           </span>
         </div>
 
-        <span class="inline-flex items-center gap-1 text-primary font-semibold">
-          <span class="w-2 h-2 rounded-full bg-primary"></span>
+        <span class="inline-flex items-center gap-1 text-primary font-semibold cm-active-period">
+          <span class="w-2 h-2 rounded-full bg-primary cm-active-period__dot"></span>
 
           Período Activo: 1° Trimestre 2026–2027
         </span>
       </div>
 
       <!-- ENCABEZADO -->
-      <section class="flex flex-col gap-space-lg mb-space-lg">
+      <section>
         <div
-          class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md"
+          class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md cm-heading"
         >
-          <div>
+          <div class="cm-heading__copy">
             <span
-              class="font-label-md uppercase tracking-wider text-primary font-semibold"
+              class="font-label-md uppercase tracking-wider text-primary font-semibold cm-eyebrow"
             >
               CONTROL ESCOLAR
             </span>
@@ -52,7 +52,7 @@
           <button
             type="button"
             (click)="abrirRegistro()"
-            class="inline-flex items-center gap-2 px-space-md py-2.5 bg-primary text-on-primary font-label-lg rounded-xl shadow-sm hover:bg-primary-container transition-all cursor-pointer"
+            class="inline-flex items-center gap-2 px-space-md py-2.5 bg-primary text-on-primary font-label-lg rounded-xl shadow-sm hover:bg-primary-container transition-all cursor-pointer cm-primary-action"
           >
             <span class="material-symbols-outlined text-[20px]">
               person_add
@@ -65,32 +65,38 @@
       <!-- TARJETAS -->
 
       <!-- TARJETAS -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
-          <p class="text-on-surface-variant">Total de alumnos</p>
-          <h2 class="text-3xl font-bold text-primary">{{ alumnosFiltrados.length }}</h2>
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 cm-kpi-grid">
+        <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm cm-kpi-card">
+          <div class="cm-kpi-card__copy"><p class="text-on-surface-variant cm-kpi-card__label">Total de alumnos</p>
+          <h2 class="text-3xl font-bold text-primary cm-kpi-card__value">{{ alumnosFiltrados.length }}</h2>
+          <small class="cm-kpi-card__description">Alumnos en el padrón</small></div>
+          <div class="cm-kpi-card__icon"><span class="material-symbols-outlined">groups</span></div>
         </div>
 
-        <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
-          <p class="text-on-surface-variant">Última asistencia: Presente</p>
-          <h2 class="text-3xl font-bold text-primary">{{ totalPresentes }}</h2>
+        <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm cm-kpi-card">
+          <div class="cm-kpi-card__copy"><p class="text-on-surface-variant cm-kpi-card__label">Última asistencia: Presente</p>
+          <h2 class="text-3xl font-bold text-primary cm-kpi-card__value">{{ totalPresentes }}</h2>
+          <small class="cm-kpi-card__description">Registros presentes</small></div>
+          <div class="cm-kpi-card__icon"><span class="material-symbols-outlined">how_to_reg</span></div>
         </div>
 
-        <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
-          <p class="text-on-surface-variant">Faltas registradas</p>
-          <h2 class="text-3xl font-bold text-error">{{ totalFaltas }}</h2>
+        <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm cm-kpi-card">
+          <div class="cm-kpi-card__copy"><p class="text-on-surface-variant cm-kpi-card__label">Faltas registradas</p>
+          <h2 class="text-3xl font-bold text-error cm-kpi-card__value">{{ totalFaltas }}</h2>
+          <small class="cm-kpi-card__description">Ausencias acumuladas</small></div>
+          <div class="cm-kpi-card__icon" style="--card-accent: var(--color-danger); --card-background: #ffeded"><span class="material-symbols-outlined">person_off</span></div>
         </div>
       </section>
 
       <!-- BUSCADOR Y FILTROS -->
       <section
-        class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg"
+        class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg cm-filters"
       >
 
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center cm-filter-grid" style="--cm-filter-count: 5">
 
           <!-- BUSCAR -->
-          <div class="md:col-span-4 relative">
+          <div class="md:col-span-4 relative cm-filter-field cm-filter-field--search">
 
             <span
               class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]"
@@ -108,7 +114,7 @@
           </div>
 
           <!-- GRADO -->
-          <div class="md:col-span-2">
+          <div class="md:col-span-2 cm-filter-field">
 
             <select
               [(ngModel)]="filtroGrado"
@@ -126,7 +132,7 @@
           </div>
 
           <!-- GRUPO -->
-          <div class="md:col-span-2">
+          <div class="md:col-span-2 cm-filter-field">
 
             <select
               [(ngModel)]="filtroGrupo"
@@ -143,7 +149,7 @@
           </div>
 
           <!-- ESTADO DE ASISTENCIA -->
-          <div class="md:col-span-3">
+          <div class="md:col-span-3 cm-filter-field">
 
             <select
               [(ngModel)]="filtroEstado"
@@ -158,23 +164,8 @@
 
           </div>
 
-          <!-- LIMPIAR FILTROS -->
-          <div class="md:col-span-1 flex justify-end">
-
-            <button
-              (click)="limpiarFiltros()"
-              class="p-2 text-outline hover:text-on-surface hover:bg-surface rounded-lg"
-              title="Limpiar filtros"
-              aria-label="Limpiar filtros"
-              type="button"
-            >
-              <span class="material-symbols-outlined"> restart_alt </span>
-            </button>
-
-          </div>
-
           <!-- ESTADO DEL ALUMNO -->
-          <div class="md:col-span-3">
+          <div class="md:col-span-3 cm-filter-field">
 
             <select
               [(ngModel)]="filtroEstadoAlumno"
@@ -188,7 +179,7 @@
           </div>
 
                     <!-- CICLO ESCOLAR -->
-          <div class="md:col-span-3">
+          <div class="md:col-span-3 cm-filter-field">
 
             <select
               [(ngModel)]="filtroCicloEscolar"
@@ -207,33 +198,46 @@
 
           </div>
 
+          <!-- LIMPIAR FILTROS -->
+          <div class="md:col-span-1 flex justify-end">
+            <button
+              (click)="limpiarFiltros()"
+              class="p-2 text-outline hover:text-on-surface hover:bg-surface rounded-lg cm-reset"
+              title="Limpiar filtros"
+              aria-label="Limpiar filtros"
+              type="button"
+            >
+              <span class="material-symbols-outlined"> restart_alt </span>
+            </button>
+          </div>
+
         </div>
 
       </section>
 
       <!-- TABLA PRINCIPAL -->
       <section
-        class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden"
+        class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden cm-data-section"
       >
         <!-- ENCABEZADO DE TABLA -->
         <div
-          class="px-space-md py-space-sm bg-surface-container-low/50 flex items-center justify-between"
+          class="px-space-md py-space-sm bg-surface-container-low/50 flex items-center justify-between cm-data-header"
         >
-          <div class="flex items-center gap-space-xs">
-            <span class="font-title-md text-title-md text-on-surface">
+          <div class="flex items-center gap-space-xs cm-data-header__title">
+            <span class="font-title-md text-title-md text-on-surface cm-data-header__heading">
               Control de asistencias
             </span>
 
             <span
-              class="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold text-sm"
+              class="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold text-sm cm-count"
             >
               {{ alumnosFiltrados.length }} alumnos
             </span>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left">
+        <div class="overflow-x-auto cm-table-scroll">
+          <table class="w-full text-left cm-table">
             <thead class="bg-surface text-on-surface-variant uppercase text-sm">
               <tr>
                 <th class="py-3 px-space-md">Alumno</th>
@@ -272,7 +276,7 @@
                 <!-- ÚLTIMA ASISTENCIA -->
                 <td class="py-3.5 px-space-md">
                   <span
-                    class="inline-flex px-2.5 py-1 rounded-full text-sm font-semibold"
+                    class="inline-flex px-2.5 py-1 rounded-full text-sm font-semibold cm-status"
                     [ngClass]="{
                       'bg-[#CCFBF1] text-[#0F766E]':
                         ultimaAsistencia(alumno) === 'Presente',
@@ -295,7 +299,7 @@
 
                 <!-- ACCIONES -->
                 <td class="py-3.5 px-space-md text-right">
-                  <div class="inline-flex items-center gap-1">
+                  <div class="inline-flex items-center gap-1 cm-actions">
                     <!-- CONSULTAR -->
                     <button
                       (click)="consultarHistorial(alumno)"

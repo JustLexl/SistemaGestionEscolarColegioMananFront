@@ -1,26 +1,26 @@
-<div class="module-page">
-      <section class="academic-context" aria-label="Contexto académico demostrativo">
-        <div class="academic-context__identity">
+<div class="module-page cm-page">
+      <section class="academic-context cm-context" aria-label="Contexto académico demostrativo">
+        <div class="academic-context__identity cm-context__identity">
           <app-ui-icon name="school" [size]="19" />
           <strong>Colegio Manantial</strong>
           <span aria-hidden="true">•</span>
           <span>Administración de profesores</span>
         </div>
-        <div class="active-period">
-          <span aria-hidden="true"></span>
+        <div class="active-period cm-active-period">
+          <span class="cm-active-period__dot" aria-hidden="true"></span>
           <strong>Período Activo: Demo 2026–2027</strong>
         </div>
       </section>
 
-      <section class="module-heading" aria-labelledby="page-title">
-        <div>
-          <span class="module-heading__eyebrow">Cuerpo Docente Institucional</span>
+      <section class="module-heading cm-heading" aria-labelledby="page-title">
+        <div class="cm-heading__copy">
+          <span class="module-heading__eyebrow cm-eyebrow">Cuerpo Docente Institucional</span>
           <h1 id="page-title">Profesores</h1>
           <p>Consulta, asignación académica y administración integral del personal docente.</p>
         </div>
         <button
           #registerButton
-          class="register-button"
+          class="register-button cm-primary-action"
           type="button"
           (click)="registroAbierto.set(true)"
         >

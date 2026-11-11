@@ -1,15 +1,15 @@
-<div class="flex w-full flex-col pb-16">
-  <div class="mb-space-md flex flex-wrap items-center justify-between gap-space-sm py-space-xs text-on-surface-variant">
-    <div class="flex items-center gap-2 font-label-md text-label-md">
-      <span class="inline-flex items-center gap-1 rounded-full bg-primary-fixed/20 px-2 py-0.5 font-semibold text-primary">
+<div class="flex w-full flex-col pb-16 cm-page">
+  <div class="mb-space-md flex flex-wrap items-center justify-between gap-space-sm py-space-xs text-on-surface-variant cm-context">
+    <div class="flex items-center gap-2 font-label-md text-label-md cm-context__identity">
+      <span class="inline-flex items-center gap-1 rounded-full bg-primary-fixed/20 px-2 py-0.5 font-semibold text-primary cm-context__brand">
         <span class="material-symbols-outlined text-[14px]">school</span>
         Colegio Manantial
       </span>
       <span>•</span>
       <span class="font-body-md text-body-sm">Estructura curricular y asignación docente</span>
     </div>
-    <span class="inline-flex items-center gap-1 text-label-sm font-semibold text-primary">
-      <span class="h-2 w-2 rounded-full bg-primary"></span>
+    <span class="inline-flex items-center gap-1 text-label-sm font-semibold text-primary cm-active-period">
+      <span class="h-2 w-2 rounded-full bg-primary cm-active-period__dot"></span>
       Datos conectados al backend real
     </span>
   </div>
@@ -27,111 +27,93 @@
     </div>
   }
 
-  <section class="mb-space-lg flex flex-col gap-space-lg">
-    <div class="flex flex-col justify-between gap-space-md lg:flex-row lg:items-end">
-      <div class="flex max-w-3xl flex-col gap-1">
-        <span class="font-label-md text-label-md font-semibold uppercase tracking-wider text-primary">Estructura escolar</span>
+  <section>
+    <div class="flex flex-col justify-between gap-space-md lg:flex-row lg:items-end cm-heading">
+      <div class="flex max-w-3xl flex-col gap-1 cm-heading__copy">
+        <span class="font-label-md text-label-md font-semibold uppercase tracking-wider text-primary cm-eyebrow">Estructura escolar</span>
         <h1 class="font-headline-lg text-headline-lg font-semibold tracking-tight text-on-surface">Grados y grupos</h1>
         <p class="font-body-md text-body-md text-on-surface-variant">
           Administra grados, aulas, grupos y la relación con Profesores activos.
         </p>
       </div>
       <div class="flex flex-wrap items-center gap-space-sm">
-        <button type="button" class="rounded-xl border border-surface-container bg-white px-space-md py-2.5 font-label-lg text-secondary shadow-sm" (click)="abrirCrearGrado()">
+        <button type="button" class="rounded-xl border border-surface-container bg-white px-space-md py-2.5 font-label-lg text-secondary shadow-sm cm-secondary-action" (click)="abrirCrearGrado()">
           + Crear grado
         </button>
-        <button type="button" class="rounded-xl bg-primary px-space-md py-2.5 font-label-lg text-on-primary shadow-sm" (click)="abrirCrearGrupo()" [disabled]="cargando()">
+        <button type="button" class="rounded-xl bg-primary px-space-md py-2.5 font-label-lg text-on-primary shadow-sm cm-primary-action" (click)="abrirCrearGrupo()" [disabled]="cargando()">
           + Registrar grupo
         </button>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-3">
-      <article class="flex items-center justify-between rounded-xl bg-white p-space-md shadow-sm">
-        <div>
-          <span class="text-label-sm text-on-surface-variant">Grados y grupos activos</span>
-          <div class="mt-1 text-headline-md font-bold">{{ grados().length }} / {{ metricas().activos }}</div>
-          <span class="text-body-sm text-on-surface-variant">{{ metricas().total }} grupos registrados</span>
+    <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-3 cm-kpi-grid">
+      <article class="flex items-center justify-between rounded-xl bg-white p-space-md shadow-sm cm-kpi-card">
+        <div class="cm-kpi-card__copy">
+          <span class="text-label-sm text-on-surface-variant cm-kpi-card__label">Grados y grupos activos</span>
+          <div class="mt-1 text-headline-md font-bold cm-kpi-card__value">{{ grados().length }} / {{ metricas().activos }}</div>
+          <span class="text-body-sm text-on-surface-variant cm-kpi-card__description">{{ metricas().total }} grupos registrados</span>
         </div>
-        <span class="material-symbols-outlined rounded-xl bg-surface-container-low p-3 text-primary">meeting_room</span>
+        <span class="material-symbols-outlined rounded-xl bg-surface-container-low p-3 text-primary cm-kpi-card__icon">meeting_room</span>
       </article>
-      <article class="flex items-center justify-between rounded-xl bg-white p-space-md shadow-sm">
-        <div>
-          <span class="text-label-sm text-on-surface-variant">Aulas utilizadas</span>
-          <div class="mt-1 text-headline-md font-bold">{{ metricas().aulasCount }}</div>
-          <span class="text-body-sm text-on-surface-variant">Ubicaciones registradas</span>
+      <article class="flex items-center justify-between rounded-xl bg-white p-space-md shadow-sm cm-kpi-card">
+        <div class="cm-kpi-card__copy">
+          <span class="text-label-sm text-on-surface-variant cm-kpi-card__label">Aulas utilizadas</span>
+          <div class="mt-1 text-headline-md font-bold cm-kpi-card__value">{{ metricas().aulasCount }}</div>
+          <span class="text-body-sm text-on-surface-variant cm-kpi-card__description">Ubicaciones registradas</span>
         </div>
-        <span class="material-symbols-outlined rounded-xl bg-surface-container-low p-3 text-secondary">domain</span>
+        <span class="material-symbols-outlined rounded-xl bg-surface-container-low p-3 text-secondary cm-kpi-card__icon">domain</span>
       </article>
-      <article class="flex items-center justify-between rounded-xl bg-white p-space-md shadow-sm">
-        <div>
-          <span class="text-label-sm text-on-surface-variant">Matrícula total</span>
-          <div class="mt-1 text-headline-md font-bold text-primary">{{ metricas().matriculaTotal }}</div>
-          <span class="text-body-sm text-on-surface-variant">Promedio {{ metricas().promedioAlumnos }} por grupo activo</span>
+      <article class="flex items-center justify-between rounded-xl bg-white p-space-md shadow-sm cm-kpi-card">
+        <div class="cm-kpi-card__copy">
+          <span class="text-label-sm text-on-surface-variant cm-kpi-card__label">Matrícula total</span>
+          <div class="mt-1 text-headline-md font-bold text-primary cm-kpi-card__value">{{ metricas().matriculaTotal }}</div>
+          <span class="text-body-sm text-on-surface-variant cm-kpi-card__description">Promedio {{ metricas().promedioAlumnos }} por grupo activo</span>
         </div>
-        <span class="material-symbols-outlined rounded-xl bg-surface-container-low p-3 text-primary">groups</span>
+        <span class="material-symbols-outlined rounded-xl bg-surface-container-low p-3 text-primary cm-kpi-card__icon">groups</span>
       </article>
     </div>
   </section>
 
-  <section class="mb-space-lg rounded-xl bg-white p-space-md shadow-sm" aria-labelledby="grados-title">
-    <div class="mb-3 flex items-center justify-between">
-      <h2 id="grados-title" class="font-title-md text-title-md">Grados disponibles</h2>
-      <span class="rounded-full bg-primary/10 px-2 py-1 text-label-sm font-bold text-primary">{{ grados().length }} grados</span>
-    </div>
-    <div class="flex flex-wrap gap-2">
-      @for (grado of grados(); track grado.id) {
-        <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-surface-container-low px-3 py-2 text-left hover:bg-surface-container" (click)="abrirEditarGrado(grado)" [attr.aria-label]="'Editar ' + grado.nombre">
-          <span class="font-semibold text-on-surface">{{ grado.nombre }}</span>
-          <span class="text-label-sm text-on-surface-variant">{{ grado.ciclo }}</span>
-          <span class="material-symbols-outlined text-[16px] text-primary">edit</span>
-        </button>
-      } @empty {
-        <span class="text-on-surface-variant">No hay grados disponibles.</span>
-      }
-    </div>
-  </section>
-
-  <section class="mb-space-lg rounded-xl bg-white p-space-md shadow-sm" aria-label="Filtros de grupos">
-    <div class="grid grid-cols-1 items-center gap-space-sm md:grid-cols-12">
-      <div class="relative md:col-span-5">
+  <section class="mb-space-lg rounded-xl bg-white p-space-md shadow-sm cm-filters" aria-label="Filtros de grupos">
+    <div class="grid grid-cols-1 items-center gap-space-sm md:grid-cols-12 cm-filter-grid">
+      <div class="relative md:col-span-5 cm-filter-field cm-filter-field--search">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-outline">search</span>
         <input id="grupo-search-input" class="w-full rounded-xl bg-surface py-2 pl-10 pr-4" placeholder="Buscar por grupo, aula o profesor..." [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
       </div>
-      <select id="filter-grado" class="rounded-xl bg-surface px-3 py-2 md:col-span-2" [value]="filtroGrado()" (change)="filtroGrado.set($any($event.target).value)">
+      <select id="filter-grado" class="rounded-xl bg-surface px-3 py-2 md:col-span-2 cm-filter-field" [value]="filtroGrado()" (change)="filtroGrado.set($any($event.target).value)">
         <option value="">Grado: Todos</option>
         @for (grado of grados(); track grado.id) {
           <option [value]="grado.id">{{ grado.nombre }}</option>
         }
       </select>
-      <select id="filter-turno" class="rounded-xl bg-surface px-3 py-2 md:col-span-2" [value]="filtroTurno()" (change)="filtroTurno.set($any($event.target).value)">
+      <select id="filter-turno" class="rounded-xl bg-surface px-3 py-2 md:col-span-2 cm-filter-field" [value]="filtroTurno()" (change)="filtroTurno.set($any($event.target).value)">
         <option value="">Turno: Todos</option>
         <option value="matutino">Matutino</option>
         <option value="vespertino">Vespertino</option>
       </select>
-      <select id="filter-estado" class="rounded-xl bg-surface px-3 py-2 md:col-span-2" [value]="filtroEstado()" (change)="filtroEstado.set($any($event.target).value)">
+      <select id="filter-estado" class="rounded-xl bg-surface px-3 py-2 md:col-span-2 cm-filter-field" [value]="filtroEstado()" (change)="filtroEstado.set($any($event.target).value)">
         <option value="">Estado: Todos</option>
         <option value="Activo">Activo</option>
         <option value="Inactivo">Inactivo</option>
       </select>
-      <button type="button" class="rounded-lg px-2 py-2 text-outline hover:bg-surface md:col-span-1" title="Restablecer filtros" (click)="limpiarFiltros()">
+      <button type="button" class="rounded-lg px-2 py-2 text-outline hover:bg-surface md:col-span-1 cm-reset" title="Restablecer filtros" (click)="limpiarFiltros()">
         <span class="material-symbols-outlined text-[18px]">restart_alt</span>
       </button>
     </div>
   </section>
 
-  <section class="overflow-hidden rounded-xl bg-white shadow-sm" aria-labelledby="grupos-title">
-    <div class="flex items-center justify-between bg-surface-container-low/50 px-space-md py-space-sm">
-      <div class="flex items-center gap-2">
+  <section class="overflow-hidden rounded-xl bg-white shadow-sm cm-data-section" aria-labelledby="grupos-title">
+    <div class="flex items-center justify-between bg-surface-container-low/50 px-space-md py-space-sm cm-data-header">
+      <div class="flex items-center gap-2 cm-data-header__title">
         <h2 id="grupos-title" class="font-title-md text-title-md">Padrón de Grados y Grupos</h2>
-        <span class="rounded-full bg-primary/10 px-2 py-0.5 text-label-sm font-bold text-primary">{{ gruposFiltrados().length }} grupos</span>
+        <span class="rounded-full bg-primary/10 px-2 py-0.5 text-label-sm font-bold text-primary cm-count">{{ gruposFiltrados().length }} grupos</span>
       </div>
       @if (cargando()) {
         <span class="text-label-sm text-primary">Cargando...</span>
       }
     </div>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left text-body-sm">
+    <div class="overflow-x-auto cm-table-scroll">
+      <table class="w-full text-left text-body-sm cm-table">
         <thead class="bg-surface uppercase tracking-wider text-on-surface-variant">
           <tr>
             <th class="px-space-md py-3">Grado y grupo</th>
@@ -166,10 +148,10 @@
                 <span class="rounded-xl bg-secondary-container/50 px-2.5 py-1 font-semibold">{{ grupo.alumnosActuales }} / {{ grupo.alumnosMax }} ({{ porcentaje(grupo) }}%)</span>
               </td>
               <td class="px-space-md py-3.5 text-center">
-                <span class="status-badge" [class.status-badge--active]="grupo.estado === 'Activo'" [class.status-badge--inactive]="grupo.estado === 'Inactivo'">{{ grupo.estado }}</span>
+                <span class="status-badge cm-status" [class.status-badge--active]="grupo.estado === 'Activo'" [class.status-badge--inactive]="grupo.estado === 'Inactivo'">{{ grupo.estado }}</span>
               </td>
               <td class="px-space-md py-3.5 text-right">
-                <div class="inline-flex items-center gap-1">
+                <div class="inline-flex items-center gap-1 cm-actions">
                   <button type="button" class="rounded-lg p-1.5 text-on-surface-variant hover:bg-surface" title="Editar" (click)="abrirEditarGrupo(grupo)">
                     <span class="material-symbols-outlined text-[19px]">edit</span>
                   </button>
@@ -184,6 +166,24 @@
           }
         </tbody>
       </table>
+    </div>
+  </section>
+
+  <section class="mb-space-lg rounded-xl bg-white p-space-md shadow-sm" aria-labelledby="grados-title">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 id="grados-title" class="font-title-md text-title-md">Grados disponibles</h2>
+      <span class="rounded-full bg-primary/10 px-2 py-1 text-label-sm font-bold text-primary">{{ grados().length }} grados</span>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      @for (grado of grados(); track grado.id) {
+        <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-surface-container-low px-3 py-2 text-left hover:bg-surface-container" (click)="abrirEditarGrado(grado)" [attr.aria-label]="'Editar ' + grado.nombre">
+          <span class="font-semibold text-on-surface">{{ grado.nombre }}</span>
+          <span class="text-label-sm text-on-surface-variant">{{ grado.ciclo }}</span>
+          <span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+        </button>
+      } @empty {
+        <span class="text-on-surface-variant">No hay grados disponibles.</span>
+      }
     </div>
   </section>
 

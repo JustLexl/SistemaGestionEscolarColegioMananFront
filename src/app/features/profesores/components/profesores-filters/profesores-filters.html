@@ -1,8 +1,8 @@
-<section class="filters" aria-labelledby="filters-title">
+<section class="filters cm-filters" aria-labelledby="filters-title">
   <h2 id="filters-title" class="visually-hidden">Buscar y filtrar profesores</h2>
 
-  <div class="filters__grid">
-    <label class="field field--search">
+  <div class="filters__grid cm-filter-grid" style="--cm-filter-count: 3">
+    <label class="field field--search cm-filter-field cm-filter-field--search">
       <span class="visually-hidden">Buscar profesor</span>
       <span class="field__control">
         <app-ui-icon name="search" [size]="19" />
@@ -10,7 +10,7 @@
       </span>
     </label>
 
-    <label class="field">
+    <label class="field cm-filter-field">
       <span class="visually-hidden">Grado</span>
       <select>
         <option value="">Grado: Todos</option>
@@ -19,7 +19,7 @@
       </select>
     </label>
 
-    <label class="field">
+    <label class="field cm-filter-field">
       <span class="visually-hidden">Grupo</span>
       <select>
         <option value="">Grupo: Todos</option>
@@ -28,7 +28,7 @@
       </select>
     </label>
 
-    <label class="field">
+    <label class="field cm-filter-field">
       <span class="visually-hidden">Materia</span>
       <select>
         <option value="">Materia: Todas</option>
@@ -37,7 +37,7 @@
       </select>
     </label>
 
-    <button class="clear-button" type="button" aria-label="Limpiar filtros" title="Limpiar filtros">
+    <button class="clear-button cm-reset" type="button" aria-label="Limpiar filtros" title="Limpiar filtros">
       <app-ui-icon name="refresh" [size]="20" />
     </button>
   </div>

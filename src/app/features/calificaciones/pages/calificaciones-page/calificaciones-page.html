@@ -1,28 +1,28 @@
-<div class="module-page">
+<div class="module-page cm-page">
       <section
-        class="academic-context"
+        class="academic-context cm-context"
         aria-label="Contexto académico demostrativo"
       >
-        <div class="academic-context__identity">
+        <div class="academic-context__identity cm-context__identity">
           <app-ui-icon name="school" [size]="19" />
           <strong>Colegio Manantial</strong><span aria-hidden="true">•</span>
           <span>Control académico de calificaciones</span>
         </div>
-        <div class="active-period">
-          <span aria-hidden="true"></span
+        <div class="active-period cm-active-period">
+          <span class="cm-active-period__dot" aria-hidden="true"></span
           ><strong>Período Activo: Demo 2026–2027</strong>
         </div>
       </section>
 
-      <section class="module-heading" aria-labelledby="page-title">
-        <div>
-          <span class="module-heading__eyebrow">Control Académico</span>
+      <section class="module-heading cm-heading" aria-labelledby="page-title">
+        <div class="cm-heading__copy">
+          <span class="module-heading__eyebrow cm-eyebrow">Control Académico</span>
           <h1 id="page-title">Calificaciones</h1>
           <p>Consulta y administra las calificaciones de los alumnos.</p>
         </div>
         <button
           #registerButton
-          class="register-button"
+          class="register-button cm-primary-action"
           type="button"
           (click)="openCreate()"
         >
@@ -32,44 +32,44 @@
         </button>
       </section>
 
-      <section class="summary" aria-label="Resumen de calificaciones">
-        <article class="summary-card summary-card--teal">
-          <div class="summary-card__copy">
-            <span>Total de calificaciones</span><strong>{{ total() }}</strong
-            ><small>Registros actuales</small>
+      <section class="summary cm-kpi-grid" aria-label="Resumen de calificaciones">
+        <article class="summary-card summary-card--teal cm-kpi-card">
+          <div class="summary-card__copy cm-kpi-card__copy">
+            <span class="cm-kpi-card__label">Total de calificaciones</span><strong class="cm-kpi-card__value">{{ total() }}</strong
+            ><small class="cm-kpi-card__description">Registros actuales</small>
           </div>
-          <div class="summary-card__icon">
+          <div class="summary-card__icon cm-kpi-card__icon">
             <app-ui-icon name="grade" [size]="24" />
           </div>
         </article>
-        <article class="summary-card summary-card--blue">
-          <div class="summary-card__copy">
-            <span>Promedio general</span
-            ><strong>{{ formatScore(promedioGeneral()) }}</strong
-            ><small>Promedio del padrón</small>
+        <article class="summary-card summary-card--blue cm-kpi-card">
+          <div class="summary-card__copy cm-kpi-card__copy">
+            <span class="cm-kpi-card__label">Promedio general</span
+            ><strong class="cm-kpi-card__value">{{ formatScore(promedioGeneral()) }}</strong
+            ><small class="cm-kpi-card__description">Promedio del padrón</small>
           </div>
-          <div class="summary-card__icon">
+          <div class="summary-card__icon cm-kpi-card__icon">
             <app-ui-icon name="chart" [size]="24" />
           </div>
         </article>
-        <article class="summary-card summary-card--amber">
-          <div class="summary-card__copy">
-            <span>Materias evaluadas</span
-            ><strong>{{ materiasEvaluadas() }}</strong
-            ><small>Materias únicas</small>
+        <article class="summary-card summary-card--amber cm-kpi-card">
+          <div class="summary-card__copy cm-kpi-card__copy">
+            <span class="cm-kpi-card__label">Materias evaluadas</span
+            ><strong class="cm-kpi-card__value">{{ materiasEvaluadas() }}</strong
+            ><small class="cm-kpi-card__description">Materias únicas</small>
           </div>
-          <div class="summary-card__icon">
+          <div class="summary-card__icon cm-kpi-card__icon">
             <app-ui-icon name="book" [size]="24" />
           </div>
         </article>
       </section>
 
-      <section class="filters" aria-labelledby="filters-title">
+      <section class="filters cm-filters" aria-labelledby="filters-title">
         <h2 id="filters-title" class="visually-hidden">
           Buscar y filtrar calificaciones
         </h2>
-        <div class="filters__grid">
-          <label class="field field--search">
+        <div class="filters__grid cm-filter-grid" style="--cm-filter-count: 4">
+          <label class="field field--search cm-filter-field cm-filter-field--search">
             <span class="visually-hidden">Buscar por nombre o matrícula</span>
             <span class="field__control"
               ><app-ui-icon name="search" [size]="19" />
@@ -83,7 +83,7 @@
               />
             </span>
           </label>
-          <label class="field"
+          <label class="field cm-filter-field"
             ><span class="visually-hidden">Grado</span>
             <select
               #gradeSelect
@@ -97,7 +97,7 @@
               }
             </select>
           </label>
-          <label class="field"
+          <label class="field cm-filter-field"
             ><span class="visually-hidden">Grupo</span>
             <select
               #groupSelect
@@ -111,7 +111,7 @@
               }
             </select>
           </label>
-          <label class="field"
+          <label class="field cm-filter-field"
             ><span class="visually-hidden">Materia</span>
             <select
               #subjectSelect
@@ -125,7 +125,7 @@
               }
             </select>
           </label>
-          <label class="field"
+          <label class="field cm-filter-field"
             ><span class="visually-hidden">Periodo</span>
             <select
               #periodSelect
@@ -140,7 +140,7 @@
             </select>
           </label>
           <button
-            class="clear-button"
+            class="clear-button cm-reset"
             type="button"
             aria-label="Limpiar filtros"
             title="Limpiar filtros"
@@ -151,16 +151,15 @@
         </div>
       </section>
 
-      <section class="registry" aria-labelledby="registry-title">
-        <div class="registry__header">
-          <h2 id="registry-title">Padrón de calificaciones</h2>
-          <span class="registry__count"
+      <section class="registry cm-data-section" aria-labelledby="registry-title">
+        <div class="registry__header cm-data-header">
+          <div class="cm-data-header__title"><h2 id="registry-title">Padrón de calificaciones</h2>
+          <span class="registry__count cm-count"
             >{{ filtered().length }} {{ filtered().length === 1 ? 'calificación'
-            : 'calificaciones' }}</span
-          >
+            : 'calificaciones' }}</span></div>
         </div>
-        <div class="table-scroll">
-          <table>
+        <div class="table-scroll cm-table-scroll">
+          <table class="cm-table">
             <caption class="visually-hidden">
               Padrón de calificaciones de demostración
             </caption>

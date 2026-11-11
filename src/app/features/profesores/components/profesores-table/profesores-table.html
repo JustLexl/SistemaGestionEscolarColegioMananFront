@@ -1,13 +1,13 @@
-<section class="registry" aria-labelledby="registry-title">
-  <div class="registry__header">
-    <h2 id="registry-title">Padrón de profesores</h2>
-    <span class="registry__count">
+<section class="registry cm-data-section" aria-labelledby="registry-title">
+  <div class="registry__header cm-data-header">
+    <div class="cm-data-header__title"><h2 id="registry-title">Padrón de profesores</h2>
+    <span class="registry__count cm-count">
       {{ totalProfesores() }} {{ totalProfesores() === 1 ? 'profesor' : 'profesores' }}
-    </span>
+    </span></div>
   </div>
 
-  <div class="table-scroll">
-    <table>
+  <div class="table-scroll cm-table-scroll">
+    <table class="cm-table">
       <colgroup>
         <col class="column--teacher" />
         <col class="column--subjects" />
@@ -61,7 +61,7 @@
               </span>
             </td>
             <td>
-              <div class="actions" [attr.aria-label]="'Acciones para ' + profesor.nombre">
+              <div class="actions cm-actions" [attr.aria-label]="'Acciones para ' + profesor.nombre">
                 <button
                   #consultationButton
                   class="actions__view"

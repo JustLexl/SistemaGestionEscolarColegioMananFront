@@ -1,12 +1,12 @@
-<section class="summary" aria-label="Resumen demostrativo de profesores">
+<section class="summary cm-kpi-grid" aria-label="Resumen demostrativo de profesores">
   @for (card of cards(); track card.label) {
-    <article class="summary-card" [class]="'summary-card summary-card--' + card.tone">
-      <div class="summary-card__copy">
-        <span>{{ card.label }}</span>
-        <strong>{{ card.value }}</strong>
-        <small>{{ card.note }}</small>
+    <article class="summary-card cm-kpi-card" [class]="'summary-card summary-card--' + card.tone + ' cm-kpi-card'">
+      <div class="summary-card__copy cm-kpi-card__copy">
+        <span class="cm-kpi-card__label">{{ card.label }}</span>
+        <strong class="cm-kpi-card__value">{{ card.value }}</strong>
+        <small class="cm-kpi-card__description">{{ card.note }}</small>
       </div>
-      <div class="summary-card__icon">
+      <div class="summary-card__icon cm-kpi-card__icon">
         <app-ui-icon [name]="card.icon" [size]="24" />
       </div>
     </article>
