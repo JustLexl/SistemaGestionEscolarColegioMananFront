@@ -31,19 +31,19 @@ describe('CiclosEscolaresApiService', () => {
   it('consulta todos los ciclos', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: [ciclo] }));
     await expect(service.obtenerCiclos()).resolves.toEqual([ciclo]);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/ciclos-escolares', { headers: undefined });
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/ciclos-escolares', { headers: undefined });
   });
 
   it('consulta un ciclo por id', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: ciclo }));
     await service.obtenerCiclo(3);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/ciclos-escolares/3', { headers: undefined });
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/ciclos-escolares/3', { headers: undefined });
   });
 
   it('crea un ciclo con POST', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: ciclo }, 201));
     await service.crearCiclo(payload);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/ciclos-escolares', {
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/ciclos-escolares', {
       method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json' },
     });
   });
@@ -51,7 +51,7 @@ describe('CiclosEscolaresApiService', () => {
   it('actualiza un ciclo con PUT', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: ciclo }));
     await service.actualizarCiclo(3, payload);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/ciclos-escolares/3', expect.objectContaining({ method: 'PUT' }));
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/ciclos-escolares/3', expect.objectContaining({ method: 'PUT' }));
   });
 
   it('propaga validaciones del backend', async () => {
@@ -66,3 +66,4 @@ describe('CiclosEscolaresApiService', () => {
     expect(error).toMatchObject({ status: 0 });
   });
 });
+

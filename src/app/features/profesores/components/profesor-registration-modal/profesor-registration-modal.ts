@@ -10,9 +10,9 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
-  CedulaProfesorDuplicadaError,
-  ProfesoresMockService,
-} from '../../services/profesores-mock.service';
+  RolesApiError,
+  RolesApiService,
+} from '../../../../pages/roles/roles-api.service';
 
 @Component({
   selector: 'app-profesor-registration-modal',
@@ -21,7 +21,7 @@ import {
   styleUrl: './profesor-registration-modal.scss',
 })
 export class ProfesorRegistrationModal implements AfterViewInit {
-  private readonly profesoresService = inject(ProfesoresMockService);
+  private readonly rolesApi = inject(RolesApiService);
 
   @ViewChild('nombreInput', { static: true })
   private readonly nombreInput!: ElementRef<HTMLInputElement>;
@@ -29,20 +29,37 @@ export class ProfesorRegistrationModal implements AfterViewInit {
   readonly closed = output<void>();
   protected readonly submitted = signal(false);
   protected readonly cedulaDuplicada = signal(false);
+  protected readonly guardando = signal(false);
+  protected readonly errorServidor = signal('');
+
   protected readonly form = new FormGroup({
-    nombre: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    cedula: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    nombre: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    correo: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    cedula: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
   });
 
   ngAfterViewInit(): void {
     this.nombreInput.nativeElement.focus();
   }
 
-  protected guardar(): void {
+  protected async guardar(): Promise<void> {
+    if (this.guardando()) return;
+
     this.submitted.set(true);
     this.cedulaDuplicada.set(false);
+    this.errorServidor.set('');
 
     const nombre = this.form.controls.nombre.value.trim();
+    const correo = this.form.controls.correo.value.trim();
     const cedula = this.form.controls.cedula.value.trim();
 
     if (!nombre) {
@@ -58,24 +75,49 @@ export class ProfesorRegistrationModal implements AfterViewInit {
       return;
     }
 
+    this.guardando.set(true);
+
     try {
-      this.profesoresService.registrarProfesor({ nombre, cedula });
+      await this.rolesApi.registrarRol({
+        nombre,
+        correo,
+        cedula,
+        puesto: 'Profesores',
+        estado: 'Activo',
+      });
+
+      this.guardando.set(false);
       this.cerrar();
     } catch (error) {
-      if (error instanceof CedulaProfesorDuplicadaError) {
-        this.cedulaDuplicada.set(true);
-        this.form.controls.cedula.setErrors({ duplicada: true });
+      if (error instanceof RolesApiError) {
+        if (
+          error.status === 409 &&
+          error.message.toLowerCase().includes('cédula')
+        ) {
+          this.cedulaDuplicada.set(true);
+          this.form.controls.cedula.setErrors({ duplicada: true });
+          return;
+        }
+
+        this.errorServidor.set(error.message);
         return;
       }
 
-      throw error;
+      this.errorServidor.set(
+        'Ocurrió un error inesperado al registrar al profesor.',
+      );
+    } finally {
+      this.guardando.set(false);
     }
   }
 
   protected cerrar(): void {
+    if (this.guardando()) return;
+
     this.form.reset();
     this.submitted.set(false);
     this.cedulaDuplicada.set(false);
+    this.errorServidor.set('');
     this.closed.emit();
   }
 
@@ -89,6 +131,11 @@ export class ProfesorRegistrationModal implements AfterViewInit {
   protected mostrarErrorNombre(): boolean {
     const control = this.form.controls.nombre;
     return control.hasError('required') && (control.touched || this.submitted());
+  }
+
+  protected mostrarErrorCorreo(): boolean {
+    const control = this.form.controls.correo;
+    return control.invalid && (control.touched || this.submitted());
   }
 
   protected mostrarErrorCedula(): boolean {

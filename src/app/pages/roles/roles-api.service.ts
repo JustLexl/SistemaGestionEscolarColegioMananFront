@@ -41,6 +41,10 @@ export class RolesApiService {
     return this.request<readonly Rol[]>('');
   }
 
+  obtenerRolPorId(id: number): Promise<Rol> {
+    return this.request<Rol>(`/${id}`);
+  }
+
   async registrarRol(datos: RolFormData): Promise<RolMutationResult> {
     const payload = await this.requestWithPayload<Rol>('', {
       method: 'POST',

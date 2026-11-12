@@ -16,6 +16,7 @@
         type="button"
         aria-label="Cerrar formulario de registro"
         title="Cerrar"
+        [disabled]="guardando()"
         (click)="cerrar()"
       >
         <span aria-hidden="true">×</span>
@@ -47,6 +48,27 @@
       </div>
 
       <div class="form-field">
+        <label for="profesor-correo">Correo electrónico</label>
+        <input
+          id="profesor-correo"
+          type="email"
+          formControlName="correo"
+          autocomplete="email"
+          aria-describedby="profesor-correo-error"
+          [attr.aria-invalid]="mostrarErrorCorreo()"
+        />
+        @if (mostrarErrorCorreo()) {
+          <span id="profesor-correo-error" class="form-field__error" role="alert">
+            @if (form.controls.correo.hasError('required')) {
+              El correo electrónico es obligatorio.
+            } @else {
+              Ingresa un correo electrónico válido.
+            }
+          </span>
+        }
+      </div>
+
+      <div class="form-field">
         <label for="profesor-cedula">Cédula / identificación</label>
         <input
           id="profesor-cedula"
@@ -68,11 +90,28 @@
         }
       </div>
 
+      @if (errorServidor()) {
+        <p class="form-field__error" role="alert">
+          {{ errorServidor() }}
+        </p>
+      }
+
       <footer class="registration-modal__actions">
-        <button class="registration-modal__cancel" type="button" (click)="cerrar()">
+        <button
+          class="registration-modal__cancel"
+          type="button"
+          [disabled]="guardando()"
+          (click)="cerrar()"
+        >
           Cancelar
         </button>
-        <button class="registration-modal__save" type="submit">Guardar</button>
+        <button
+          class="registration-modal__save"
+          type="submit"
+          [disabled]="guardando()"
+        >
+          {{ guardando() ? 'Guardando...' : 'Guardar' }}
+        </button>
       </footer>
     </form>
   </section>

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
+import { RolesApiError, RolesApiService } from '../../../../pages/roles/roles-api.service';
 import { ProfesoresTable } from '../../components/profesores-table/profesores-table';
 import { ProfesoresMockService } from '../../services/profesores-mock.service';
 import { ProfesoresPage } from './profesores-page';
@@ -8,6 +10,7 @@ import { ProfesoresPage } from './profesores-page';
 describe('ProfesoresPage', () => {
   let fixture: ComponentFixture<ProfesoresPage>;
   let service: ProfesoresMockService;
+  let rolesApi: RolesApiService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -17,6 +20,32 @@ describe('ProfesoresPage', () => {
 
     fixture = TestBed.createComponent(ProfesoresPage);
     service = TestBed.inject(ProfesoresMockService);
+    rolesApi = TestBed.inject(RolesApiService);
+
+    vi.spyOn(rolesApi, 'registrarRol').mockImplementation(async (datos) => {
+      try {
+        const profesor = service.registrarProfesor({
+          nombre: datos.nombre,
+          cedula: datos.cedula ?? '',
+        });
+        return {
+          usuario: {
+            id: profesor.id,
+            nombre: profesor.nombre,
+            puesto: 'Profesores',
+            correo: datos.correo,
+            estado: 'Activo',
+          },
+          profesor,
+        } as Awaited<ReturnType<RolesApiService['registrarRol']>>;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'CedulaProfesorDuplicadaError') {
+          throw new RolesApiError(409, 'Ya existe un profesor con esta cédula.');
+        }
+        throw error;
+      }
+    });
+    vi.spyOn(service, 'cargarDesdeApi').mockResolvedValue(true);
     fixture.detectChanges();
   });
 
@@ -45,8 +74,10 @@ describe('ProfesoresPage', () => {
     click('.register-button');
   }
 
-  function saveRegistration(): void {
+  async function saveRegistration(): Promise<void> {
     click('.registration-modal__save');
+    await fixture.whenStable();
+    fixture.detectChanges();
   }
 
   function openDetail(rowIndex = 0): void {
@@ -60,11 +91,12 @@ describe('ProfesoresPage', () => {
     return compiled().querySelector('.detail-modal')?.textContent ?? '';
   }
 
-  function registerDemo04(): void {
+  async function registerDemo04(): Promise<void> {
     openRegistration();
     write('#profesor-nombre', 'Docente Demo 04');
+    write('#profesor-correo', 'docente04@ejemplo.com');
     write('#profesor-cedula', 'DOC-DEMO-004');
-    saveRegistration();
+    await saveRegistration();
   }
 
   function openEdit(rowIndex = 0): void {
@@ -140,52 +172,54 @@ describe('ProfesoresPage', () => {
     expect(compiled().querySelector('[role="dialog"]')).toBeNull();
   });
 
-  it('should not register an invalid empty form', () => {
+  it('should not register an invalid empty form', async () => {
     const initialLength = service.profesores().length;
     openRegistration();
 
-    saveRegistration();
+    await saveRegistration();
 
     expect(service.profesores()).toHaveLength(initialLength);
     expect(compiled().querySelector('[role="dialog"]')).not.toBeNull();
   });
 
-  it('should show the required name error', () => {
+  it('should show the required name error', async () => {
     openRegistration();
     write('#profesor-cedula', 'DOC-DEMO-004');
 
-    saveRegistration();
+    await saveRegistration();
 
     expect(compiled().textContent).toContain('El nombre es obligatorio.');
   });
 
-  it('should show the required cedula error', () => {
+  it('should show the required cedula error', async () => {
     openRegistration();
     write('#profesor-nombre', 'Docente Demo 04');
 
-    saveRegistration();
+    await saveRegistration();
 
     expect(compiled().textContent).toContain('La cédula es obligatoria.');
   });
 
-  it('should show an error and reject a duplicate cedula', () => {
+  it('should show an error and reject a duplicate cedula', async () => {
     const initialLength = service.profesores().length;
     openRegistration();
     write('#profesor-nombre', 'Profesor duplicado');
+    write('#profesor-correo', 'profesor@ejemplo.com');
     write('#profesor-cedula', '  doc-demo-001  ');
 
-    saveRegistration();
+    await saveRegistration();
 
     expect(compiled().textContent).toContain('Ya existe un profesor con esta cédula.');
     expect(service.profesores()).toHaveLength(initialLength);
   });
 
-  it('should add a row and update counters after a valid registration', () => {
+  it('should add a row and update counters after a valid registration', async () => {
     openRegistration();
     write('#profesor-nombre', '  Docente Demo 04  ');
+    write('#profesor-correo', 'profesor@ejemplo.com');
     write('#profesor-cedula', '  DOC-DEMO-004  ');
 
-    saveRegistration();
+    await saveRegistration();
 
     expect(compiled().querySelectorAll('tbody tr')).toHaveLength(4);
     expect(compiled().textContent).toContain('Docente Demo 04');
@@ -194,12 +228,13 @@ describe('ProfesoresPage', () => {
     expect(compiled().querySelector('.summary-card strong')?.textContent).toContain('4');
   });
 
-  it('should close the modal after a valid registration', () => {
+  it('should close the modal after a valid registration', async () => {
     openRegistration();
     write('#profesor-nombre', 'Docente Demo 04');
+    write('#profesor-correo', 'profesor@ejemplo.com');
     write('#profesor-cedula', 'DOC-DEMO-004');
 
-    saveRegistration();
+    await saveRegistration();
 
     expect(compiled().querySelector('[role="dialog"]')).toBeNull();
   });
@@ -256,15 +291,15 @@ describe('ProfesoresPage', () => {
     expect(detailText()).toContain('3.º B');
   });
 
-  it('should show the empty subjects message for a newly registered profesor', () => {
-    registerDemo04();
+  it('should show the empty subjects message for a newly registered profesor', async () => {
+    await registerDemo04();
     openDetail(3);
 
     expect(detailText()).toContain('Sin materias asignadas');
   });
 
-  it('should show the empty groups message for a newly registered profesor', () => {
-    registerDemo04();
+  it('should show the empty groups message for a newly registered profesor', async () => {
+    await registerDemo04();
     openDetail(3);
 
     expect(detailText()).toContain('Sin grupos asignados');
@@ -289,8 +324,8 @@ describe('ProfesoresPage', () => {
     expect(compiled().querySelector('.detail-modal')).toBeNull();
   });
 
-  it('should consult a profesor registered during the current session', () => {
-    registerDemo04();
+  it('should consult a profesor registered during the current session', async () => {
+    await registerDemo04();
 
     openDetail(3);
 
@@ -443,8 +478,8 @@ describe('ProfesoresPage', () => {
     expect(detailText()).toContain('DOC-DEMO-001-A');
   });
 
-  it('should edit a profesor registered during the current session', () => {
-    registerDemo04();
+  it('should edit a profesor registered during the current session', async () => {
+    await registerDemo04();
     openEdit(3);
     write('#editar-profesor-nombre', 'Docente Demo 04 Modificado');
     write('#editar-profesor-cedula', 'DOC-DEMO-004-A');
@@ -621,8 +656,8 @@ describe('ProfesoresPage', () => {
     expect(compiled().querySelector('.deactivate-modal')).toBeNull();
   });
 
-  it('should deactivate a profesor registered during the current session', () => {
-    registerDemo04();
+  it('should deactivate a profesor registered during the current session', async () => {
+    await registerDemo04();
     openDeactivation(3);
 
     confirmDeactivation();

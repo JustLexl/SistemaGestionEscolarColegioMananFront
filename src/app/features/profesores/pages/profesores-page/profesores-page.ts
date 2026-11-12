@@ -55,6 +55,7 @@ export class ProfesoresPage implements OnInit {
 
   protected cerrarRegistro(): void {
     this.registroAbierto.set(false);
+    void this.profesoresService.cargarDesdeApi();
     this.registerButton().nativeElement.focus();
   }
 
@@ -88,6 +89,7 @@ export class ProfesoresPage implements OnInit {
   protected cerrarEdicion(): void {
     const id = this.profesorEditadoId();
     this.profesorEditadoId.set(null);
+    void this.profesoresService.cargarDesdeApi();
 
     if (id !== null) {
       this.profesoresTable().focusEditButton(id);
@@ -108,9 +110,11 @@ export class ProfesoresPage implements OnInit {
   protected cerrarBaja(): void {
     const id = this.profesorBajaId();
     this.profesorBajaId.set(null);
+    void this.profesoresService.cargarDesdeApi();
 
     if (id !== null) {
       this.profesoresTable().focusDeactivationButton(id);
     }
   }
 }
+

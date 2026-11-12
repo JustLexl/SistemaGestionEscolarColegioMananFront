@@ -84,13 +84,13 @@ describe('AlumnosComponent con relaciones académicas reales', () => {
     grupos = [grupoHistorico, grupoActivo, grupoActivoOtroGrado],
     alumnos = [sofia],
   ): void {
-    http.expectOne('http://localhost:3002/api/alumnos').flush({
+    http.expectOne('http://localhost:3000/api/alumnos').flush({
       success: true, data: alumnos,
     });
-    http.expectOne('http://localhost:3002/api/grupos').flush({
+    http.expectOne('http://localhost:3000/api/grupos').flush({
       success: true, data: grupos,
     });
-    http.expectOne('http://localhost:3002/api/ciclos-escolares').flush({
+    http.expectOne('http://localhost:3000/api/ciclos-escolares').flush({
       success: true, data: [cicloHistorico, cicloActivo],
     });
     fixture.detectChanges();
@@ -144,11 +144,11 @@ describe('AlumnosComponent con relaciones académicas reales', () => {
     };
     component.guardarAlumno();
 
-    const alta = http.expectOne('http://localhost:3002/api/alumnos');
+    const alta = http.expectOne('http://localhost:3000/api/alumnos');
     expect(alta.request.method).toBe('POST');
     expect(alta.request.body.grupoId).toBe(10);
     alta.flush({ success: true, data: { ...sofia, id: 6, grupoId: 10 } });
-    http.expectOne('http://localhost:3002/api/alumnos').flush({
+    http.expectOne('http://localhost:3000/api/alumnos').flush({
       success: true, data: [sofia],
     });
   });
@@ -161,11 +161,11 @@ describe('AlumnosComponent con relaciones académicas reales', () => {
       tutor: 'Tutor Demo', estado: 'Activo',
     };
     component.guardarAlumno();
-    const alta = http.expectOne('http://localhost:3002/api/alumnos');
+    const alta = http.expectOne('http://localhost:3000/api/alumnos');
     expect(alta.request.body).not.toHaveProperty('grado');
     expect(alta.request.body).not.toHaveProperty('grupo');
     alta.flush({ success: true, data: sofia });
-    http.expectOne('http://localhost:3002/api/alumnos').flush({
+    http.expectOne('http://localhost:3000/api/alumnos').flush({
       success: true, data: [sofia],
     });
   });
@@ -216,3 +216,4 @@ describe('AlumnosComponent con relaciones académicas reales', () => {
     );
   });
 });
+
