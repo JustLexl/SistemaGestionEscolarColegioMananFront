@@ -29,7 +29,7 @@
 
           <span class="w-2 h-2 rounded-full bg-primary cm-active-period__dot"></span>
 
-          Período Activo: 1° Trimestre 2024–2025
+          Ciclo activo: {{ cicloActivo?.nombre || 'No disponible' }}
 
         </span>
 
@@ -182,7 +182,7 @@
           class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center cm-filter-grid"
         >
 
-          <div class="md:col-span-5 relative cm-filter-field cm-filter-field--search">
+          <div class="md:col-span-3 relative cm-filter-field cm-filter-field--search">
 
             <span
               class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]"
@@ -203,16 +203,30 @@
           <div class="md:col-span-2 cm-filter-field">
 
             <select
+              [(ngModel)]="filtroCiclo"
+              (ngModelChange)="cambiarCicloFiltro()"
+              class="w-full px-3 py-2 bg-surface rounded-xl"
+            >
+              <option value="">Ciclo: Todos</option>
+              <option *ngFor="let ciclo of ciclosFiltro" [value]="ciclo.id">
+                {{ ciclo.nombre }} · {{ ciclo.estado }}
+              </option>
+            </select>
+
+          </div>
+
+
+          <div class="md:col-span-2 cm-filter-field">
+
+            <select
               [(ngModel)]="filtroGrado"
+              (ngModelChange)="cambiarGradoFiltro()"
               class="w-full px-3 py-2 bg-surface rounded-xl"
             >
               <option value="">Grado: Todos</option>
-              <option value="1° Primaria">1° Primaria</option>
-              <option value="2° Primaria">2° Primaria</option>
-              <option value="3° Primaria">3° Primaria</option>
-              <option value="4° Primaria">4° Primaria</option>
-              <option value="5° Primaria">5° Primaria</option>
-              <option value="6° Primaria">6° Primaria</option>
+              <option *ngFor="let grado of gradosFiltro" [value]="grado.id">
+                {{ grado.nombre }}
+              </option>
             </select>
 
           </div>
@@ -222,12 +236,13 @@
 
             <select
               [(ngModel)]="filtroGrupo"
+              [disabled]="!filtroGrado"
               class="w-full px-3 py-2 bg-surface rounded-xl"
             >
               <option value="">Grupo: Todos</option>
-              <option value="Grupo A">Grupo A</option>
-              <option value="Grupo B">Grupo B</option>
-              <option value="Grupo C">Grupo C</option>
+              <option *ngFor="let grupo of gruposFiltro" [value]="grupo.id">
+                Grupo {{ grupo.grupoLetra }}
+              </option>
             </select>
 
           </div>
@@ -346,11 +361,11 @@
                   <div class="flex flex-col">
 
                     <span class="font-semibold">
-                      {{ alumno.grado }}
+                      {{ alumno.grado.nombre }}
                     </span>
 
                     <span class="text-on-surface-variant text-sm">
-                      {{ alumno.grupo }}
+                      Grupo {{ alumno.grupo.grupoLetra }} · {{ alumno.cicloEscolar.nombre }}
                     </span>
 
                   </div>
@@ -621,7 +636,7 @@
               [(ngModel)]="nuevoAlumno.fechaNacimiento"
               class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
               name="fechaNacimiento"
-              required
+              [required]="!modoEdicion || !!alumnoEditando?.fechaNacimiento"
               type="date"
             />
 
@@ -641,13 +656,23 @@
           </h3>
 
           <p class="text-sm text-on-surface-variant">
-            Seleccione el grado y grupo correspondiente.
+            La asignación se guarda mediante el grupo académico real.
           </p>
 
         </div>
 
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+
+          <div class="flex flex-col gap-1">
+            <label class="font-label-md text-label-md text-on-surface font-medium">
+              Ciclo escolar
+            </label>
+            <div class="w-full px-3 py-2 bg-surface-container text-on-surface rounded-xl">
+              {{ cicloFormulario?.nombre || 'No disponible' }}
+              <span *ngIf="cicloFormulario"> · {{ cicloFormulario.estado }}</span>
+            </div>
+          </div>
 
           <!-- GRADO -->
           <div class="flex flex-col gap-1">
@@ -659,9 +684,11 @@
             </label>
 
             <select
-              [(ngModel)]="nuevoAlumno.grado"
+              [(ngModel)]="gradoSeleccionadoId"
+              (ngModelChange)="cambiarGradoFormulario()"
               class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
-              name="grado"
+              name="gradoId"
+              [disabled]="asignacionAcademicaBloqueada || sinGruposDisponibles"
               required
             >
 
@@ -669,28 +696,8 @@
                 Seleccione el grado...
               </option>
 
-              <option value="1° Primaria">
-                1° Primaria
-              </option>
-
-              <option value="2° Primaria">
-                2° Primaria
-              </option>
-
-              <option value="3° Primaria">
-                3° Primaria
-              </option>
-
-              <option value="4° Primaria">
-                4° Primaria
-              </option>
-
-              <option value="5° Primaria">
-                5° Primaria
-              </option>
-
-              <option value="6° Primaria">
-                6° Primaria
+              <option *ngFor="let grado of gradosFormulario" [value]="grado.id">
+                {{ grado.nombre }}
               </option>
 
             </select>
@@ -708,9 +715,10 @@
             </label>
 
             <select
-              [(ngModel)]="nuevoAlumno.grupo"
+              [(ngModel)]="nuevoAlumno.grupoId"
               class="w-full px-3 py-2 bg-surface text-on-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
-              name="grupo"
+              name="grupoId"
+              [disabled]="asignacionAcademicaBloqueada || sinGruposDisponibles || !gradoSeleccionadoId"
               required
             >
 
@@ -718,16 +726,8 @@
                 Seleccione el grupo...
               </option>
 
-              <option value="Grupo A">
-                Grupo A
-              </option>
-
-              <option value="Grupo B">
-                Grupo B
-              </option>
-
-              <option value="Grupo C">
-                Grupo C
+              <option *ngFor="let grupo of gruposFormulario" [ngValue]="grupo.id">
+                Grupo {{ grupo.grupoLetra }} · {{ grupo.turno }}
               </option>
 
             </select>
@@ -735,6 +735,20 @@
           </div>
 
         </div>
+
+        <p
+          *ngIf="sinGruposDisponibles"
+          class="text-sm text-error bg-error-container px-3 py-2 rounded-xl"
+        >
+          {{ mensajeSinGrupos }}
+        </p>
+
+        <p
+          *ngIf="asignacionAcademicaBloqueada"
+          class="text-sm text-on-surface-variant bg-surface-container px-3 py-2 rounded-xl"
+        >
+          {{ mensajeHistorial }}
+        </p>
 
       </div>
 
@@ -819,6 +833,7 @@
 
         <button
           class="px-space-md py-2 bg-primary text-on-primary font-label-lg rounded-xl hover:bg-primary-container shadow-sm transition-all"
+          [disabled]="sinGruposDisponibles"
           type="submit"
         >
           {{ modoEdicion ? 'Guardar cambios' : 'Guardar alumno' }}
@@ -1075,6 +1090,20 @@
         >
 
           <div class="p-4 bg-surface rounded-xl">
+            <span class="block text-sm text-on-surface-variant">Ciclo escolar</span>
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.cicloEscolar.nombre }} · {{ alumnoSeleccionado.cicloEscolar.estado }}
+            </span>
+          </div>
+
+          <div class="p-4 bg-surface rounded-xl">
+            <span class="block text-sm text-on-surface-variant">Nivel</span>
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.grado.nivel }}
+            </span>
+          </div>
+
+          <div class="p-4 bg-surface rounded-xl">
 
             <span
               class="block text-sm text-on-surface-variant"
@@ -1083,7 +1112,7 @@
             </span>
 
             <span class="font-semibold text-on-surface">
-              {{ alumnoSeleccionado.grado }}
+              {{ alumnoSeleccionado.grado.nombre }}
             </span>
 
           </div>
@@ -1098,9 +1127,16 @@
             </span>
 
             <span class="font-semibold text-on-surface">
-              {{ alumnoSeleccionado.grupo }}
+              Grupo {{ alumnoSeleccionado.grupo.grupoLetra }}
             </span>
 
+          </div>
+
+          <div class="p-4 bg-surface rounded-xl">
+            <span class="block text-sm text-on-surface-variant">Turno</span>
+            <span class="font-semibold text-on-surface">
+              {{ alumnoSeleccionado.grupo.turno }}
+            </span>
           </div>
 
         </div>

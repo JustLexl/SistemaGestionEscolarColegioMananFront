@@ -22,10 +22,19 @@ interface AlumnoAPI {
   id: number;
   matricula: string;
   nombre: string;
-  grado: string;
-  grupo: string;
+  grado: string | { nombre: string };
+  grupo: string | { nombre: string; grupoLetra: string };
   tutor: string;
   estado: 'Activo' | 'Inactivo';
+}
+
+function nombreGrado(grado: AlumnoAPI['grado']): string {
+  return typeof grado === 'string' ? grado : grado.nombre;
+}
+
+function nombreGrupo(grupo: AlumnoAPI['grupo']): string {
+  if (typeof grupo === 'string') return grupo;
+  return grupo.grupoLetra ? `Grupo ${grupo.grupoLetra}` : grupo.nombre;
 }
 
 interface AlumnoAsistencia {
@@ -132,8 +141,8 @@ export class AsistenciasComponent implements OnInit {
           id: alumno.id,
           matricula: alumno.matricula,
           nombre: alumno.nombre,
-          grado: alumno.grado,
-          grupo: alumno.grupo,
+          grado: nombreGrado(alumno.grado),
+          grupo: nombreGrupo(alumno.grupo),
           estado: alumno.estado,
           registros: asistencias
             .filter((asistencia) => asistencia.alumnoId === alumno.id)

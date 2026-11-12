@@ -6,8 +6,11 @@ export interface AlumnoApi {
   readonly id: number | string;
   readonly matricula: string;
   readonly nombre: string;
-  readonly grado: string;
-  readonly grupo: string;
+  readonly grado: string | { readonly nombre: string };
+  readonly grupo: string | {
+    readonly nombre: string;
+    readonly grupoLetra: string;
+  };
 }
 
 export interface MateriaApi {

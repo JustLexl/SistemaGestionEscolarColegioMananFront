@@ -392,11 +392,13 @@ export class CalificacionesPage implements OnInit {
     }
   }
 
-  private shortGrade(value: string): string {
-    return value.replace(/\s+Primaria$/i, '').trim();
+  private shortGrade(value: AlumnoApi['grado']): string {
+    const nombre = typeof value === 'string' ? value : value.nombre;
+    return nombre.replace(/\s+(Primaria|Secundaria)$/i, '').trim();
   }
 
-  private shortGroup(value: string): string {
+  private shortGroup(value: AlumnoApi['grupo']): string {
+    if (typeof value !== 'string') return value.grupoLetra;
     return value.replace(/^Grupo\s+/i, '').trim();
   }
 
