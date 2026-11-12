@@ -77,6 +77,16 @@
 
       <a
         class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/materias"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
+        <span>Materias</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
         routerLink="/calificaciones"
         routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
         [routerLinkActiveOptions]="{ exact: false }"
@@ -84,19 +94,6 @@
         <span class="material-symbols-outlined text-primary text-[20px]">grade</span>
         <span>Calificaciones</span>
       </a>
-
-      <button
-        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant opacity-50 cursor-not-allowed w-full"
-        type="button"
-        disabled
-        title="Materias (No disponible)"
-      >
-        <span class="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
-        <span>Materias</span>
-        <span class="ml-auto text-[11px] bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant font-medium">
-          No disponible
-        </span>
-      </button>
 
       <a
         class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"

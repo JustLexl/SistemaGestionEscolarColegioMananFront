@@ -1,0 +1,318 @@
+<section class="cm-page materias-page">
+  <div class="cm-context">
+    <div class="cm-context__identity">
+      <span class="cm-context__brand">
+        <span class="material-symbols-outlined">auto_stories</span>
+        Gestión académica
+      </span>
+      <span>Relaciones reales por grupo y profesor</span>
+    </div>
+    <span class="cm-active-period">
+      <span class="cm-active-period__dot"></span>
+      Ciclo activo: {{ cicloActivo()?.nombre || 'Sin ciclo activo' }}
+    </span>
+  </div>
+
+  <header class="cm-heading">
+    <div class="cm-heading__copy">
+      <span class="cm-eyebrow">Oferta académica</span>
+      <h1>Materias</h1>
+      <p>Administra las materias, grupos y profesores asignados por ciclo escolar.</p>
+    </div>
+    <button class="cm-primary-action" type="button" (click)="abrirCrear()">
+      <span class="material-symbols-outlined">add</span>
+      Registrar materia
+    </button>
+  </header>
+
+  @if (error()) {
+    <div class="notice notice--error" role="alert">{{ error() }}</div>
+  }
+  @if (mensaje()) {
+    <div class="notice notice--success" role="status">{{ mensaje() }}</div>
+  }
+
+  <div class="cm-kpi-grid materias-kpis" aria-label="Resumen de materias">
+    <article class="cm-kpi-card">
+      <div class="cm-kpi-card__copy">
+        <span class="cm-kpi-card__label">Total materias</span>
+        <strong class="cm-kpi-card__value">{{ metricas().total }}</strong>
+        <span class="cm-kpi-card__description">Oferta registrada</span>
+      </div>
+      <span class="material-symbols-outlined cm-kpi-card__icon">menu_book</span>
+    </article>
+    <article class="cm-kpi-card">
+      <div class="cm-kpi-card__copy">
+        <span class="cm-kpi-card__label">Materias activas</span>
+        <strong class="cm-kpi-card__value">{{ metricas().activas }}</strong>
+        <span class="cm-kpi-card__description">Operación académica</span>
+      </div>
+      <span class="material-symbols-outlined cm-kpi-card__icon">verified</span>
+    </article>
+    <article class="cm-kpi-card">
+      <div class="cm-kpi-card__copy">
+        <span class="cm-kpi-card__label">Profesores asignados</span>
+        <strong class="cm-kpi-card__value">{{ metricas().profesoresAsignados }}</strong>
+        <span class="cm-kpi-card__description">Relaciones vigentes</span>
+      </div>
+      <span class="material-symbols-outlined cm-kpi-card__icon">badge</span>
+    </article>
+    <article class="cm-kpi-card">
+      <div class="cm-kpi-card__copy">
+        <span class="cm-kpi-card__label">Grupos con materias</span>
+        <strong class="cm-kpi-card__value">{{ metricas().gruposConMaterias }}</strong>
+        <span class="cm-kpi-card__description">Cobertura real</span>
+      </div>
+      <span class="material-symbols-outlined cm-kpi-card__icon">groups</span>
+    </article>
+  </div>
+
+  <section class="cm-filters" aria-label="Filtros de materias">
+    <div class="cm-filter-grid materias-filters">
+      <label class="cm-filter-field cm-filter-field--search">
+        <span class="visually-hidden">Buscar</span>
+        <span class="material-symbols-outlined">search</span>
+        <input
+          type="search"
+          placeholder="Buscar por nombre, código o clave SEP"
+          [value]="busqueda()"
+          (input)="busqueda.set($any($event.target).value)"
+        />
+      </label>
+      <label class="cm-filter-field">
+        <span class="visually-hidden">Ciclo escolar</span>
+        <select [value]="filtroCiclo()" (change)="filtroCiclo.set($any($event.target).value)">
+          <option value="">Todos los ciclos</option>
+          @for (ciclo of ciclos(); track ciclo.id) {
+            <option [value]="ciclo.id">{{ ciclo.nombre }}</option>
+          }
+        </select>
+      </label>
+      <label class="cm-filter-field">
+        <span class="visually-hidden">Grado</span>
+        <select [value]="filtroGrado()" (change)="filtroGrado.set($any($event.target).value)">
+          <option value="">Todos los grados</option>
+          @for (grado of gradosFiltro(); track grado.id) {
+            <option [value]="grado.id">{{ grado.nombre }}</option>
+          }
+        </select>
+      </label>
+      <label class="cm-filter-field">
+        <span class="visually-hidden">Profesor</span>
+        <select [value]="filtroProfesor()" (change)="filtroProfesor.set($any($event.target).value)">
+          <option value="">Todos los profesores</option>
+          @for (profesor of profesores(); track profesor.id) {
+            <option [value]="profesor.id">{{ profesor.nombre }}</option>
+          }
+        </select>
+      </label>
+      <label class="cm-filter-field">
+        <span class="visually-hidden">Estado</span>
+        <select [value]="filtroEstado()" (change)="filtroEstado.set($any($event.target).value)">
+          <option value="">Todos los estados</option>
+          @for (estado of estados; track estado) {
+            <option [value]="estado">{{ mostrarEstado(estado) }}</option>
+          }
+        </select>
+      </label>
+      <button class="cm-reset" type="button" title="Limpiar filtros" (click)="limpiarFiltros()">
+        <span class="material-symbols-outlined">filter_alt_off</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="cm-data-section">
+    <div class="cm-data-header">
+      <div class="cm-data-header__title">
+        <h2>Catálogo de materias</h2>
+        <span class="cm-count">{{ materiasFiltradas().length }}</span>
+      </div>
+    </div>
+    <div class="cm-table-scroll">
+      <table class="cm-table">
+        <thead>
+          <tr>
+            <th>Materia</th>
+            <th>Clave SEP</th>
+            <th>Grados / grupos</th>
+            <th>Profesor</th>
+            <th>Carga horaria</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (cargando()) {
+            <tr><td colspan="7" class="empty-state">Cargando materias…</td></tr>
+          } @else {
+            @for (materia of materiasFiltradas(); track materia.id) {
+              <tr>
+                <td>
+                  <strong>{{ materia.nombre }}</strong>
+                  <small>{{ materia.codigo }} · {{ materia.cicloEscolar.nombre }}</small>
+                </td>
+                <td>{{ materia.claveSep }}</td>
+                <td>
+                  <span>{{ materia.grados.length ? materia.grados[0].nombre : 'Sin grado' }}</span>
+                  @if (materia.grados.length > 1) {
+                    <small>+{{ materia.grados.length - 1 }} grado adicional</small>
+                  }
+                  <small>Grupos {{ materia.grupos.length ? letrasGrupos(materia) : '—' }}</small>
+                </td>
+                <td>
+                  <span>{{ materia.profesor?.nombre || 'Sin asignar' }}</span>
+                  @if (materia.profesor) { <small>{{ materia.profesor.cedula }}</small> }
+                </td>
+                <td>{{ materia.cargaHoraria }}</td>
+                <td>
+                  <span
+                    class="cm-status"
+                    [class.cm-status--active]="materia.estado === 'Activa'"
+                    [class.cm-status--planning]="materia.estado === 'En planeacion'"
+                    [class.cm-status--inactive]="materia.estado === 'Inactiva'"
+                  >{{ mostrarEstado(materia.estado) }}</span>
+                </td>
+                <td>
+                  <div class="cm-actions">
+                    <button type="button" title="Consultar materia" (click)="abrirConsulta(materia)">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <button type="button" title="Editar materia" (click)="abrirEditar(materia)">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button
+                      type="button"
+                      title="Dar de baja"
+                      [disabled]="materia.estado === 'Inactiva' || materia.cicloEscolar.estado === 'Finalizado'"
+                      (click)="darDeBaja(materia)"
+                    >
+                      <span class="material-symbols-outlined">block</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7" class="empty-state">No hay materias que coincidan con los filtros.</td></tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+
+@if (modalAbierto()) {
+  <div class="modal-backdrop" role="presentation" (click)="cerrarModal()">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="materia-modal-title" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <div>
+          <span class="cm-eyebrow">Gestión de materias</span>
+          <h2 id="materia-modal-title">
+            {{ modalModo() === 'crear' ? 'Registrar materia' : modalModo() === 'editar' ? 'Editar materia' : 'Consultar materia' }}
+          </h2>
+        </div>
+        <button type="button" class="icon-button" title="Cerrar" (click)="cerrarModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </header>
+
+      @if (materiaSeleccionada()?.cicloEscolar?.estado === 'Finalizado' && modalModo() === 'editar') {
+        <div class="notice notice--info">Esta materia es histórica. Su configuración académica es de solo lectura.</div>
+      }
+
+      <form class="materia-form" [formGroup]="formulario" (ngSubmit)="guardar()">
+        <label class="field field--wide">
+          <span>Nombre *</span>
+          <input formControlName="nombre" type="text" />
+        </label>
+        <label class="field">
+          <span>Código</span>
+          <input formControlName="codigo" type="text" />
+        </label>
+        <label class="field">
+          <span>Clave SEP *</span>
+          <input formControlName="claveSep" type="text" />
+        </label>
+        <label class="field">
+          <span>Carga horaria *</span>
+          <input formControlName="cargaHoraria" type="text" placeholder="4 hrs/sem" />
+        </label>
+        <label class="field">
+          <span>Ciclo escolar *</span>
+          <select formControlName="cicloEscolarId" (change)="cambiarCiclo()">
+            <option value="" disabled>Selecciona un ciclo</option>
+            @for (ciclo of ciclosConfigurables(); track ciclo.id) {
+              <option [value]="ciclo.id">{{ ciclo.nombre }} · {{ ciclo.estado === 'Planeacion' ? 'Planeación' : ciclo.estado }}</option>
+            }
+            @if (materiaSeleccionada()?.cicloEscolar?.estado === 'Finalizado') {
+              <option [value]="materiaSeleccionada()!.cicloEscolar.id">{{ materiaSeleccionada()!.cicloEscolar.nombre }} · Finalizado</option>
+            }
+          </select>
+        </label>
+        <label class="field field--wide">
+          <span>Grupos * <small>Usa Ctrl/Cmd para seleccionar varios</small></span>
+          <select
+            class="groups-select"
+            formControlName="grupoIds"
+            multiple
+            size="5"
+            (change)="cambiarGrupos($event)"
+          >
+            @for (grupo of gruposFormulario(); track grupo.id) {
+              <option [value]="grupo.id" [selected]="formulario.controls.grupoIds.value.includes(grupo.id)">
+                {{ grupo.grado.nombre }} — Grupo {{ grupo.grupoLetra }}
+              </option>
+            }
+          </select>
+          @if (gruposFormulario().length === 0) {
+            <small class="field-hint">No hay grupos registrados para este ciclo.</small>
+          }
+        </label>
+        <label class="field field--wide">
+          <span>Profesor</span>
+          <select formControlName="profesorId">
+            <option value="">Sin asignar (sólo planeación)</option>
+            @for (profesor of profesoresActivos(); track profesor.id) {
+              <option [value]="profesor.id">{{ profesor.nombre }} · {{ profesor.cedula }}</option>
+            }
+            @if (materiaSeleccionada()?.profesor?.estado === 'Inactivo') {
+              <option [value]="materiaSeleccionada()!.profesor!.id">{{ materiaSeleccionada()!.profesor!.nombre }} · Inactivo</option>
+            }
+          </select>
+        </label>
+        <label class="field">
+          <span>Estado</span>
+          <select formControlName="estado">
+            @for (estado of estados; track estado) {
+              <option [value]="estado">{{ mostrarEstado(estado) }}</option>
+            }
+          </select>
+        </label>
+        <label class="check-field">
+          <input formControlName="isTroncoComun" type="checkbox" />
+          <span>Materia de tronco común</span>
+        </label>
+
+        @if (modalModo() === 'consultar' && materiaSeleccionada()) {
+          <div class="detail-summary field--wide">
+            <div><span>Grados</span><strong>{{ nombresGrados(materiaSeleccionada()!) }}</strong></div>
+            <div><span>Grupos</span><strong>{{ nombresGrupos(materiaSeleccionada()!) }}</strong></div>
+            <div><span>Profesor</span><strong>{{ materiaSeleccionada()!.profesor?.nombre || 'Sin asignar' }}</strong></div>
+            <div><span>Cédula</span><strong>{{ materiaSeleccionada()!.profesor?.cedula || '—' }}</strong></div>
+          </div>
+        }
+
+        <footer class="modal-actions field--wide">
+          <button class="cm-secondary-action" type="button" (click)="cerrarModal()">
+            {{ modalModo() === 'consultar' ? 'Cerrar' : 'Cancelar' }}
+          </button>
+          @if (modalModo() !== 'consultar' && materiaSeleccionada()?.cicloEscolar?.estado !== 'Finalizado') {
+            <button class="cm-primary-action" type="submit" [disabled]="guardando()">
+              {{ guardando() ? 'Guardando…' : modalModo() === 'crear' ? 'Registrar materia' : 'Guardar cambios' }}
+            </button>
+          }
+        </footer>
+      </form>
+    </section>
+  </div>
+}

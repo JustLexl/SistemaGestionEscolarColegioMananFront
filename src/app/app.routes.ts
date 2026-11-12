@@ -43,6 +43,12 @@ export const routes: Routes = [
         title: 'Profesores | Colegio Manantial'
       },
       {
+        path: 'materias',
+        loadComponent: () =>
+          import('./pages/materias/materias.component').then((c) => c.MateriasComponent),
+        title: 'Materias | Colegio Manantial'
+      },
+      {
         path: 'calificaciones',
         loadComponent: () =>
           import('./features/calificaciones/pages/calificaciones-page/calificaciones-page').then((c) => c.CalificacionesPage),
