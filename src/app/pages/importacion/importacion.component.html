@@ -1,0 +1,262 @@
+<section class="cm-page import-page">
+  <div class="cm-context">
+    <div class="cm-context__identity">
+      <span class="cm-context__brand">
+        <span class="material-symbols-outlined">upload_file</span>
+        Administración escolar
+      </span>
+      <span>Operación de datos</span>
+    </div>
+    <span class="cm-active-period">
+      <span class="cm-active-period__dot"></span>
+      Archivos de hasta 10 MB
+    </span>
+  </div>
+
+  <header class="cm-heading">
+    <div class="cm-heading__copy">
+      <span class="cm-eyebrow">Importación masiva</span>
+      <h1>Importar datos</h1>
+      <p>Descarga la plantilla oficial, valida el archivo y confirma únicamente los registros correctos.</p>
+    </div>
+    <button class="cm-secondary-action" type="button" (click)="descargarPlantilla()" [disabled]="ocupado()">
+      <span class="material-symbols-outlined">download</span>
+      Descargar plantilla
+    </button>
+  </header>
+
+  <div class="entity-grid" aria-label="Entidades disponibles">
+    @for (item of entidades; track item.id) {
+      <button
+        class="entity-card"
+        [class.entity-card--active]="entidad() === item.id"
+        type="button"
+        (click)="seleccionarEntidad(item.id)"
+        [attr.aria-pressed]="entidad() === item.id"
+      >
+        <span class="entity-card__icon material-symbols-outlined">{{ item.icono }}</span>
+        <span class="entity-card__copy">
+          <strong>{{ item.nombre }}</strong>
+          <small>{{ item.descripcion }}</small>
+        </span>
+        @if (entidad() === item.id) {
+          <span class="material-symbols-outlined entity-card__check">check_circle</span>
+        }
+      </button>
+    }
+  </div>
+
+  <section class="upload-panel" [class.upload-panel--error]="estado() === 'error'">
+    <div class="upload-panel__header">
+      <div>
+        <span class="step-label">Paso 1</span>
+        <h2>Selecciona el archivo de {{ entidadActiva().nombre }}</h2>
+        <p>Sólo archivos .xlsx o .csv con los encabezados de la plantilla oficial.</p>
+      </div>
+      <button class="template-link" type="button" (click)="descargarPlantilla()" [disabled]="ocupado()">
+        <span class="material-symbols-outlined">file_download</span>
+        Plantilla de {{ entidadActiva().nombre }}
+      </button>
+    </div>
+
+    <input
+      #fileInput
+      class="visually-hidden"
+      type="file"
+      accept=".xlsx,.csv"
+      (change)="onFileInput($event)"
+    />
+
+    @if (!archivo()) {
+      <button
+        class="drop-zone"
+        type="button"
+        (click)="fileInput.click()"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+      >
+        <span class="drop-zone__icon material-symbols-outlined">cloud_upload</span>
+        <strong>Arrastra tu archivo aquí o selecciónalo</strong>
+        <span>Excel (.xlsx) o CSV · máximo 10 MB</span>
+      </button>
+    } @else {
+      <div class="file-card">
+        <span class="file-card__icon material-symbols-outlined">description</span>
+        <div class="file-card__copy">
+          <strong>{{ archivo()!.name }}</strong>
+          <span>{{ formatearTamano(archivo()!.size) }} · {{ entidadActiva().nombre }}</span>
+        </div>
+        <button type="button" class="replace-button" (click)="fileInput.click()" [disabled]="ocupado()">
+          Reemplazar
+        </button>
+      </div>
+    }
+
+    @if (mensajeError()) {
+      <div class="feedback feedback--error" role="alert">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ mensajeError() }}</span>
+      </div>
+    }
+
+    <div class="upload-actions">
+      <button
+        class="cm-primary-action"
+        type="button"
+        [disabled]="!archivo() || ocupado()"
+        (click)="validar()"
+      >
+        @if (estado() === 'validando') {
+          <span class="spinner" aria-hidden="true"></span>
+          Validando archivo…
+        } @else {
+          <span class="material-symbols-outlined">fact_check</span>
+          Validar archivo
+        }
+      </button>
+    </div>
+  </section>
+
+  @if (resultado(); as datos) {
+    <section class="results" aria-live="polite">
+      <div class="results__heading">
+        <div>
+          <span class="step-label">Paso 2</span>
+          <h2>Resultado de validación</h2>
+          <p>{{ datos.mensaje }}</p>
+        </div>
+        <button class="cm-secondary-action" type="button" (click)="reiniciar()" [disabled]="ocupado()">
+          <span class="material-symbols-outlined">restart_alt</span>
+          Reiniciar
+        </button>
+      </div>
+
+      <div class="cm-kpi-grid result-kpis">
+        <article class="cm-kpi-card">
+          <div class="cm-kpi-card__copy">
+            <p class="cm-kpi-card__label">Registros encontrados</p>
+            <p class="cm-kpi-card__value">{{ datos.totalRegistros }}</p>
+            <p class="cm-kpi-card__description">Filas procesadas</p>
+          </div>
+          <span class="cm-kpi-card__icon material-symbols-outlined">dataset</span>
+        </article>
+        <article class="cm-kpi-card kpi-valid">
+          <div class="cm-kpi-card__copy">
+            <p class="cm-kpi-card__label">Registros válidos</p>
+            <p class="cm-kpi-card__value">{{ datos.totalValidos }}</p>
+            <p class="cm-kpi-card__description">Listos para importar</p>
+          </div>
+          <span class="cm-kpi-card__icon material-symbols-outlined">check_circle</span>
+        </article>
+        <article class="cm-kpi-card kpi-error">
+          <div class="cm-kpi-card__copy">
+            <p class="cm-kpi-card__label">Registros con errores</p>
+            <p class="cm-kpi-card__value">{{ datos.totalErrores }}</p>
+            <p class="cm-kpi-card__description">Requieren corrección</p>
+          </div>
+          <span class="cm-kpi-card__icon material-symbols-outlined">warning</span>
+        </article>
+      </div>
+
+      @if (datos.totalValidos > 0) {
+        <section class="cm-data-section">
+          <div class="cm-data-header">
+            <div class="cm-data-header__title">
+              <h3 class="cm-data-header__heading">Vista previa de registros válidos</h3>
+              <span class="cm-count">{{ datos.totalValidos }}</span>
+            </div>
+            @if (datos.totalValidos > validosVista().length) {
+              <small>Mostrando los primeros {{ validosVista().length }}</small>
+            }
+          </div>
+          <div class="cm-table-scroll">
+            <table class="cm-table preview-table">
+              <thead>
+                <tr>
+                  @for (columna of columnasVista(); track columna) {
+                    <th>{{ columna }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (registro of validosVista(); track $index) {
+                  <tr>
+                    @for (columna of columnasVista(); track columna) {
+                      <td>{{ valorCelda(registro[columna]) }}</td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      @if (datos.totalErrores > 0) {
+        <section class="error-list">
+          <div class="error-list__heading">
+            <div>
+              <h3>Registros que requieren atención</h3>
+              <p>Corrige estas filas en el archivo antes de volver a importarlas.</p>
+            </div>
+            <span>{{ datos.totalErrores }} error(es)</span>
+          </div>
+          @for (error of datos.errores; track $index) {
+            <article class="error-row">
+              <div class="error-row__identity">
+                <strong>{{ filaError(error, $index) }}</strong>
+                @if (identificadorError(error)) {
+                  <span>{{ identificadorError(error) }}</span>
+                }
+              </div>
+              <ul>
+                @for (motivo of motivosError(error); track motivo) {
+                  <li>{{ motivo }}</li>
+                }
+              </ul>
+            </article>
+          }
+        </section>
+      }
+
+      <footer class="confirm-bar">
+        <div>
+          <strong>Confirmar importación</strong>
+          <span>Se guardarán {{ datos.totalValidos }} registros válidos; los errores no se enviarán.</span>
+        </div>
+        <button
+          class="cm-primary-action"
+          type="button"
+          [disabled]="!puedeConfirmar()"
+          (click)="confirmar()"
+        >
+          @if (estado() === 'confirmando') {
+            <span class="spinner" aria-hidden="true"></span>
+            Importando…
+          } @else {
+            <span class="material-symbols-outlined">publish</span>
+            Importar {{ datos.totalValidos }} registros
+          }
+        </button>
+      </footer>
+    </section>
+  }
+
+  @if (estado() === 'completado' && confirmacion(); as completada) {
+    <section class="completion" role="status">
+      <span class="completion__icon material-symbols-outlined">task_alt</span>
+      <div>
+        <span class="step-label">Proceso completado</span>
+        <h2>{{ completada.totalImportados }} registros importados</h2>
+        <p>{{ completada.mensaje }}</p>
+        <p>
+          {{ entidadActiva().nombre }} · {{ resultado()?.totalErrores ?? 0 }} descartados ·
+          {{ fechaOperacionTexto() }}
+        </p>
+      </div>
+      <button class="cm-secondary-action" type="button" (click)="reiniciar()">
+        Nueva importación
+      </button>
+    </section>
+  }
+</section>

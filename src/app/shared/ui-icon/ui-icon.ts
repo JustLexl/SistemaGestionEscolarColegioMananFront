@@ -19,6 +19,7 @@ export type IconName =
   | 'students'
   | 'teachers'
   | 'trash'
+  | 'upload'
   | 'user-plus';
 
 @Component({

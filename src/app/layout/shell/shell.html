@@ -97,6 +97,16 @@
 
       <a
         class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/importacion"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">upload_file</span>
+        <span>Importar datos</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
         routerLink="/roles"
         routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
         [routerLinkActiveOptions]="{ exact: false }"
