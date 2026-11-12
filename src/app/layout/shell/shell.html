@@ -47,6 +47,16 @@
 
       <a
         class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
+        routerLink="/ciclos-escolares"
+        routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <span class="material-symbols-outlined text-primary text-[20px]">date_range</span>
+        <span>Ciclos escolares</span>
+      </a>
+
+      <a
+        class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl font-label-lg text-label-lg transition-all"
         routerLink="/grados-y-grupos"
         routerLinkActive="bg-primary-container text-on-primary-container shadow-[0_1px_3px_0_rgba(15,41,66,0.04)]"
         [routerLinkActiveOptions]="{ exact: false }"
@@ -106,7 +116,7 @@
     <div class="px-space-xs flex items-center justify-between">
       <span class="font-label-sm text-label-sm text-on-surface-variant">Ciclo Escolar</span>
       <span class="font-label-sm text-label-sm bg-surface-container text-secondary font-semibold px-2 py-0.5 rounded-lg">
-        2024–2025
+        2026–2027
       </span>
     </div>
 

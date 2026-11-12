@@ -10,11 +10,12 @@ describe('GradosGruposApiService', () => {
   let service: GradosGruposApiService;
   let fetchMock: ReturnType<typeof vi.fn>;
 
-  const grado = { id: '6', nombre: '6° Primaria', nivel: 'Primaria', ciclo: '2026–2027' };
+  const ciclo = { id: 3, nombre: '2027–2028', fechaInicio: '2027-08-30', fechaFin: '2028-07-14', estado: 'Planeacion' } as const;
+  const grado = { id: '8', nombre: '2° Secundaria', nivel: 'Secundaria', numeroGrado: 2, cicloEscolarId: 3, ciclo: ciclo.nombre, cicloEscolar: ciclo } as const;
   const grupo = {
     id: 10,
-    gradoId: '6',
-    gradoNombre: '6° Primaria',
+    gradoId: '8',
+    gradoNombre: '2° Secundaria',
     grupoLetra: 'Z',
     nombre: '6° Primaria - Grupo Z',
     clave: 'CM-PRI-6Z-26',
@@ -30,14 +31,17 @@ describe('GradosGruposApiService', () => {
     alumnosMax: 40,
     estado: 'Activo',
     isBase: false,
+    grado,
+    cicloEscolarId: 3,
+    cicloEscolar: ciclo,
   } as const;
   const gradoPayload: GradoPayload = {
-    nombre: grado.nombre,
     nivel: grado.nivel,
-    ciclo: grado.ciclo,
+    numeroGrado: grado.numeroGrado,
+    cicloEscolarId: grado.cicloEscolarId,
   };
   const grupoPayload: GrupoPayload = {
-    gradoId: '6',
+    gradoId: '8',
     grupoLetra: 'Z',
     clave: grupo.clave,
     aula: grupo.aula,
@@ -83,8 +87,8 @@ describe('GradosGruposApiService', () => {
 
   it('edita un grado con PUT', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: grado }));
-    await service.actualizarGrado('6', gradoPayload);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grados/6', expect.objectContaining({ method: 'PUT' }));
+    await service.actualizarGrado('8', gradoPayload);
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grados/8', expect.objectContaining({ method: 'PUT' }));
   });
 
   it('obtiene grupos reales', async () => {

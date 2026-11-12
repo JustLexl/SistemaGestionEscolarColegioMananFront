@@ -4,13 +4,18 @@ import {
   GradosGruposApiService,
 } from './grados-grupos-api.service';
 import { GradosGruposComponent } from './grados-grupos.component';
+import { CiclosEscolaresApiService } from '../ciclos-escolares/ciclos-escolares-api.service';
 
 describe('GradosGruposComponent', () => {
   let component: GradosGruposComponent;
   let fixture: ComponentFixture<GradosGruposComponent>;
   let api: Record<string, ReturnType<typeof vi.fn>>;
+  let ciclosApi: Record<string, ReturnType<typeof vi.fn>>;
 
-  const grado = { id: '6', nombre: '6° Primaria', nivel: 'Primaria', ciclo: '2026–2027' };
+  const ciclo = { id: 3, nombre: '2027–2028', fechaInicio: '2027-08-30', fechaFin: '2028-07-14', estado: 'Planeacion' } as const;
+  const cicloActivo = { id: 2, nombre: '2026–2027', fechaInicio: '2026-08-31', fechaFin: '2027-07-09', estado: 'Activo' } as const;
+  const grado = { id: '8', nombre: '2° Secundaria', nivel: 'Secundaria', numeroGrado: 2, cicloEscolarId: 3, ciclo: ciclo.nombre, cicloEscolar: ciclo } as const;
+  const gradoActivo = { id: '7', nombre: '1° Secundaria', nivel: 'Secundaria', numeroGrado: 1, cicloEscolarId: 2, ciclo: cicloActivo.nombre, cicloEscolar: cicloActivo } as const;
   const profesor = {
     id: 3,
     usuarioId: 13,
@@ -20,10 +25,10 @@ describe('GradosGruposComponent', () => {
   };
   const grupo = {
     id: 10,
-    gradoId: '6',
-    gradoNombre: '6° Primaria',
+    gradoId: '8',
+    gradoNombre: '2° Secundaria',
     grupoLetra: 'Z',
-    nombre: '6° Primaria - Grupo Z',
+    nombre: '2° Secundaria - Grupo Z',
     clave: 'CM-PRI-6Z-26',
     aula: 'Aula Demo',
     edificio: 'Edificio B',
@@ -37,11 +42,14 @@ describe('GradosGruposComponent', () => {
     alumnosMax: 40,
     estado: 'Activo',
     isBase: false,
+    grado,
+    cicloEscolarId: 3,
+    cicloEscolar: ciclo,
   };
 
   beforeEach(async () => {
     api = {
-      obtenerGrados: vi.fn().mockResolvedValue([grado]),
+      obtenerGrados: vi.fn().mockResolvedValue([grado, gradoActivo]),
       obtenerGrupos: vi.fn().mockResolvedValue([grupo]),
       obtenerProfesoresActivos: vi.fn().mockResolvedValue([profesor]),
       obtenerMetricas: vi.fn().mockResolvedValue({
@@ -58,10 +66,14 @@ describe('GradosGruposComponent', () => {
       actualizarGrupo: vi.fn().mockResolvedValue(grupo),
       cambiarEstadoGrupo: vi.fn().mockResolvedValue({ ...grupo, estado: 'Inactivo' }),
     };
+    ciclosApi = { obtenerCiclos: vi.fn().mockResolvedValue([cicloActivo, ciclo]) };
 
     await TestBed.configureTestingModule({
       imports: [GradosGruposComponent],
-      providers: [{ provide: GradosGruposApiService, useValue: api }],
+      providers: [
+        { provide: GradosGruposApiService, useValue: api },
+        { provide: CiclosEscolaresApiService, useValue: ciclosApi },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GradosGruposComponent);
@@ -76,35 +88,56 @@ describe('GradosGruposComponent', () => {
   const ui = () => component as any;
 
   it('renderiza grados, grupos, Profesores y métricas obtenidos', () => {
-    expect(fixture.nativeElement.textContent).toContain('6° Primaria - Grupo Z');
+    expect(fixture.nativeElement.textContent).toContain('2° Secundaria - Grupo Z');
   });
 
   it('crea un grado y refresca los datos', async () => {
     ui().abrirCrearGrado();
-    ui().formGrado.setValue({ nombre: '1° Secundaria', nivel: 'Secundaria', ciclo: '2026–2027' });
+    ui().formGrado.setValue({ nivel: 'Secundaria', numeroGrado: 1, cicloEscolarId: 3 });
     await ui().guardarGrado();
     expect(api['crearGrado']).toHaveBeenCalledWith({
-      nombre: '1° Secundaria',
       nivel: 'Secundaria',
-      ciclo: '2026–2027',
+      numeroGrado: 1,
+      cicloEscolarId: 3,
     });
     expect(api['obtenerGrados']).toHaveBeenCalledOnce();
   });
 
+  it('ofrece Primaria 1°–6° y Secundaria solo 1°–3°', () => {
+    ui().abrirCrearGrado();
+    expect(ui().numerosGrado()).toEqual([1, 2, 3, 4, 5, 6]);
+    ui().formGrado.controls.nivel.setValue('Secundaria');
+    ui().cambiarNivel();
+    expect(ui().numerosGrado()).toEqual([1, 2, 3]);
+  });
+
+  it('muestra únicamente ciclos en Planeación al crear un grado', () => {
+    ui().abrirCrearGrado();
+    fixture.detectChanges();
+    const opciones = [...fixture.nativeElement.querySelectorAll('select[formControlName="cicloEscolarId"] option')]
+      .map((option: HTMLOptionElement) => option.textContent?.trim());
+    expect(opciones).toEqual(['2027–2028 · Planeación']);
+  });
+
+  it('bloquea el ciclo al editar un grado activo', () => {
+    ui().abrirEditarGrado(gradoActivo);
+    expect(ui().formGrado.controls.cicloEscolarId.disabled).toBe(true);
+  });
+
   it('edita un grado existente', async () => {
     ui().abrirEditarGrado(grado);
-    ui().formGrado.controls.nombre.setValue('Sexto de Primaria');
+    ui().formGrado.controls.numeroGrado.setValue(3);
     await ui().guardarGrado();
     expect(api['actualizarGrado']).toHaveBeenCalledWith(
-      '6',
-      expect.objectContaining({ nombre: 'Sexto de Primaria' }),
+      '8',
+      expect.objectContaining({ numeroGrado: 3, cicloEscolarId: 3 }),
     );
   });
 
   it('registra un grupo enviando Profesor.id y no usuarioId', async () => {
     ui().abrirCrearGrupo();
     ui().formGrupo.setValue({
-      gradoId: '6',
+      gradoId: '8',
       grupoLetra: 'Z',
       clave: 'CM-PRI-6Z-26',
       aula: 'Aula Demo',
@@ -150,7 +183,7 @@ describe('GradosGruposComponent', () => {
     );
     ui().abrirCrearGrupo();
     ui().formGrupo.setValue({
-      gradoId: '6', grupoLetra: 'Z', clave: 'CM-PRI-6Z-26', aula: 'Aula Demo',
+      gradoId: '8', grupoLetra: 'Z', clave: 'CM-SEC-2Z-28', aula: 'Aula Demo',
       edificio: 'Edificio B', turno: 'matutino', profesorId: '6', alumnosMax: 40, estado: 'Activo',
     });
     await ui().guardarGrupo();

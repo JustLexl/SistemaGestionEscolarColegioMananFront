@@ -25,6 +25,12 @@ export const routes: Routes = [
         title: 'Grados y Grupos | Colegio Manantial'
       },
       {
+        path: 'ciclos-escolares',
+        loadComponent: () =>
+          import('./pages/ciclos-escolares/ciclos-escolares.component').then((c) => c.CiclosEscolaresComponent),
+        title: 'Ciclos escolares | Colegio Manantial'
+      },
+      {
         path: 'asistencias',
         loadComponent: () =>
           import('./pages/asistencias/asistencias.component').then((c) => c.AsistenciasComponent),

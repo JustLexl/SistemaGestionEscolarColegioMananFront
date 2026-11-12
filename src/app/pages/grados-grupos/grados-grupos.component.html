@@ -37,10 +37,10 @@
         </p>
       </div>
       <div class="flex flex-wrap items-center gap-space-sm">
-        <button type="button" class="rounded-xl border border-surface-container bg-white px-space-md py-2.5 font-label-lg text-secondary shadow-sm cm-secondary-action" (click)="abrirCrearGrado()">
+        <button type="button" class="rounded-xl border border-surface-container bg-white px-space-md py-2.5 font-label-lg text-secondary shadow-sm cm-secondary-action" (click)="abrirCrearGrado()" [disabled]="ciclosPlaneacion().length === 0">
           + Crear grado
         </button>
-        <button type="button" class="rounded-xl bg-primary px-space-md py-2.5 font-label-lg text-on-primary shadow-sm cm-primary-action" (click)="abrirCrearGrupo()" [disabled]="cargando()">
+        <button type="button" class="rounded-xl bg-primary px-space-md py-2.5 font-label-lg text-on-primary shadow-sm cm-primary-action" (click)="abrirCrearGrupo()" [disabled]="cargando() || gradosPlaneacion().length === 0">
           + Registrar grupo
         </button>
       </div>
@@ -129,10 +129,10 @@
             <tr class="hover:bg-surface-container-low">
               <td class="px-space-md py-3.5">
                 <div class="flex items-center gap-3">
-                  <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-label-md font-bold text-white">{{ grupo.gradoId }}°{{ grupo.grupoLetra }}</span>
+                  <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-label-md font-bold text-white">{{ grupo.grado.numeroGrado }}°{{ grupo.grupoLetra }}</span>
                   <div>
                     <div class="font-semibold">{{ grupo.nombre }}</div>
-                    <div class="text-label-sm text-on-surface-variant">Clave: {{ grupo.clave }}</div>
+                    <div class="text-label-sm text-on-surface-variant">{{ grupo.cicloEscolar.nombre }} · Clave: {{ grupo.clave }}</div>
                   </div>
                 </div>
               </td>
@@ -152,10 +152,10 @@
               </td>
               <td class="px-space-md py-3.5 text-right">
                 <div class="inline-flex items-center gap-1 cm-actions">
-                  <button type="button" class="rounded-lg p-1.5 text-on-surface-variant hover:bg-surface" title="Editar" (click)="abrirEditarGrupo(grupo)">
+                  <button type="button" class="rounded-lg p-1.5 text-on-surface-variant hover:bg-surface" [title]="grupo.cicloEscolar.estado === 'Finalizado' ? 'Ciclo finalizado: solo lectura' : 'Editar'" (click)="abrirEditarGrupo(grupo)" [disabled]="grupo.cicloEscolar.estado === 'Finalizado'">
                     <span class="material-symbols-outlined text-[19px]">edit</span>
                   </button>
-                  <button type="button" class="rounded-lg p-1.5 text-error hover:bg-error-container" [title]="grupo.estado === 'Activo' ? 'Dar de baja' : 'Reactivar'" (click)="solicitarCambioEstado(grupo)">
+                  <button type="button" class="rounded-lg p-1.5 text-error hover:bg-error-container" [title]="grupo.cicloEscolar.estado === 'Finalizado' ? 'Ciclo finalizado: solo lectura' : (grupo.estado === 'Activo' ? 'Dar de baja' : 'Reactivar')" (click)="solicitarCambioEstado(grupo)" [disabled]="grupo.cicloEscolar.estado === 'Finalizado'">
                     <span class="material-symbols-outlined text-[19px]">{{ grupo.estado === 'Activo' ? 'toggle_off' : 'toggle_on' }}</span>
                   </button>
                 </div>
@@ -176,10 +176,10 @@
     </div>
     <div class="flex flex-wrap gap-2">
       @for (grado of grados(); track grado.id) {
-        <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-surface-container-low px-3 py-2 text-left hover:bg-surface-container" (click)="abrirEditarGrado(grado)" [attr.aria-label]="'Editar ' + grado.nombre">
+        <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-surface-container-low px-3 py-2 text-left hover:bg-surface-container" (click)="abrirEditarGrado(grado)" [attr.aria-label]="'Editar ' + grado.nombre" [disabled]="grado.cicloEscolar.estado === 'Finalizado'">
           <span class="font-semibold text-on-surface">{{ grado.nombre }}</span>
-          <span class="text-label-sm text-on-surface-variant">{{ grado.ciclo }}</span>
-          <span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+          <span class="text-label-sm text-on-surface-variant">{{ grado.ciclo }} · {{ estadoCicloTexto(grado.cicloEscolar) }}</span>
+          <span class="material-symbols-outlined text-[16px] text-primary">{{ grado.cicloEscolar.estado === 'Finalizado' ? 'lock' : 'edit' }}</span>
         </button>
       } @empty {
         <span class="text-on-surface-variant">No hay grados disponibles.</span>
@@ -198,9 +198,22 @@
           <button type="button" class="modal-close" (click)="cerrarGrado()" aria-label="Cerrar">×</button>
         </header>
         <form [formGroup]="formGrado" (ngSubmit)="guardarGrado()" class="modal-form">
-          <label>Nombre del grado <input formControlName="nombre" placeholder="6° Primaria" /></label>
-          <label>Nivel <input formControlName="nivel" placeholder="Primaria" /></label>
-          <label>Ciclo escolar <input formControlName="ciclo" placeholder="2026–2027" /></label>
+          <label>Nivel
+            <select formControlName="nivel" (change)="cambiarNivel()"><option value="Primaria">Primaria</option><option value="Secundaria">Secundaria</option></select>
+          </label>
+          <label>Número de grado
+            <select formControlName="numeroGrado">@for (numero of numerosGrado(); track numero) { <option [value]="numero">{{ numero }}°</option> }</select>
+          </label>
+          <label>Ciclo escolar
+            <select formControlName="cicloEscolarId">
+              @if (gradoEditandoId()) {
+                @for (ciclo of ciclos(); track ciclo.id) { <option [value]="ciclo.id">{{ ciclo.nombre }} · {{ estadoCicloTexto(ciclo) }}</option> }
+              } @else {
+                @for (ciclo of ciclosPlaneacion(); track ciclo.id) { <option [value]="ciclo.id">{{ ciclo.nombre }} · Planeación</option> }
+              }
+            </select>
+            <small>El nombre del grado se genera automáticamente.</small>
+          </label>
           <footer class="modal-actions">
             <button type="button" class="secondary-button" (click)="cerrarGrado()">Cancelar</button>
             <button type="submit" class="primary-button" [disabled]="guardando()">{{ guardando() ? 'Guardando...' : 'Guardar grado' }}</button>
@@ -223,8 +236,9 @@
         <form [formGroup]="formGrupo" (ngSubmit)="guardarGrupo()" class="modal-form grid-cols-1 md:grid-cols-2">
           <label>Grado
             <select formControlName="gradoId">
-              @for (grado of grados(); track grado.id) { <option [value]="grado.id">{{ grado.nombre }}</option> }
+              @for (grado of gradosParaGrupo(); track grado.id) { <option [value]="grado.id">{{ grado.nombre }} · {{ grado.ciclo }}</option> }
             </select>
+            @if (grupoEditando()?.cicloEscolar?.estado === 'Activo') { <small>El grado y ciclo están bloqueados porque el ciclo está activo.</small> }
           </label>
           <label>Grupo / letra <input formControlName="grupoLetra" maxlength="5" placeholder="A" /></label>
           <label>Clave <input formControlName="clave" placeholder="CM-PRI-6A-26" /></label>

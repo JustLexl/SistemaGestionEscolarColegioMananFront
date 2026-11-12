@@ -1,0 +1,90 @@
+<div class="flex w-full flex-col pb-16 cm-page">
+  <div class="mb-space-md flex flex-wrap items-center justify-between gap-space-sm py-space-xs text-on-surface-variant cm-context">
+    <div class="flex items-center gap-2 font-label-md text-label-md cm-context__identity">
+      <span class="inline-flex items-center gap-1 rounded-full bg-primary-fixed/20 px-2 py-0.5 font-semibold text-primary cm-context__brand">
+        <span class="material-symbols-outlined text-[14px]">school</span> Colegio Manantial
+      </span>
+      <span>•</span><span class="font-body-md text-body-sm">Planeación del calendario académico</span>
+    </div>
+    <span class="inline-flex items-center gap-1 text-label-sm font-semibold text-primary cm-active-period">
+      <span class="h-2 w-2 rounded-full bg-primary cm-active-period__dot"></span>
+      Estado calculado automáticamente por fechas
+    </span>
+  </div>
+
+  @if (error()) {
+    <div class="mb-space-md flex items-center justify-between rounded-xl bg-error-container px-4 py-3 text-on-error-container" role="alert">
+      <span>{{ error() }}</span><button type="button" class="font-semibold" (click)="error.set('')">Cerrar</button>
+    </div>
+  }
+  @if (mensaje()) {
+    <div class="mb-space-md flex items-center justify-between rounded-xl bg-primary-fixed/30 px-4 py-3 text-primary" role="status">
+      <span>{{ mensaje() }}</span><button type="button" class="font-semibold" (click)="mensaje.set('')">Cerrar</button>
+    </div>
+  }
+
+  <section>
+    <div class="flex flex-col justify-between gap-space-md lg:flex-row lg:items-end cm-heading">
+      <div class="flex max-w-3xl flex-col gap-1 cm-heading__copy">
+        <span class="font-label-md text-label-md font-semibold uppercase tracking-wider text-primary cm-eyebrow">Planeación escolar</span>
+        <h1>Ciclos escolares</h1>
+        <p>Administra periodos académicos. El estado se determina de forma centralizada con sus fechas.</p>
+      </div>
+      <button id="crear-ciclo" type="button" class="cm-primary-action" (click)="abrirCrear()">
+        <span class="material-symbols-outlined text-[19px]">add</span> Crear ciclo
+      </button>
+    </div>
+
+    <div class="cm-kpi-grid">
+      <article class="cm-kpi-card"><div class="cm-kpi-card__copy"><span class="cm-kpi-card__label">Ciclos registrados</span><strong class="cm-kpi-card__value">{{ ciclos().length }}</strong><span class="cm-kpi-card__description">Histórico y planeación</span></div><span class="material-symbols-outlined cm-kpi-card__icon">date_range</span></article>
+      <article class="cm-kpi-card"><div class="cm-kpi-card__copy"><span class="cm-kpi-card__label">Ciclo activo</span><strong class="cm-kpi-card__value">{{ activos() }}</strong><span class="cm-kpi-card__description">Solo uno puede estar vigente</span></div><span class="material-symbols-outlined cm-kpi-card__icon">event_available</span></article>
+      <article class="cm-kpi-card"><div class="cm-kpi-card__copy"><span class="cm-kpi-card__label">En planeación</span><strong class="cm-kpi-card__value">{{ planeados() }}</strong><span class="cm-kpi-card__description">Disponibles para crear grados</span></div><span class="material-symbols-outlined cm-kpi-card__icon">edit_calendar</span></article>
+    </div>
+  </section>
+
+  <section class="mb-space-lg rounded-xl bg-white p-space-md shadow-sm cm-filters" aria-label="Filtros de ciclos escolares">
+    <div class="flex flex-wrap items-center gap-space-sm">
+      <label for="estado-ciclo" class="font-semibold text-on-surface-variant">Estado</label>
+      <select id="estado-ciclo" class="rounded-xl bg-surface px-3 py-2" [value]="filtroEstado()" (change)="filtroEstado.set($any($event.target).value)">
+        <option value="">Todos</option><option value="Planeacion">Planeación</option><option value="Activo">Activo</option><option value="Finalizado">Finalizado</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="overflow-hidden rounded-xl bg-white shadow-sm cm-data-section" aria-labelledby="ciclos-title">
+    <div class="cm-data-header"><div class="cm-data-header__title"><h2 id="ciclos-title">Padrón de ciclos escolares</h2><span class="cm-count">{{ ciclosFiltrados().length }} ciclos</span></div>@if (cargando()) { <span class="text-label-sm text-primary">Cargando...</span> }</div>
+    <div class="overflow-x-auto cm-table-scroll">
+      <table class="w-full text-left text-body-sm cm-table">
+        <thead><tr><th>Ciclo escolar</th><th>Fecha de inicio</th><th>Fecha de fin</th><th>Estado</th><th class="text-right">Acciones</th></tr></thead>
+        <tbody>
+          @for (ciclo of ciclosFiltrados(); track ciclo.id) {
+            <tr>
+              <td><div class="flex items-center gap-3"><span class="cycle-mark"><span class="material-symbols-outlined">calendar_month</span></span><div><strong>{{ ciclo.nombre }}</strong><small>ID {{ ciclo.id }}</small></div></div></td>
+              <td>{{ fechaLegible(ciclo.fechaInicio) }}</td><td>{{ fechaLegible(ciclo.fechaFin) }}</td>
+              <td><span class="cycle-status" [class.cycle-status--active]="ciclo.estado === 'Activo'" [class.cycle-status--planning]="ciclo.estado === 'Planeacion'" [class.cycle-status--final]="ciclo.estado === 'Finalizado'">{{ etiquetaEstado(ciclo.estado) }}</span></td>
+              <td class="text-right">
+                @if (ciclo.estado === 'Planeacion') {
+                  <button type="button" class="action-button" title="Editar ciclo" (click)="abrirEditar(ciclo)"><span class="material-symbols-outlined">edit</span></button>
+                } @else { <span class="readonly-label"><span class="material-symbols-outlined">lock</span> Solo lectura</span> }
+              </td>
+            </tr>
+          } @empty { <tr><td colspan="5" class="empty-state">No hay ciclos que coincidan con el filtro.</td></tr> }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  @if (modalAbierto()) {
+    <div class="modal-backdrop" (click)="cerrar()">
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ciclo-modal-title" (click)="$event.stopPropagation()">
+        <header class="modal-header"><div><span>Planeación escolar</span><h2 id="ciclo-modal-title">{{ cicloEditandoId() === null ? 'Crear ciclo escolar' : 'Editar ciclo escolar' }}</h2></div><button type="button" (click)="cerrar()" aria-label="Cerrar">×</button></header>
+        <form [formGroup]="form" (ngSubmit)="guardar()" class="modal-form">
+          <label>Nombre del ciclo<input formControlName="nombre" placeholder="2028–2029" /></label>
+          <div class="date-grid"><label>Fecha de inicio<input type="date" formControlName="fechaInicio" /></label><label>Fecha de fin<input type="date" formControlName="fechaFin" /></label></div>
+          <p class="form-help"><span class="material-symbols-outlined">info</span> El estado no se captura manualmente: se calcula según la fecha actual.</p>
+          <footer class="modal-actions"><button type="button" class="secondary-button" (click)="cerrar()">Cancelar</button><button type="submit" class="primary-button" [disabled]="guardando()">{{ guardando() ? 'Guardando...' : 'Guardar ciclo' }}</button></footer>
+        </form>
+      </section>
+    </div>
+  }
+</div>

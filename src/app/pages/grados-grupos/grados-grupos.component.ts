@@ -10,6 +10,10 @@ import {
   GruposMetricas,
   ProfesorResumen,
 } from './grados-grupos-api.service';
+import {
+  CicloEscolar,
+  CiclosEscolaresApiService,
+} from '../ciclos-escolares/ciclos-escolares-api.service';
 
 @Component({
   selector: 'app-grados-grupos',
@@ -20,7 +24,9 @@ import {
 })
 export class GradosGruposComponent implements OnInit {
   private readonly api = inject(GradosGruposApiService);
+  private readonly ciclosApi = inject(CiclosEscolaresApiService);
 
+  protected readonly ciclos = signal<readonly CicloEscolar[]>([]);
   protected readonly grados = signal<readonly Grado[]>([]);
   protected readonly grupos = signal<readonly Grupo[]>([]);
   protected readonly profesores = signal<readonly ProfesorResumen[]>([]);
@@ -46,6 +52,26 @@ export class GradosGruposComponent implements OnInit {
   protected readonly filtroTurno = signal('');
   protected readonly filtroEstado = signal('');
 
+  protected readonly ciclosPlaneacion = computed(() =>
+    this.ciclos().filter((ciclo) => ciclo.estado === 'Planeacion'),
+  );
+  protected readonly gradosPlaneacion = computed(() =>
+    this.grados().filter((grado) => grado.cicloEscolar.estado === 'Planeacion'),
+  );
+  protected readonly grupoEditando = computed(() =>
+    this.grupos().find((grupo) => grupo.id === this.grupoEditandoId()) ?? null,
+  );
+  protected readonly gradosParaGrupo = computed(() => {
+    const grupo = this.grupoEditando();
+    if (!grupo) return this.gradosPlaneacion();
+    if (grupo.cicloEscolar.estado !== 'Planeacion') {
+      return this.grados().filter((grado) => grado.id === grupo.gradoId);
+    }
+    return this.grados().filter(
+      (grado) => grado.cicloEscolarId === grupo.cicloEscolarId,
+    );
+  });
+
   protected readonly gruposFiltrados = computed(() => {
     const texto = this.busqueda().trim().toLocaleLowerCase('es-MX');
     return this.grupos().filter((grupo) => {
@@ -62,9 +88,18 @@ export class GradosGruposComponent implements OnInit {
   });
 
   protected readonly formGrado = new FormGroup({
-    nombre: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    nivel: new FormControl('Primaria', { nonNullable: true, validators: [Validators.required] }),
-    ciclo: new FormControl('2026–2027', { nonNullable: true, validators: [Validators.required] }),
+    nivel: new FormControl<'Primaria' | 'Secundaria'>('Primaria', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    numeroGrado: new FormControl(1, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1)],
+    }),
+    cicloEscolarId: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1)],
+    }),
   });
 
   protected readonly formGrupo = new FormGroup({
@@ -96,12 +131,14 @@ export class GradosGruposComponent implements OnInit {
     this.cargando.set(true);
     this.error.set('');
     try {
-      const [grados, grupos, profesores, metricas] = await Promise.all([
+      const [ciclos, grados, grupos, profesores, metricas] = await Promise.all([
+        this.ciclosApi.obtenerCiclos(),
         this.api.obtenerGrados(),
         this.api.obtenerGrupos(),
         this.api.obtenerProfesoresActivos(),
         this.api.obtenerMetricas(),
       ]);
+      this.ciclos.set(ciclos);
       this.grados.set(grados);
       this.grupos.set(grupos);
       this.profesores.set(profesores);
@@ -114,19 +151,34 @@ export class GradosGruposComponent implements OnInit {
   }
 
   protected abrirCrearGrado(): void {
+    const ciclo = this.ciclosPlaneacion()[0];
+    if (!ciclo) {
+      this.error.set('No existe un ciclo en planeación disponible para crear grados.');
+      return;
+    }
     this.gradoEditandoId.set(null);
-    this.formGrado.reset({ nombre: '', nivel: 'Primaria', ciclo: '2026–2027' });
+    this.formGrado.controls.cicloEscolarId.enable();
+    this.formGrado.reset({ nivel: 'Primaria', numeroGrado: 1, cicloEscolarId: ciclo.id });
     this.error.set('');
     this.modalGradoAbierto.set(true);
   }
 
   protected abrirEditarGrado(grado: Grado): void {
+    if (grado.cicloEscolar.estado === 'Finalizado') {
+      this.error.set('Los grados de ciclos finalizados son de solo lectura.');
+      return;
+    }
     this.gradoEditandoId.set(grado.id);
     this.formGrado.setValue({
-      nombre: grado.nombre,
       nivel: grado.nivel,
-      ciclo: grado.ciclo,
+      numeroGrado: grado.numeroGrado,
+      cicloEscolarId: grado.cicloEscolarId,
     });
+    if (grado.cicloEscolar.estado === 'Activo') {
+      this.formGrado.controls.cicloEscolarId.disable();
+    } else {
+      this.formGrado.controls.cicloEscolarId.enable();
+    }
     this.error.set('');
     this.modalGradoAbierto.set(true);
   }
@@ -163,9 +215,15 @@ export class GradosGruposComponent implements OnInit {
   }
 
   protected abrirCrearGrupo(): void {
+    const grado = this.gradosPlaneacion()[0];
+    if (!grado) {
+      this.error.set('Primero crea un grado dentro de un ciclo en planeación.');
+      return;
+    }
     this.grupoEditandoId.set(null);
+    this.formGrupo.controls.gradoId.enable();
     this.formGrupo.reset({
-      gradoId: this.grados()[0]?.id ?? '',
+      gradoId: grado.id,
       grupoLetra: '',
       clave: '',
       aula: '',
@@ -180,6 +238,10 @@ export class GradosGruposComponent implements OnInit {
   }
 
   protected abrirEditarGrupo(grupo: Grupo): void {
+    if (grupo.cicloEscolar.estado === 'Finalizado') {
+      this.error.set('Los grupos de ciclos finalizados son de solo lectura.');
+      return;
+    }
     this.grupoEditandoId.set(grupo.id);
     this.formGrupo.setValue({
       gradoId: grupo.gradoId,
@@ -192,6 +254,11 @@ export class GradosGruposComponent implements OnInit {
       alumnosMax: grupo.alumnosMax,
       estado: grupo.estado,
     });
+    if (grupo.cicloEscolar.estado === 'Activo') {
+      this.formGrupo.controls.gradoId.disable();
+    } else {
+      this.formGrupo.controls.gradoId.enable();
+    }
     this.error.set('');
     this.modalGrupoAbierto.set(true);
   }
@@ -268,6 +335,23 @@ export class GradosGruposComponent implements OnInit {
 
   protected porcentaje(grupo: Grupo): number {
     return grupo.alumnosMax > 0 ? Math.round((grupo.alumnosActuales / grupo.alumnosMax) * 100) : 0;
+  }
+
+  protected numerosGrado(): readonly number[] {
+    return this.formGrado.controls.nivel.value === 'Secundaria'
+      ? [1, 2, 3]
+      : [1, 2, 3, 4, 5, 6];
+  }
+
+  protected cambiarNivel(): void {
+    const maximo = this.formGrado.controls.nivel.value === 'Secundaria' ? 3 : 6;
+    if (this.formGrado.controls.numeroGrado.value > maximo) {
+      this.formGrado.controls.numeroGrado.setValue(1);
+    }
+  }
+
+  protected estadoCicloTexto(ciclo: CicloEscolar): string {
+    return ciclo.estado === 'Planeacion' ? 'Planeación' : ciclo.estado;
   }
 
   private mensajeError(error: unknown): string {

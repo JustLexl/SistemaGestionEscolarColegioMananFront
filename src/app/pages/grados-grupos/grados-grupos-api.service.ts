@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../core/api/api-base-url';
+import { CicloEscolar } from '../ciclos-escolares/ciclos-escolares-api.service';
 
 interface ApiResponse<T> {
   readonly success: boolean;
@@ -11,8 +12,11 @@ interface ApiResponse<T> {
 export interface Grado {
   readonly id: string;
   readonly nombre: string;
-  readonly nivel: string;
+  readonly nivel: 'Primaria' | 'Secundaria';
+  readonly numeroGrado: number;
+  readonly cicloEscolarId: number;
   readonly ciclo: string;
+  readonly cicloEscolar: CicloEscolar;
 }
 
 export interface ProfesorResumen {
@@ -42,6 +46,9 @@ export interface Grupo {
   readonly alumnosMax: number;
   readonly estado: 'Activo' | 'Inactivo';
   readonly isBase: boolean;
+  readonly grado: Grado;
+  readonly cicloEscolarId: number;
+  readonly cicloEscolar: CicloEscolar;
 }
 
 export interface GruposMetricas {
@@ -54,9 +61,9 @@ export interface GruposMetricas {
 }
 
 export interface GradoPayload {
-  readonly nombre: string;
-  readonly nivel: string;
-  readonly ciclo: string;
+  readonly nivel: 'Primaria' | 'Secundaria';
+  readonly numeroGrado: number;
+  readonly cicloEscolarId: number;
 }
 
 export interface GrupoPayload {
