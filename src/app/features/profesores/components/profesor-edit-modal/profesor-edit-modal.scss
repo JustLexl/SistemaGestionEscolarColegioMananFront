@@ -104,6 +104,10 @@ form {
   font-size: 0.75rem;
 }
 
+.edit-modal__api-error {
+  margin: 0;
+}
+
 .edit-modal__actions {
   display: flex;
   justify-content: flex-end;
@@ -133,6 +137,11 @@ form {
 
 .edit-modal__save:hover {
   background: var(--color-primary-hover);
+}
+
+.edit-modal button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 @media (max-width: 520px) {

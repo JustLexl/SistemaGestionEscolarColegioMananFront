@@ -16,6 +16,7 @@
         type="button"
         aria-label="Cerrar confirmación de baja"
         title="Cerrar"
+        [disabled]="guardando()"
         (click)="cerrar()"
       >
         <span aria-hidden="true">×</span>
@@ -31,12 +32,29 @@
       El profesor permanecerá registrado, pero su estado cambiará a Inactivo.
     </p>
 
+    @if (errorApi()) {
+      <p class="deactivate-modal__error" role="alert">
+        {{ errorApi() }}
+      </p>
+    }
+
     <footer class="deactivate-modal__actions">
-      <button #cancelButton class="deactivate-modal__cancel" type="button" (click)="cerrar()">
+      <button
+        #cancelButton
+        class="deactivate-modal__cancel"
+        type="button"
+        [disabled]="guardando()"
+        (click)="cerrar()"
+      >
         Cancelar
       </button>
-      <button class="deactivate-modal__confirm" type="button" (click)="confirmarBaja()">
-        Dar de baja
+      <button
+        class="deactivate-modal__confirm"
+        type="button"
+        [disabled]="guardando()"
+        (click)="confirmarBaja()"
+      >
+        {{ guardando() ? 'Procesando...' : 'Dar de baja' }}
       </button>
     </footer>
   </section>

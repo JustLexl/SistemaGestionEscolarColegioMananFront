@@ -16,6 +16,7 @@
         type="button"
         aria-label="Cerrar formulario de edición"
         title="Cerrar"
+        [disabled]="guardando()"
         (click)="cerrar()"
       >
         <span aria-hidden="true">×</span>
@@ -35,6 +36,7 @@
           type="text"
           formControlName="nombre"
           autocomplete="off"
+          [readOnly]="guardando()"
           aria-describedby="editar-profesor-nombre-error"
           [attr.aria-invalid]="mostrarErrorNombre()"
         />
@@ -52,6 +54,7 @@
           type="text"
           formControlName="cedula"
           autocomplete="off"
+          [readOnly]="guardando()"
           aria-describedby="editar-profesor-cedula-error"
           [attr.aria-invalid]="mostrarErrorCedula() || cedulaDuplicada()"
           (input)="limpiarErrorCedulaDuplicada()"
@@ -67,9 +70,24 @@
         }
       </div>
 
+      @if (errorApi()) {
+        <p class="form-field__error edit-modal__api-error" role="alert">
+          {{ errorApi() }}
+        </p>
+      }
+
       <footer class="edit-modal__actions">
-        <button class="edit-modal__cancel" type="button" (click)="cerrar()">Cancelar</button>
-        <button class="edit-modal__save" type="submit">Guardar</button>
+        <button
+          class="edit-modal__cancel"
+          type="button"
+          [disabled]="guardando()"
+          (click)="cerrar()"
+        >
+          Cancelar
+        </button>
+        <button class="edit-modal__save" type="submit" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando...' : 'Guardar' }}
+        </button>
       </footer>
     </form>
   </section>

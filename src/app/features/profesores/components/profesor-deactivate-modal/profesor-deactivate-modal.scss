@@ -80,6 +80,13 @@
   border-radius: 8px;
 }
 
+.deactivate-modal__error {
+  margin: 12px 0 0;
+  color: var(--color-danger);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .deactivate-modal__actions {
   display: flex;
   justify-content: flex-end;
@@ -109,6 +116,11 @@
 
 .deactivate-modal__confirm:hover {
   background: #a92b32;
+}
+
+.deactivate-modal button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 @media (max-width: 520px) {
