@@ -31,7 +31,7 @@ describe('ImportacionApiService', () => {
     const archivo = new File(['matricula,fecha,estado'], 'asistencias.csv', { type: 'text/csv' });
     const resultado = await service.validarArchivo('asistencias', archivo);
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe('http://localhost:3000/api/importacion/asistencias/validar');
+    expect(url).toBe('http://localhost:3002/api/importacion/asistencias/validar');
     expect(init.method).toBe('POST');
     expect(init.body).toBeInstanceOf(FormData);
     expect((init.body as FormData).get('archivo')).toBe(archivo);
@@ -45,7 +45,7 @@ describe('ImportacionApiService', () => {
     const validos: readonly RegistroImportacion[] = validacion.validos;
     await service.confirmar('asistencias', validos);
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe('http://localhost:3000/api/importacion/asistencias/confirmar');
+    expect(url).toBe('http://localhost:3002/api/importacion/asistencias/confirmar');
     expect(init.method).toBe('POST');
     expect(JSON.parse(String(init.body))).toEqual({ validos });
   });

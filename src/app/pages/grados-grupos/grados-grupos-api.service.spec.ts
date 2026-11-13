@@ -72,13 +72,13 @@ describe('GradosGruposApiService', () => {
   it('obtiene grados reales', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: [grado] }));
     await expect(service.obtenerGrados()).resolves.toEqual([grado]);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/grados', { headers: undefined });
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grados', { headers: undefined });
   });
 
   it('crea un grado con POST', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: grado }, 201));
     await service.crearGrado(gradoPayload);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/grados', {
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grados', {
       method: 'POST',
       body: JSON.stringify(gradoPayload),
       headers: { 'Content-Type': 'application/json' },
@@ -88,13 +88,13 @@ describe('GradosGruposApiService', () => {
   it('edita un grado con PUT', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: grado }));
     await service.actualizarGrado('8', gradoPayload);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/grados/8', expect.objectContaining({ method: 'PUT' }));
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grados/8', expect.objectContaining({ method: 'PUT' }));
   });
 
   it('obtiene grupos reales', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: [grupo] }));
     await expect(service.obtenerGrupos()).resolves.toEqual([grupo]);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/grupos', { headers: undefined });
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grupos', { headers: undefined });
   });
 
   it('registra un grupo enviando Profesor.id', async () => {
@@ -106,7 +106,7 @@ describe('GradosGruposApiService', () => {
   it('edita un grupo con PUT', async () => {
     fetchMock.mockResolvedValue(response({ success: true, data: grupo }));
     await service.actualizarGrupo(10, grupoPayload);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/grupos/10', expect.objectContaining({ method: 'PUT' }));
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/grupos/10', expect.objectContaining({ method: 'PUT' }));
   });
 
   it('carga únicamente Profesores activos para el dropdown', async () => {

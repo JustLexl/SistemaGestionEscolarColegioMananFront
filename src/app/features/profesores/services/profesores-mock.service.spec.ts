@@ -196,7 +196,7 @@ describe('ProfesoresMockService', () => {
       gruposAsignados: ['3° A', '6° Z'],
       materiasAsignadas: ['Matemáticas III', 'Lengua Materna III'],
     });
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/api/profesores');
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3002/api/profesores');
     vi.unstubAllGlobals();
   });
 
